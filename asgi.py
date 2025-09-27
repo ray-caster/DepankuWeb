@@ -17,7 +17,6 @@ from ai_analysis_service import AIAnalysisService
 from moderation_service import ModerationService
 
 # Convert Flask WSGI app to ASGI
-# Convert Flask WSGI app to ASGI using a2wsgi
 flask_asgi_app = ASGIMiddleware(app)
 
 # Global variables for shared resources
@@ -64,14 +63,29 @@ async def shutdown():
     # Any other cleanup tasks can be added here
     print("Shutdown complete")
 
-async def application(scope, receive, send):
-    if scope['type'] == 'lifespan':
-        # Handle lifespan events
+class ASGIApplication:
+    """Custom ASGI application wrapper that handles lifespan events."""
+    
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+        self.started = False
+        
+    async def __call__(self, scope, receive, send):
+        if scope['type'] == 'lifespan':
+            await self.handle_lifespan(scope, receive, send)
+        else:
+            # Delegate to the WSGI app for HTTP requests
+            self.wsgi_app(scope, receive, send)
+    
+    async def handle_lifespan(self, scope, receive, send):
+        """Handle ASGI lifespan events."""
         while True:
             message = await receive()
             if message['type'] == 'lifespan.startup':
                 try:
-                    await startup()
+                    if not self.started:
+                        await startup()
+                        self.started = True
                     await send({'type': 'lifespan.startup.complete'})
                 except Exception as e:
                     await send({'type': 'lifespan.startup.failed', 'message': str(e)})
@@ -82,10 +96,9 @@ async def application(scope, receive, send):
                 except Exception as e:
                     await send({'type': 'lifespan.shutdown.failed', 'message': str(e)})
                 break
-    else:
-        # Delegate to the Flask ASGI app for other requests
-        # Call the ASGI middleware directly without await since it's not a coroutine
-        flask_asgi_app(scope, receive, send)
+
+# Create the ASGI application
+application = ASGIApplication(flask_asgi_app)
 
 if __name__ == "__main__":
     import uvicorn
