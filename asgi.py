@@ -5,7 +5,7 @@ This file provides ASGI compatibility for Uvicorn workers with lifespan support.
 import os
 import sys
 import asyncio
-from asgiref.wsgi import WSGIToASGI
+from a2wsgi import ASGIMiddleware
 
 # Add the current directory to Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -17,7 +17,8 @@ from ai_analysis_service import AIAnalysisService
 from moderation_service import ModerationService
 
 # Convert Flask WSGI app to ASGI
-flask_asgi_app = WSGIToASGI(app)
+# Convert Flask WSGI app to ASGI using a2wsgi
+flask_asgi_app = ASGIMiddleware(app)
 
 # Global variables for shared resources
 openrouter_client = None
@@ -83,8 +84,8 @@ async def application(scope, receive, send):
                 break
     else:
         # Delegate to the Flask ASGI app for other requests
-        # Use the correct call signature for ASGIMiddleware
-        await flask_asgi_app(scope, receive, send)
+        # Call the ASGI middleware directly without await since it's not a coroutine
+        flask_asgi_app(scope, receive, send)
 
 if __name__ == "__main__":
     import uvicorn
