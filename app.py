@@ -21,6 +21,21 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')
 CORS(app)
 
+# Helper function to normalize tags (ensure they start with '#' and are lowercase)
+def normalize_tags(tags):
+    """Normalize tags to ensure they start with '#' and are lowercase."""
+    normalized = []
+    for tag in tags:
+        if isinstance(tag, str):
+            # Remove any existing '#' and add it back, convert to lowercase
+            tag = tag.strip()
+            if tag.startswith('#'):
+                tag = '#' + tag[1:].lstrip('#')
+            else:
+                tag = '#' + tag
+            normalized.append(tag.lower())
+    return normalized
+
 # Initialize Firebase Admin SDK
 try:
     # Check if Firebase Admin SDK is already initialized
@@ -369,7 +384,7 @@ async def organization_create():
             'contactEmail': data.get('contactEmail', ''),
             'logo': data.get('logo', ''),
             'category': data.get('category'),
-            'tags': data.get('tags', []),
+            'tags': normalize_tags(data.get('tags', [])),
             'location': {
                 'type': data.get('locationType', 'remote'),
                 'address': data.get('address', ''),
@@ -466,7 +481,7 @@ async def organization_edit(org_id):
             'contactEmail': data.get('contactEmail', org_dict.get('contactEmail', '')),
             'logo': data.get('logo', org_dict.get('logo', '')),
             'category': data.get('category', org_dict.get('category')),
-            'tags': data.get('tags', org_dict.get('tags', [])),
+            'tags': normalize_tags(data.get('tags', org_dict.get('tags', []))),
             'location': {
                 'type': data.get('locationType', org_dict.get('location', {}).get('type', 'remote')),
                 'address': data.get('address', org_dict.get('location', {}).get('address', '')),
@@ -578,7 +593,19 @@ def api_organizations_list():
         for org in organizations:
             org_data = org.to_dict()
             org_data['id'] = org.id
-            org_list.append(org_data)
+            
+            # Apply search filter if search query is provided
+            if search_query:
+                search_lower = search_query.lower()
+                name_match = search_lower in org_data.get('name', '').lower()
+                desc_match = search_lower in org_data.get('description', '').lower()
+                tags_match = any(search_lower in tag.lower() for tag in org_data.get('tags', []))
+                
+                # Only include organization if it matches search criteria
+                if name_match or desc_match or tags_match:
+                    org_list.append(org_data)
+            else:
+                org_list.append(org_data)
         
         return jsonify({
             'success': True,

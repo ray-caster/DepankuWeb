@@ -315,25 +315,15 @@ function initializeSearch() {
 function handleSearch() {
     const query = searchInput.value.trim();
     if (query) {
-        if (index) {
-            // Use Algolia search if available
-            index.search(query).then(({ hits }) => {
-                if (hits.length > 0) {
-                    // Redirect to search results page or show results
-                    console.log('Search results:', hits);
-                    // For now, show alert with result count
-                    alert(`Found ${hits.length} organizations matching "${query}"`);
-                } else {
-                    alert(`No organizations found for "${query}". Try different keywords.`);
-                }
-            }).catch(error => {
-                console.error('Search error:', error);
-                alert(`Search functionality temporarily unavailable. Please try again later.`);
-            });
+        // Check if user is authenticated
+        if (auth && auth.currentUser) {
+            // Redirect authenticated users to organizations page with search query
+            window.location.href = `/organizations?search=${encodeURIComponent(query)}`;
         } else {
-            // Fallback: basic search behavior
-            console.log('Fallback search for:', query);
-            alert(`Search functionality would show results for: ${query}`);
+            // For unauthenticated users, redirect to signup with search query preserved
+            const searchParams = new URLSearchParams();
+            searchParams.set('search', query);
+            window.location.href = `/signup?${searchParams.toString()}`;
         }
     }
 }
