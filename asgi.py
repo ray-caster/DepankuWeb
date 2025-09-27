@@ -49,9 +49,16 @@ async def shutdown():
     print("Shutting down Depanku application...")
     
     # Clean up OpenRouter client session if it exists
-    if openrouter_client and hasattr(openrouter_client, 'session'):
-        await openrouter_client.__aexit__(None, None, None)
-        print("OpenRouter session closed")
+    if openrouter_client:
+        try:
+            # Check if OpenRouterClient has a session and close it
+            if hasattr(openrouter_client, 'session') and openrouter_client.session:
+                await openrouter_client.session.close()
+                print("OpenRouter session closed")
+        except AttributeError as e:
+            print(f"OpenRouterClient session close error: {e}")
+        except Exception as e:
+            print(f"Error closing OpenRouter session: {e}")
     
     # Any other cleanup tasks can be added here
     print("Shutdown complete")
