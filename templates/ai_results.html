@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Analysis Results - Depanku</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <style>
+        .results-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .results-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+        }
+
+        .persona-card {
+            border-left: 4px solid #007bff;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+        }
+
+        .persona-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .persona-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #007bff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .persona-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .persona-response {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .critique-card {
+            border-left: 4px solid #dc3545;
+            background: #f8d7da;
+        }
+
+        .consensus-card {
+            border-left: 4px solid #28a745;
+            background: #d4edda;
+        }
+
+        .question-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .question-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .question-text {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .response-text {
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-button">
+            <a href="/ai-analysis" style="text-decoration: none; color: #007bff;">
+                ← Back to AI Analysis
+            </a>
+        </div>
+
+        <div class="results-header">
+            <h1>AI Analysis Results</h1>
+            <p>Detailed breakdown of your multi-AI analysis</p>
+        </div>
+
+        <div id="loading-container" style="text-align: center; padding: 2rem;">
+            <div class="loading-spinner"></div>
+            <p>Loading analysis results...</p>
+        </div>
+
+        <div id="results-container" class="results-container" style="display: none;">
+            <div class="results-content">
+                <!-- Left Column -->
+                <div>
+                    <!-- Socratic Questions -->
+                    <div class="section">
+                        <h3 class="section-title">Socratic Questions & Responses</h3>
+                        <div id="questions-container"></div>
+                    </div>
+
+                    <!-- Refined Goal -->
+                    <div class="section">
+                        <h3 class="section-title">Refined Goal</h3>
+                        <p id="refined-goal"></p>
+                    </div>
+
+                    <!-- Devil's Advocate -->
+                    <div class="section">
+                        <h3 class="section-title">Devil's Advocate Critique</h3>
+                        <div id="critique-container"></div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <!-- AI Personas -->
+                    <div class="section">
+                        <h3 class="section-title">AI Expert Analysis</h3>
+                        <div id="personas-container"></div>
+                    </div>
+
+                    <!-- Final Recommendation -->
+                    <div class="section">
+                        <h3 class="section-title">Final Recommendation</h3>
+                        <div id="consensus-container"></div>
+                    </div>
+
+                    <!-- Session Info -->
+                    <div class="section">
+                        <h3 class="section-title">Session Information</h3>
+                        <div id="session-info">
+                            <p><strong>Session ID:</strong> <span id="session-id"></span></p>
+                            <p><strong>Status:</strong> <span id="session-status"></span></p>
+                            <p><strong>Created:</strong> <span id="session-created"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-container" class="error-message" style="display: none;"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script>
+        const sessionId = "{{ session_id }}";
+
+        async function loadResults() {
+            try {
+                const user = await getCurrentUser();
+                if (!user) {
+                    throw new Error('Please log in to view analysis results');
+                }
+
+                const response = await fetch(`/api/ai/results/${sessionId}?uid=${user.uid}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data.data);
+                } else {
+                    throw new Error(data.error?.message || 'Failed to load results');
+                }
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        function displayResults(sessionData) {
+            // Hide loading, show results
+            document.getElementById('loading-container').style.display = 'none';
+            document.getElementById('results-container').style.display = 'block';
+
+            // Display refined goal
+            document.getElementById('refined-goal').textContent = sessionData.goal || 'No goal specified';
+
+            // Display Socratic questions and responses
+            const questionsContainer = document.getElementById('questions-container');
+            if (sessionData.questions && sessionData.userResponses) {
+                sessionData.questions.forEach((question, index) => {
+                    const response = sessionData.userResponses[index] || 'No response';
+                    
+                    const questionItem = document.createElement('div');
+                    questionItem.className = 'question-item';
+                    questionItem.innerHTML = `
+                        <div class="question-text">${question}</div>
+                        <div class="response-text">${response}</div>
+                    `;
+                    questionsContainer.appendChild(questionItem);
+                });
+            }
+
+            // Display AI personas responses
+            const personasContainer = document.getElementById('personas-container');
+            if (sessionData.personas) {
+                const personas = [
+                    { key: 'deepseek', name: 'DeepSeek (Admissions Officer)', icon: 'D' },
+                    { key: 'maverick', name: 'Maverick (Peer Student)', icon: 'M' },
+                    { key: 'qwen', name: 'Qwen (HR Manager)', icon: 'Q' },
+                    { key: 'glm', name: 'GLM 4.5 Air (Philosopher)', icon: 'G' }
+                ];
+
+                personas.forEach(persona => {
+                    const personaData = sessionData.personas[persona.key];
+                    if (personaData && personaData.response) {
+                        const personaCard = document.createElement('div');
+                        personaCard.className = 'persona-card';
+                        personaCard.innerHTML = `
+                            <div class="persona-header">
+                                <div class="persona-icon">${persona.icon}</div>
+                                <div class="persona-name">${persona.name}</div>
+                            </div>
+                            <div class="persona-response">${personaData.response}</div>
+                        `;
+                        personasContainer.appendChild(personaCard);
+                    }
+                });
+            }
+
+            // Display devil's advocate critique
+            const critiqueContainer = document.getElementById('critique-container');
+            if (sessionData.personas?.grok?.critique) {
+                const critiqueCard = document.createElement('div');
+                critiqueCard.className = 'persona-card critique-card';
+                critiqueCard.innerHTML = `
+                    <div class="persona-header">
+                        <div class="persona-icon">⚡</div>
+                        <div class="persona-name">Grok (Devil's Advocate)</div>
+                    </div>
+                    <div class="persona-response">${sessionData.personas.grok.critique}</div>
+                `;
+                critiqueContainer.appendChild(critiqueCard);
+            }
+
+            // Display consensus results
+            const consensusContainer = document.getElementById('consensus-container');
+            if (sessionData.consensus) {
+                const consensusCard = document.createElement('div');
+                consensusCard.className = 'persona-card consensus-card';
+                
+                let consensusHTML = `
+                    <div class="persona-header">
+                        <div class="persona-icon">✓</div>
+                        <div class="persona-name">Final Consensus</div>
+                    </div>
+                    <div class="persona-response">
+                        <strong>Recommendation:</strong><br>
+                        ${sessionData.consensus.finalRecommendation || 'No recommendation'}
+                `;
+
+                if (sessionData.consensus.reasoning) {
+                    consensusHTML += `<br><br><strong>Reasoning:</strong><br>${sessionData.consensus.reasoning}`;
+                }
+
+                if (sessionData.consensus.reached !== undefined) {
+                    consensusHTML += `<br><br><strong>Consensus Reached:</strong> ${sessionData.consensus.reached ? 'Yes' : 'No'}`;
+                }
+
+                consensusCard.innerHTML = consensusHTML + '</div>';
+                consensusContainer.appendChild(consensusCard);
+            }
+
+            // Display session information
+            document.getElementById('session-id').textContent = sessionId;
+            document.getElementById('session-status').textContent = sessionData.status || 'Unknown';
+            
+            if (sessionData.createdAt) {
+                const createdDate = new Date(sessionData.createdAt._seconds * 1000);
+                document.getElementById('session-created').textContent = createdDate.toLocaleString();
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loading-container').style.display = 'none';
+            const errorContainer = document.getElementById('error-container');
+            errorContainer.textContent = message;
+            errorContainer.style.display = 'block';
+        }
+
+        // Load results when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadResults();
+        });
+    </script>
+</body>
+</html>

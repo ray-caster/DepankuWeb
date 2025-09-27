@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile - Depanku</title>
+    <meta name="description" content="Manage your Depanku account and subscription plan">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../static/css/landing.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>Depanku</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('organizations') }}" class="nav-link">Organizations</a>
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="#" id="logout-link" class="nav-link">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Profile Section -->
+    <section class="profile-section">
+        <div class="container">
+            <h2 class="section-title">Your Profile</h2>
+            
+            <div class="profile-grid">
+                <!-- User Info Card -->
+                <div class="profile-card">
+                    <h3>Account Information</h3>
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <label>Display Name:</label>
+                            <span id="user-display-name">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email:</label>
+                            <span id="user-email">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Age Group:</label>
+                            <span id="user-age-group">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Member Since:</label>
+                            <span id="user-created-at">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Card -->
+                <div class="profile-card">
+                    <h3>Subscription Plan</h3>
+                    <div class="subscription-info">
+                        <div class="plan-details">
+                            <div class="plan-name" id="plan-name">Loading...</div>
+                            <div class="plan-status" id="plan-status">Loading...</div>
+                        </div>
+                        
+                        <div class="usage-info">
+                            <h4>AI Analysis Usage</h4>
+                            <div class="usage-meter">
+                                <div class="meter-label">
+                                    <span>Analyses Remaining:</span>
+                                    <span id="ai-analyses-remaining">Loading...</span>
+                                </div>
+                                <div class="meter-bar">
+                                    <div class="meter-fill" id="meter-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subscription-actions">
+                            <button class="btn btn-primary" id="upgrade-btn" style="display: none;">
+                                Upgrade to Premium
+                            </button>
+                            <button class="btn btn-outline" id="manage-subscription-btn" style="display: none;">
+                                Manage Subscription
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences Card -->
+                <div class="profile-card">
+                    <h3>Preferences</h3>
+                    <div class="preferences-info">
+                        <div class="preference-item">
+                            <label>Interests:</label>
+                            <div id="user-interests">Loading...</div>
+                        </div>
+                        <div class="preference-item">
+                            <label>Location Preference:</label>
+                            <span id="user-location">Loading...</span>
+                        </div>
+                        <div class="preference-item">
+                            <label>Notifications:</label>
+                            <span id="user-notifications">Loading...</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline" id="edit-preferences-btn">
+                        Edit Preferences
+                    </button>
+                </div>
+
+                <!-- Recent Activity Card -->
+                <div class="profile-card">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="activity-list">
+                        <div class="activity-item">Loading recent activity...</div>
+                    </div>
+                    <a href="#" class="btn btn-outline">View All Activity</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+</body>
+</html>

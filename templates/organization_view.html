@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Details - Depanku</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/landing.css" rel="stylesheet">
+    <style>
+        .org-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        .tag-badge {
+            background-color: #6c757d;
+            color: white;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .position-card {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .position-card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .location-badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+        .action-buttons {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Depanku</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/organizations">My Organizations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/messages">Messages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Organization Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Profile</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="org-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 id="orgName" class="display-4 fw-bold">Organization Name</h1>
+                    <div class="d-flex flex-wrap align-items-center mt-3">
+                        <span id="orgCategory" class="location-badge bg-primary me-3">Category</span>
+                        <span id="orgLocation" class="location-badge bg-secondary me-3">Location</span>
+                        <span id="orgStatus" class="location-badge bg-warning">Pending Approval</span>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div id="orgLogo" class="text-center">
+                        <img src="" alt="Organization Logo" class="img-fluid rounded-circle" style="max-width: 120px; height: 120px; object-fit: cover;" onerror="this.style.display='none'">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Organization Details -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">About</h4>
+                    </div>
+                    <div class="card-body">
+                        <p id="orgDescription" class="card-text">Organization description will appear here...</p>
+                        
+                        <div class="mt-3">
+                            <h6>Tags:</h6>
+                            <div id="orgTags" class="d-flex flex-wrap">
+                                <!-- Tags will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open Positions -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Open Positions</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="positionsList">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading positions...</span>
+                                </div>
+                                <p class="mt-2">Loading open positions...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Contact Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Contact Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>Website:</strong>
+                            <div id="orgWebsite">
+                                <a href="#" target="_blank" id="websiteLink">Visit Website</a>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Email:</strong>
+                            <div id="orgEmail">
+                                <a href="mailto:" id="emailLink">contact@organization.com</a>
+                            </div>
+                        </div>
+                        <div id="orgAddress" class="mb-3" style="display: none;">
+                            <strong>Address:</strong>
+                            <div id="addressText"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Organization Stats -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Statistics</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="h4 text-primary" id="viewCount">0</div>
+                                <small class="text-muted">Views</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="h4 text-success" id="clickCount">0</div>
+                                <small class="text-muted">Clicks</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Owner Actions -->
+                <div class="card" id="ownerActions" style="display: none;">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Organization Management</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-primary" id="editBtn">
+                                <i class="fas fa-edit"></i> Edit Organization
+                            </a>
+                            <button class="btn btn-outline-danger" id="deleteBtn">
+                                <i class="fas fa-trash"></i> Delete Organization
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this organization? This action cannot be undone.</p>
+                    <p class="text-danger"><strong>Warning:</strong> All organization data and positions will be permanently removed.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete Organization</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const orgId = '{{ org_id }}';
+        
+        // Function to load organization data
+        async function loadOrganization() {
+            try {
+                const response = await axios.get(`/api/organizations/${orgId}`);
+                const org = response.data.data;
+                
+                // Update page title and header
+                document.title = `${org.name} - Depanku`;
+                document.getElementById('orgName').textContent = org.name;
+                document.getElementById('orgDescription').textContent = org.description;
+                
+                // Update category and location
+                document.getElementById('orgCategory').textContent = org.category || 'Not specified';
+                document.getElementById('orgLocation').textContent = org.location?.type || 'remote';
+                
+                // Update status
+                const statusBadge = document.getElementById('orgStatus');
+                statusBadge.textContent = org.status || 'pending';
+                statusBadge.className = `location-badge ${
+                    org.status === 'approved' ? 'bg-success' : 
+                    org.status === 'rejected' ? 'bg-danger' : 'bg-warning'
+                }`;
+                
+                // Update logo
+                const logoImg = document.querySelector('#orgLogo img');
+                if (org.logo) {
+                    logoImg.src = org.logo;
+                    logoImg.style.display = 'block';
+                }
+                
+                // Update tags
+                const tagsContainer = document.getElementById('orgTags');
+                tagsContainer.innerHTML = '';
+                if (org.tags && org.tags.length > 0) {
+                    org.tags.forEach(tag => {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge tag-badge';
+                        badge.textContent = tag;
+                        tagsContainer.appendChild(badge);
+                    });
+                } else {
+                    tagsContainer.innerHTML = '<span class="text-muted">No tags specified</span>';
+                }
+                
+                // Update contact information
+                const websiteLink = document.getElementById('websiteLink');
+                if (org.website) {
+                    websiteLink.href = org.website;
+                    websiteLink.textContent = org.website;
+                } else {
+                    document.getElementById('orgWebsite').innerHTML = '<span class="text-muted">Not specified</span>';
+                }
+                
+                const emailLink = document.getElementById('emailLink');
+                if (org.contactEmail) {
+                    emailLink.href = `mailto:${org.contactEmail}`;
+                    emailLink.textContent = org.contactEmail;
+                } else {
+                    document.getElementById('orgEmail').innerHTML = '<span class="text-muted">Not specified</span>';
+                }
+                
+                // Update address
+                if (org.location?.address) {
+                    document.getElementById('orgAddress').style.display = 'block';
+                    document.getElementById('addressText').textContent = org.location.address;
+                }
+                
+                // Update statistics
+                document.getElementById('viewCount').textContent = org.viewCount || 0;
+                document.getElementById('clickCount').textContent = org.clickCount || 0;
+                
+                // Load positions
+                loadPositions(org.openPositions);
+                
+                // Show owner actions if user is the owner
+                if (org.ownerId === '{{ session.user_id }}') { // This would need proper session handling
+                    document.getElementById('ownerActions').style.display = 'block';
+                    document.getElementById('editBtn').href = `/organizations/${orgId}/edit`;
+                }
+                
+            } catch (error) {
+                console.error('Error loading organization:', error);
+                document.getElementById('orgName').textContent = 'Organization Not Found';
+                document.getElementById('orgDescription').textContent = 'The requested organization could not be found or you may not have permission to view it.';
+            }
+        }
+        
+        // Function to load positions
+        function loadPositions(positions) {
+            const positionsList = document.getElementById('positionsList');
+            
+            if (!positions || positions.length === 0) {
+                positionsList.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+                        <p>No open positions at this time.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            positionsList.innerHTML = '';
+            positions.forEach((position, index) => {
+                const positionCard = document.createElement('div');
+                positionCard.className = 'position-card';
+                positionCard.innerHTML = `
+                    <h5>${position.title || 'Untitled Position'}</h5>
+                    <p class="text-muted">${position.description || 'No description provided.'}</p>
+                    
+                    ${position.requirements && position.requirements.length > 0 ? `
+                        <div class="mb-2">
+                            <strong>Requirements:</strong>
+                            <ul>
+                                ${position.requirements.map(req => `<li>${req}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    
+                    ${position.applicationLink ? `
+                        <div class="text-end">
+                            <a href="${position.applicationLink}" target="_blank" class="btn btn-primary">
+                                Apply Now <i class="fas fa-external-link-alt ms-1"></i>
+                            </a>
+                        </div>
+                    ` : ''}
+                    
+                    ${position.postedDate ? `
+                        <small class="text-muted">
+                            Posted: ${new Date(position.postedDate.seconds * 1000).toLocaleDateString()}
+                        </small>
+                    ` : ''}
+                `;
+                positionsList.appendChild(positionCard);
+            });
+        }
+        
+        // Handle delete button click
+        document.getElementById('deleteBtn').addEventListener('click', () => {
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        });
+        
+        // Handle confirm delete
+        document.getElementById('confirmDelete').addEventListener('click', async () => {
+            try {
+                const response = await axios.delete(`/api/organizations/${orgId}`);
+                if (response.data.success) {
+                    window.location.href = '/organizations';
+                }
+            } catch (error) {
+                console.error('Error deleting organization:', error);
+                alert('Failed to delete organization. Please try again.');
+            }
+        });
+        
+        // Load organization data when page loads
+        document.addEventListener('DOMContentLoaded', loadOrganization);
+    </script>
+</body>
+</html>

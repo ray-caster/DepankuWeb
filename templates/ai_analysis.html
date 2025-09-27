@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Analysis - Depanku</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <style>
+        .ai-analysis-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .analysis-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .analysis-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        .step.active .step-number {
+            background: #007bff;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #28a745;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .step.active .step-label {
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        .step.completed .step-label {
+            color: #28a745;
+        }
+
+        .step-connector {
+            position: absolute;
+            top: 20px;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 1;
+        }
+
+        .analysis-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .socratic-chat {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .ai-message {
+            background: #007bff;
+            color: white;
+            margin-right: auto;
+        }
+
+        .user-message {
+            background: #e9ecef;
+            color: #333;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .input-group button {
+            padding: 0.75rem 1.5rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .input-group button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .debate-visualization {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .ai-personas {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .persona-card {
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .persona-card.deepseek { border-color: #007bff; }
+        .persona-card.maverick { border-color: #28a745; }
+        .persona-card.qwen { border-color: #6f42c1; }
+        .persona-card.glm { border-color: #fd7e14; }
+        .persona-card.grok { border-color: #dc3545; }
+
+        .persona-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: bold;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .deepseek .persona-icon { background: #007bff; }
+        .maverick .persona-icon { background: #28a745; }
+        .qwen .persona-icon { background: #6f42c1; }
+        .glm .persona-icon { background: #fd7e14; }
+        .grok .persona-icon { background: #dc3545; }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            color: #28a745;
+            background: #d4edda;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .limit-warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ai-analysis-container">
+            <div class="analysis-header">
+                <h1>AI Career Analysis</h1>
+                <p>Get personalized recommendations from multiple AI experts</p>
+            </div>
+
+            <div class="limit-warning" id="limit-warning" style="display: none;">
+                <strong>Free Tier Limit:</strong> You have <span id="remaining-analyses">3</span> AI analyses remaining this month.
+            </div>
+
+            <div class="error-message" id="error-message"></div>
+            <div class="success-message" id="success-message"></div>
+
+            <div class="analysis-steps">
+                <div class="step-connector"></div>
+                <div class="step active" id="step-1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Goal Refinement</div>
+                </div>
+                <div class="step" id="step-2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">AI Debate</div>
+                </div>
+                <div class="step" id="step-3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Results</div>
+                </div>
+            </div>
+
+            <!-- Phase 1: Socratic Questioning -->
+            <div class="analysis-content" id="socratic-phase">
+                <h3>Tell us about your goals</h3>
+                <p>We'll ask a few questions to better understand what you're looking for.</p>
+                
+                <div class="socratic-chat" id="chat-container">
+                    <div class="message ai-message">
+                        Hello! I'm here to help you explore opportunities. What are you hoping to achieve?
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="goal-input" placeholder="Describe your career or educational goals..." autocomplete="off">
+                    <button id="start-analysis-btn">Start Analysis</button>
+                </div>
+
+                <div id="question-phase" style="display: none;">
+                    <div class="input-group">
+                        <input type="text" id="answer-input" placeholder="Your response..." autocomplete="off">
+                        <button id="submit-answer-btn">Submit</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 2: AI Debate Visualization -->
+            <div class="debate-visualization" id="debate-phase">
+                <h3>AI Experts are debating your opportunity</h3>
+                <p>Our team of AI specialists is analyzing your goals from different perspectives...</p>
+                
+                <div class="loading-spinner"></div>
+                <p>Building consensus among experts...</p>
+
+                <div class="ai-personas">
+                    <div class="persona-card deepseek">
+                        <div class="persona-icon">D</div>
+                        <h4>DeepSeek</h4>
+                        <p>Admissions Officer</p>
+                        <div class="status">Analyzing...</div>
+                    </div>
+                    <div class="persona-card maverick">
+                        <div class="persona-icon">M</div>
+                        <h4>Maverick</h4>
+                        <p>Peer Student</p>
+                        <div class="status">Analyzing...</div>
+                    </div>
+                    <div class="persona-card qwen">
+                        <div class="persona-icon">Q</div>
+                        <h4>Qwen</h4>
+                        <p>HR Manager</p>
+                        <div class="status">Analyzing...</div>
+                    </div>
+                    <div class="persona-card glm">
+                        <div class="persona-icon">G</div>
+                        <h4>GLM 4.5 Air</h4>
+                        <p>Philosopher</p>
+                        <div class="status">Analyzing...</div>
+                    </div>
+                    <div class="persona-card grok">
+                        <div class="persona-icon">⚡</div>
+                        <h4>Grok</h4>
+                        <p>Devil's Advocate</p>
+                        <div class="status">Waiting...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script>
+        let currentQuestionIndex = 0;
+        let sessionId = null;
+        const questions = [
+            "What specific skills or experiences are you hoping to gain?",
+            "What time commitment can you realistically manage?",
+            "What are your top priorities for this opportunity?",
+            "What type of environment do you thrive in?",
+            "What potential challenges are you willing to overcome?"
+        ];
+
+        async function checkAILimit() {
+            try {
+                const user = await getCurrentUser();
+                if (!user) return;
+
+                const response = await fetch(`/api/auth/check-ai-limit?uid=${user.uid}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const remaining = data.data.aiAnalysesRemaining;
+                    const hasAccess = data.data.hasAccess;
+
+                    if (data.data.plan === 'free') {
+                        document.getElementById('limit-warning').style.display = 'block';
+                        document.getElementById('remaining-analyses').textContent = remaining;
+                    }
+
+                    if (!hasAccess) {
+                        document.getElementById('start-analysis-btn').disabled = true;
+                        showError('You have reached your free analysis limit. Upgrade to premium for unlimited analyses.');
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking AI limit:', error);
+            }
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successElement = document.getElementById('success-message');
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                successElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function addMessage(text, isAI = true) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isAI ? 'ai-message' : 'user-message'}`;
+            messageDiv.textContent = text;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function startSocraticQuestioning() {
+            try {
+                const user = await getCurrentUser();
+                if (!user) {
+                    showError('Please log in to start AI analysis');
+                    return;
+                }
+
+                const goalInput = document.getElementById('goal-input');
+                const goal = goalInput.value.trim();
+
+                if (!goal) {
+                    showError('Please describe your goals to start the analysis');
+                    return;
+                }
+
+                // Disable input and show loading
+                goalInput.disabled = true;
+                document.getElementById('start-analysis-btn').disabled = true;
+                document.getElementById('start-analysis-btn').innerHTML = '<div class="loading-spinner"></div> Starting...';
+
+                const response = await fetch('/api/ai/socratic', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: user.uid,
+                        goal: goal
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    sessionId = data.data.sessionId;
+                    addMessage(`Great! Let me ask you a few questions to better understand your goals.`);
+                    
+                    // Show first question
+                    document.getElementById('question-phase').style.display = 'flex';
+                    addMessage(questions[0]);
+                    
+                    // Update UI
+                    document.getElementById('start-analysis-btn').style.display = 'none';
+                    goalInput.style.display = 'none';
+                    
+                } else {
+                    showError(data.error?.message || 'Failed to start analysis');
+                    goalInput.disabled = false;
+                    document.getElementById('start-analysis-btn').disabled = false;
+                    document.getElementById('start-analysis-btn').textContent = 'Start Analysis';
+                }
+
+            } catch (error) {
+                showError('Failed to start analysis: ' + error.message);
+                document.getElementById('goal-input').disabled = false;
+                document.getElementById('start-analysis-btn').disabled = false;
+                document.getElementById('start-analysis-btn').textContent = 'Start Analysis';
+            }
+        }
+
+        async function submitAnswer() {
+            try {
+                const answerInput = document.getElementById('answer-input');
+                const answer = answerInput.value.trim();
+
+                if (!answer) {
+                    showError('Please provide an answer');
+                    return;
+                }
+
+                // Add user message
+                addMessage(answer, false);
+
+                // Clear input
+                answerInput.value = '';
+                answerInput.disabled = true;
+                document.getElementById('submit-answer-btn').disabled = true;
+                document.getElementById('submit-answer-btn').innerHTML = '<div class="loading-spinner"></div>';
+
+                // Move to next question or start debate
+                currentQuestionIndex++;
+
+                if (currentQuestionIndex < questions.length) {
+                    // Show next question
+                    setTimeout(() => {
+                        addMessage(questions[currentQuestionIndex]);
+                        answerInput.disabled = false;
+                        document.getElementById('submit-answer-btn').disabled = false;
+                        document.getElementById('submit-answer-btn').textContent = 'Submit';
+                    }, 1000);
+                } else {
+                    // All questions answered, start debate
+                    addMessage("Thank you! Now I'll have our team of AI experts analyze your goals...");
+                    
+                    // Show debate phase
+                    document.getElementById('socratic-phase').style.display = 'none';
+                    document.getElementById('debate-phase').style.display = 'block';
+                    
+                    // Update steps
+                    document.getElementById('step-1').classList.remove('active');
+                    document.getElementById('step-1').classList.add('completed');
+                    document.getElementById('step-2').classList.add('active');
+
+                    // Start AI debate
+                    await startAIDebate();
+                }
+
+            } catch (error) {
+                showError('Failed to process answer: ' + error.message);
+                document.getElementById('answer-input').disabled = false;
+                document.getElementById('submit-answer-btn').disabled = false;
+                document.getElementById('submit-answer-btn').textContent = 'Submit';
+            }
+        }
+
+        async function startAIDebate() {
+            try {
+                const user = await getCurrentUser();
+                if (!user) return;
+
+                const response = await fetch('/api/ai/debate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: user.uid,
+                        sessionId: sessionId,
+                        refinedGoal: "User's refined goal based on questions" // This would be from the actual refined goal
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Debate completed, redirect to results
+                    window.location.href = `/ai-results/${sessionId}`;
+                } else {
+                    showError(data.error?.message || 'AI debate failed');
+                }
+
+            } catch (error) {
+                showError('AI debate failed: ' + error.message);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('start-analysis-btn').addEventListener('click', startSocraticQuestioning);
+        document.getElementById('submit-answer-btn').addEventListener('click', submitAnswer);
+        
+        document.getElementById('goal-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startSocraticQuestioning();
+            }
+        });
+
+        document.getElementById('answer-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitAnswer();
+            }
+        });
+
+        // Check AI limits on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAILimit();
+        });
+    </script>
+</body>
+</html>
