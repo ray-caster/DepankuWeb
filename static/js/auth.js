@@ -178,16 +178,39 @@ function handleLogin(event) {
     submitBtn.textContent = 'Signing in...';
     submitBtn.disabled = true;
     
-    // Sign in with Firebase Auth
+    // Sign in with Firebase Auth to get ID token
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            showSuccess(successMessage, 'Login successful! Redirecting...');
-            setTimeout(() => {
-                window.location.href = '/profile';
-            }, 2000);
+            // Get the ID token
+            return userCredential.user.getIdToken();
+        })
+        .then((idToken) => {
+            // Send ID token to backend for verification
+            return fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    idToken: idToken
+                })
+            });
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showSuccess(successMessage, 'Login successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = '/profile';
+                }, 2000);
+            } else {
+                throw new Error(data.error.message);
+            }
         })
         .catch((error) => {
-            showError(errorMessage, getFirebaseErrorMessage(error));
+            // Sign out from Firebase if backend verification fails
+            auth.signOut();
+            showError(errorMessage, error.message);
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
         });

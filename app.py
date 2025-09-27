@@ -28,23 +28,35 @@ try:
         # Load Firebase service account key from environment variable or file
         firebase_config_str = os.environ.get('FIREBASE_SERVICE_ACCOUNT')
         if firebase_config_str:
+            logger.info("Loading Firebase service account from environment variable")
             cred_dict = json.loads(firebase_config_str)
             cred = credentials.Certificate(cred_dict)
         else:
             # Fallback to file-based config
             cred_path = os.path.join(os.path.dirname(__file__), 'firebase_service_account.json')
             if os.path.exists(cred_path):
+                logger.info(f"Loading Firebase service account from file: {cred_path}")
                 cred = credentials.Certificate(cred_path)
             else:
+                logger.error("Firebase service account file not found")
                 raise FileNotFoundError("Firebase service account file not found")
         
+        # Initialize Firebase Admin SDK
         firebase_admin.initialize_app(cred)
+        logger.info("Firebase Admin SDK initialized successfully")
     
     # Initialize Firestore
     db = firestore.client()
-    print("Firebase Admin SDK initialized successfully")
+    logger.info("Firestore client initialized successfully")
+    
+except FileNotFoundError as e:
+    logger.error(f"Firebase service account configuration error: {e}")
+    db = None
+except ValueError as e:
+    logger.error(f"Invalid Firebase service account JSON: {e}")
+    db = None
 except Exception as e:
-    print(f"Error initializing Firebase: {e}")
+    logger.error(f"Error initializing Firebase Admin SDK: {e}")
     db = None
 
 # Authentication routes
@@ -123,19 +135,82 @@ def login():
     # Handle POST request for login
     try:
         data = request.get_json()
-        email = data.get('email')
-        password = data.get('password')
+        id_token = data.get('idToken')
         
-        # This would typically be handled by Firebase client SDK
-        # For backend verification, we need to verify ID token
-        # For now, we'll return a placeholder response
+        if not id_token:
+            return jsonify({
+                'error': {
+                    'code': 'INVALID_REQUEST',
+                    'message': 'ID token is required'
+                }
+            }), 400
+        
+        # Verify the Firebase ID token
+        decoded_token = auth.verify_id_token(id_token)
+        uid = decoded_token['uid']
+        
+        # Get user data from Firestore
+        user_ref = db.collection('users').document(uid)
+        user_data = user_ref.get()
+        
+        if not user_data.exists:
+            return jsonify({
+                'error': {
+                    'code': 'USER_NOT_FOUND',
+                    'message': 'User not found in database'
+                }
+            }), 404
+        
+        user_dict = user_data.to_dict()
+        
+        # Update last login time
+        user_ref.update({
+            'lastLogin': datetime.now()
+        })
+        
+        # Set session variables
+        session['user_id'] = uid
+        session['user_email'] = user_dict.get('email')
+        session['display_name'] = user_dict.get('displayName')
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'uid': uid,
+                'email': user_dict.get('email'),
+                'displayName': user_dict.get('displayName'),
+                'ageGroup': user_dict.get('ageGroup')
+            }
+        })
+        
+    except auth.InvalidIdTokenError:
         return jsonify({
             'error': {
-                'code': 'NOT_IMPLEMENTED',
-                'message': 'Client-side Firebase Auth should handle login'
+                'code': 'INVALID_TOKEN',
+                'message': 'Invalid ID token'
             }
-        }), 501
-        
+        }), 401
+    except auth.ExpiredIdTokenError:
+        return jsonify({
+            'error': {
+                'code': 'EXPIRED_TOKEN',
+                'message': 'ID token has expired'
+            }
+        }), 401
+    except auth.RevokedIdTokenError:
+        return jsonify({
+            'error': {
+                'code': 'REVOKED_TOKEN',
+                'message': 'ID token has been revoked'
+            }
+        }), 401
+    except auth.CertificateFetchError:
+        return jsonify({
+            'error': {
+                'code': 'CERTIFICATE_ERROR',
+                'message': 'Error fetching certificate'
+            }
+        }), 500
     except Exception as e:
         return jsonify({
             'error': {
@@ -153,7 +228,7 @@ def logout():
 @app.route('/profile')
 def profile():
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return redirect(url_for('login'))
     
     return render_template('profile.html')
@@ -246,7 +321,7 @@ def check_ai_limit():
 @app.route('/organizations')
 def organizations():
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return redirect(url_for('login'))
     
     return render_template('organizations.html')
@@ -254,7 +329,7 @@ def organizations():
 @app.route('/organizations/create', methods=['GET', 'POST'])
 async def organization_create():
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return redirect(url_for('login'))
     
     if request.method == 'GET':
@@ -339,7 +414,7 @@ def organization_view(org_id):
 @app.route('/organizations/<org_id>/edit', methods=['GET', 'POST'])
 async def organization_edit(org_id):
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return redirect(url_for('login'))
     
     if request.method == 'GET':
@@ -424,7 +499,7 @@ async def organization_edit(org_id):
 @app.route('/organizations/<org_id>/delete', methods=['POST'])
 def organization_delete(org_id):
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return jsonify({
             'error': {
                 'code': 'AUTH_REQUIRED',
@@ -610,7 +685,7 @@ def generate_ai_suggestions(organization_name):
 def ai_analysis():
     """Main AI analysis page"""
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return redirect(url_for('login'))
     
     return render_template('ai_analysis.html')
@@ -710,7 +785,7 @@ async def api_ai_debate():
 def ai_results(session_id):
     """Page to display AI analysis results"""
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return redirect(url_for('login'))
     
     return render_template('ai_results.html', session_id=session_id)
@@ -835,7 +910,7 @@ async def api_ai_test():
 @app.route('/dashboard')
 def dashboard():
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return redirect(url_for('login'))
     
     return render_template('dashboard.html')
@@ -929,7 +1004,7 @@ def api_user_planning_update():
 def messages():
     """Main messaging page showing conversations"""
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return redirect(url_for('login'))
     
     return render_template('messages.html')
@@ -938,7 +1013,7 @@ def messages():
 def conversation(conversation_id):
     """Individual conversation view"""
     # Check if user is authenticated
-    if 'user' not in session:
+    if 'user_id' not in session:
         return redirect(url_for('login'))
     
     return render_template('conversation.html', conversation_id=conversation_id)
