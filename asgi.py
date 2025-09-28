@@ -75,7 +75,7 @@ class ASGIApplication:
             await self.handle_lifespan(scope, receive, send)
         else:
             # Delegate to the WSGI app for HTTP requests
-            self.wsgi_app(scope, receive, send)
+            await self.wsgi_app(scope, receive, send)
     
     async def handle_lifespan(self, scope, receive, send):
         """Handle ASGI lifespan events."""
