@@ -92,6 +92,9 @@
     <!-- Algolia Search -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-theme-classic">
     
+    <!-- Algolia Search Client -->
+    <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.20.0/dist/algoliasearch-lite.umd.js"></script>
+    
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     
@@ -266,7 +269,7 @@
                     </div>
                     <p>"Depanku helped me find the perfect STEM internship that matched my interests in robotics and AI. I landed my dream opportunity!"</p>
                     <div class="testimonial-author">
-                        <img src="{{ url_for('static', filename='images/avatar-sarah.jpg') }}" alt="Sarah" class="author-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI2UzZjJmZCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjAiIHI9IjUiIGZpbGw9IiMwMDdiZmYiLz4KICA8cGF0aCBkPSJNMTUgMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMz极简主义风格，使用纯色圆形作为头像占位符。';">
+                        <img src="{{ url_for('static', filename='images/avatar-sarah.svg') }}" alt="Sarah" class="author-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI2UzZjJmZCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjAiIHI9IjUiIGZpbGw9IiMwMDdiZmYiLz4KICA8cGF0aCBkPSJNMTUgMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMz极简主义风格，使用纯色圆形作为头像占位符。';">
                         <div class="author-info">
                             <strong>Sarah, High School Student</strong>
                             <span class="author-role">Robotics Enthusiast</span>
@@ -285,7 +288,7 @@
                     </div>
                     <p>"The AI analysis gave me insights I never considered. It's like having a personal career coach that understands my unique journey!"</p>
                     <div class="testimonial-author">
-                        <img src="{{ url_for('static', filename='images/avatar-michael.jpg') }}" alt="Michael" class="author-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI2UzZjJmZCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjAiIHI9IjUiIGZpbGw9IiMyOGE3NDUiLz4KPC9zdmc+';">
+                        <img src="{{ url_for('static', filename='images/avatar-michael.svg') }}" alt="Michael" class="author-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI2UzZjJmZCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjAiIHI9IjUiIGZpbGw9IiMyOGE3NDUiLz4KPC9zdmc+';">
                         <div class="author-info">
                             <strong>Michael, College Student</strong>
                             <span class="author-role">Computer Science Major</span>
@@ -304,7 +307,7 @@
                     </div>
                     <p>"As an educator, I've seen Depanku transform how students discover opportunities. 92% of my students found relevant programs!"</p>
                     <div class="testimonial-author">
-                        <img src="{{ url_for('static', filename='images/avatar-dr-chen.jpg') }}" alt="Dr. Chen" class="author-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI2UzZjJmZCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjAiIHI9IjUiIGZpbGw9IiNmZDdlMTQiLz4KPC9zdmc+';">
+                        <img src="{{ url_for('static', filename='images/avatar-dr-chen.svg') }}" alt="Dr. Chen" class="author-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI2UzZjJmZCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjAiIHI9IjUi IGZpbGw9IiNmZDdlMTQiLz4KPC9zdmc+';">
                         <div class="author-info">
                             <strong>Dr. Chen, Science Teacher</strong>
                             <span class="author-role">STEM Educator</span>
@@ -449,6 +452,11 @@
     </footer>
 
     <!-- JavaScript -->
+    <script>
+        // Inject Algolia credentials from Flask
+        window.ALGOLIA_APP_ID = "{{ ALGOLIA_APP_ID }}";
+        window.ALGOLIA_SEARCH_API_KEY = "{{ ALGOLIA_API_KEY }}";
+    </script>
     <script src="{{ url_for('static', filename='js/landing.js') }}" defer></script>
     
     <!-- Algolia Search -->

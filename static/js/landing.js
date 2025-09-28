@@ -125,32 +125,33 @@ function handleLogout(event) {
     }
 }
 
-// Initialize Algolia Search Client (placeholder - remove or configure properly)
+// Initialize Algolia Search Client
 let algoliaClient = null;
 let index = null;
 
 function initializeAlgolia() {
-    // Check if Algolia is configured
+    // Check if Algolia is available and properly configured
     if (typeof algoliasearch === 'undefined') {
-        console.warn('Algolia search is not available');
+        console.warn('Algolia search is not available - using fallback search');
         return;
     }
     
     try {
-        // Use environment variables or configuration for credentials
-        const appId = window.ALGOLIA_APP_ID || 'YOUR_ALGOLIA_APP_ID';
-        const apiKey = window.ALGOLIA_SEARCH_API_KEY || 'YOUR_ALGOLIA_SEARCH_API_KEY';
+        // Check for actual Algolia configuration
+        const appId = window.ALGOLIA_APP_ID;
+        const apiKey = window.ALGOLIA_SEARCH_API_KEY;
         
-        if (appId === 'YOUR_ALGOLIA_APP_ID' || apiKey === 'YOUR_ALGOLIA_SEARCH_API_KEY') {
-            console.warn('Algolia credentials not configured. Search functionality disabled.');
+        if (!appId || !apiKey || appId.trim() === '' || apiKey.trim() === '') {
+            console.warn('Algolia credentials not configured. Using fallback search functionality.');
             return;
         }
         
         algoliaClient = algoliasearch(appId, apiKey);
         index = algoliaClient.initIndex('organizations');
-        console.log('Algolia search initialized');
+        console.log('Algolia search initialized successfully');
     } catch (error) {
         console.error('Algolia initialization error:', error);
+        console.log('Falling back to basic search functionality');
     }
 }
 
@@ -219,60 +220,141 @@ function setupMobileMenu() {
     });
 }
 
-// Algolia Autocomplete Instance (only initialize if Algolia is available)
+// Algolia Autocomplete Instance (only initialize if Algolia is properly configured)
 function initializeAutocomplete() {
     if (!index) {
         // Fallback: basic search without Algolia
-        console.log('Using fallback search functionality');
+        console.log('Using fallback search functionality - Algolia not configured');
+        setupBasicSearch();
         return;
     }
     
     if (typeof autocomplete === 'undefined') {
         console.warn('Algolia autocomplete not available');
+        setupBasicSearch();
         return;
     }
     
-    const autocompleteInstance = autocomplete({
-        container: searchBox,
-        placeholder: 'Search organizations, internships, or opportunities...',
-        getSources({ query }) {
-            return [
-                {
-                    sourceId: 'organizations',
-                    getItems() {
-                        return index.search(query).then(({ hits }) => hits);
-                    },
-                    templates: {
-                        item({ item }) {
-                            return `
-                                <div class="aa-ItemWrapper">
-                                    <div class="aa-ItemContent">
-                                        <div class="aa-ItemIcon">
-                                            <img src="${item.logo || '/static/images/default-org.png'}" alt="${item.name}" />
-                                        </div>
-                                        <div class="aa-ItemContentBody">
-                                            <div class="aa-ItemContentTitle">
-                                                ${item.name}
+    try {
+        const autocompleteInstance = autocomplete({
+            container: searchBox,
+            placeholder: 'Search organizations, internships, or opportunities...',
+            getSources({ query }) {
+                return [
+                    {
+                        sourceId: 'organizations',
+                        getItems() {
+                            return index.search(query, {
+                                hitsPerPage: 5,
+                                attributesToRetrieve: ['name', 'description', 'logo', 'tags', 'category'],
+                                attributesToSnippet: ['description:20']
+                            }).then(({ hits }) => hits);
+                        },
+                        templates: {
+                            item({ item }) {
+                                return `
+                                    <div class="aa-ItemWrapper" onclick="handleSearchSelection('${item.name.replace(/'/g, "\\'")}')">
+                                        <div class="aa-ItemContent">
+                                            <div class="aa-ItemIcon">
+                                                <img src="${item.logo || '/static/images/default-org.png'}" alt="${item.name}" />
                                             </div>
-                                            <div class="aa-ItemContentDescription">
-                                                ${item.description || 'No description available'}
-                                            </div>
-                                            <div class="aa-ItemContentTags">
-                                                ${item.tags ? item.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                                            <div class="aa-ItemContentBody">
+                                                <div class="aa-ItemContentTitle">
+                                                    ${item.name}
+                                                </div>
+                                                <div class="aa-ItemContentDescription">
+                                                    ${item._snippetResult?.description?.value || item.description || 'No description available'}
+                                                </div>
+                                                <div class="aa-ItemContentTags">
+                                                    ${item.tags ? item.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
-                        },
-                        noResults() {
-                            return 'No organizations found. Try different keywords.';
+                                `;
+                            },
+                            noResults() {
+                                return 'No organizations found. Try different keywords.';
+                            }
                         }
                     }
-                }
-            ];
-        }
-    });
+                ];
+            },
+            onSelect({ item }) {
+                searchInput.value = item.name;
+                handleSearch();
+            }
+        });
+    } catch (error) {
+        console.error('Algolia autocomplete error:', error);
+        console.log('Falling back to basic search functionality');
+        setupBasicSearch();
+    }
+}
+
+// Setup basic search functionality when Algolia is not available
+function setupBasicSearch() {
+    if (searchInput) {
+        // Add real-time search suggestions for basic search
+        searchInput.addEventListener('input', debounce(function() {
+            const query = this.value.trim();
+            if (query.length > 2) {
+                showBasicSearchSuggestions(query);
+            } else {
+                hideSearchSuggestions();
+            }
+        }, 300));
+    }
+}
+
+// Show basic search suggestions
+function showBasicSearchSuggestions(query) {
+    // This would typically make an API call to get search suggestions
+    // For now, we'll just show a simple message
+    const suggestionsContainer = document.getElementById('search-suggestions') || createSuggestionsContainer();
+    suggestionsContainer.innerHTML = `
+        <div class="search-suggestion">
+            <div class="suggestion-text">Search for "${query}" in organizations</div>
+            <div class="suggestion-hint">Press Enter to search</div>
+        </div>
+    `;
+    suggestionsContainer.style.display = 'block';
+}
+
+// Hide search suggestions
+function hideSearchSuggestions() {
+    const suggestionsContainer = document.getElementById('search-suggestions');
+    if (suggestionsContainer) {
+        suggestionsContainer.style.display = 'none';
+    }
+}
+
+// Create search suggestions container
+function createSuggestionsContainer() {
+    const container = document.createElement('div');
+    container.id = 'search-suggestions';
+    container.style.cssText = `
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+    `;
+    searchBox.appendChild(container);
+    return container;
+}
+
+// Handle search selection from autocomplete
+function handleSearchSelection(query) {
+    searchInput.value = query;
+    handleSearch();
 }
 
 // Event Listeners
@@ -315,16 +397,9 @@ function initializeSearch() {
 function handleSearch() {
     const query = searchInput.value.trim();
     if (query) {
-        // Check if user is authenticated
-        if (auth && auth.currentUser) {
-            // Redirect authenticated users to organizations page with search query
-            window.location.href = `/organizations?search=${encodeURIComponent(query)}`;
-        } else {
-            // For unauthenticated users, redirect to signup with search query preserved
-            const searchParams = new URLSearchParams();
-            searchParams.set('search', query);
-            window.location.href = `/signup?${searchParams.toString()}`;
-        }
+        // For both authenticated and unauthenticated users, redirect to organizations page with search query
+        // This allows search functionality without requiring authentication
+        window.location.href = `/organizations?search=${encodeURIComponent(query)}`;
     }
 }
 
@@ -348,6 +423,8 @@ function setupEventListeners() {
             if (auth && auth.currentUser) {
                 window.location.href = '/ai-analysis';
             } else {
+                // Store the intended destination for redirect persistence
+                sessionStorage.setItem('redirectAfterSignup', '/ai-analysis');
                 window.location.href = '/signup';
             }
         });

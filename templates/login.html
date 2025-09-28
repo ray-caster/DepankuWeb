@@ -7,7 +7,7 @@
     <meta name="description" content="Login to your Depanku account to access AI-powered career planning">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
@@ -42,11 +42,15 @@
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" id="email" name="email" required placeholder="Enter your email">
+                        <span class="validation-message error"></span>
+                        <span class="validation-message success"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" required placeholder="Enter your password">
+                        <span class="validation-message error"></span>
+                        <span class="validation-message success"></span>
                     </div>
                     
                     <div class="form-group">
@@ -56,15 +60,18 @@
                         </label>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span class="btn-text">Sign In</span>
+                        <span class="btn-loading" style="display: none;">Signing in...</span>
+                    </button>
                 </form>
                 
                 <div class="auth-footer">
                     <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a></p>
                 </div>
                 
-                <div id="error-message" class="error-message" style="display: none;"></div>
-                <div id="success-message" class="success-message" style="display: none;"></div>
+                <div id="error-message" class="error-message"></div>
+                <div id="success-message" class="success-message"></div>
             </div>
         </div>
     </section>

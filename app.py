@@ -87,6 +87,7 @@ def signup():
         password = data.get('password')
         display_name = data.get('displayName')
         age_group = data.get('ageGroup')
+        redirect_after_signup = data.get('redirectAfterSignup')
         
         # Create user in Firebase Auth
         user = auth.create_user(
@@ -124,14 +125,20 @@ def signup():
         # Generate custom token for client-side authentication
         custom_token = auth.create_custom_token(user.uid)
         
+        response_data = {
+            'uid': user.uid,
+            'email': email,
+            'displayName': display_name,
+            'customToken': custom_token.decode('utf-8')
+        }
+        
+        # Include redirectAfterSignup in response if provided
+        if redirect_after_signup:
+            response_data['redirectAfterSignup'] = redirect_after_signup
+        
         return jsonify({
             'success': True,
-            'data': {
-                'uid': user.uid,
-                'email': email,
-                'displayName': display_name,
-                'customToken': custom_token.decode('utf-8')
-            }
+            'data': response_data
         }), 201
         
     except Exception as e:
@@ -1337,7 +1344,10 @@ def get_organization_owner(org_id):
 # Main index route
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Inject Algolia credentials into the template
+    return render_template('index.html',
+                         ALGOLIA_APP_ID=os.environ.get('ALGOLIA_APP_ID', ''),
+                         ALGOLIA_API_KEY=os.environ.get('ALGOLIA_API_KEY', ''))
 
 if __name__ == '__main__':
     app.run(debug=True, port=6000)

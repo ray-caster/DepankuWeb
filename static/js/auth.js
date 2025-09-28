@@ -121,6 +121,10 @@ function handleSignup(event) {
     submitBtn.textContent = 'Creating account...';
     submitBtn.disabled = true;
     
+    // Get redirect destination if available
+    const redirectDestination = sessionStorage.getItem('redirectAfterSignup');
+    sessionStorage.removeItem('redirectAfterSignup'); // Clean up
+
     // Send signup request to backend
     fetch('/signup', {
         method: 'POST',
@@ -131,7 +135,8 @@ function handleSignup(event) {
             email,
             password,
             displayName,
-            ageGroup
+            ageGroup,
+            redirectAfterSignup: redirectDestination
         })
     })
     .then(response => response.json())
@@ -143,10 +148,14 @@ function handleSignup(event) {
             throw new Error(data.error.message);
         }
     })
-    .then(() => {
+    .then((data) => {
         showSuccess(successMessage, 'Account created successfully! Redirecting...');
+        
+        // Use redirect destination from backend response if available
+        const redirectDestination = data.data.redirectAfterSignup;
+        
         setTimeout(() => {
-            window.location.href = '/profile';
+            window.location.href = redirectDestination || '/profile';
         }, 2000);
     })
     .catch(error => {
