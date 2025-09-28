@@ -94,6 +94,8 @@
     
     <!-- Algolia Search Client -->
     <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.20.0/dist/algoliasearch-lite.umd.js"></script>
+    <!-- Algolia Autocomplete -->
+    <script src="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js@1.9.3/dist/umd/index.js"></script>
     
     
     <!-- Favicon -->
@@ -458,8 +460,6 @@
         window.ALGOLIA_APP_ID = "{{ ALGOLIA_APP_ID }}";
         window.ALGOLIA_SEARCH_API_KEY = "{{ ALGOLIA_API_KEY }}";
     </script>
-    <!-- Algolia Autocomplete -->
-    <script src="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js"></script>
     <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
 </body>
 </html>
