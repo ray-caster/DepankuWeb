@@ -63,42 +63,37 @@ async def shutdown():
     # Any other cleanup tasks can be added here
     print("Shutdown complete")
 
-class ASGIApplication:
-    """Custom ASGI application wrapper that handles lifespan events."""
-    
-    def __init__(self, wsgi_app):
-        self.wsgi_app = wsgi_app
-        self.started = False
-        
-    async def __call__(self, scope, receive, send):
-        if scope['type'] == 'lifespan':
-            await self.handle_lifespan(scope, receive, send)
-        else:
-            # Delegate to the WSGI app for HTTP requests
-            await self.wsgi_app(scope, receive, send)
-    
-    async def handle_lifespan(self, scope, receive, send):
-        """Handle ASGI lifespan events."""
-        while True:
-            message = await receive()
-            if message['type'] == 'lifespan.startup':
-                try:
-                    if not self.started:
-                        await startup()
-                        self.started = True
-                    await send({'type': 'lifespan.startup.complete'})
-                except Exception as e:
-                    await send({'type': 'lifespan.startup.failed', 'message': str(e)})
-            elif message['type'] == 'lifespan.shutdown':
-                try:
-                    await shutdown()
-                    await send({'type': 'lifespan.shutdown.complete'})
-                except Exception as e:
-                    await send({'type': 'lifespan.shutdown.failed', 'message': str(e)})
-                break
+async def asgi_app(scope, receive, send):
+    """ASGI application that handles both lifespan and HTTP requests."""
+    if scope['type'] == 'lifespan':
+        await handle_lifespan(scope, receive, send)
+    else:
+        # Delegate to the WSGI app for HTTP requests
+        await flask_asgi_app(scope, receive, send)
+
+async def handle_lifespan(scope, receive, send):
+    """Handle ASGI lifespan events."""
+    started = False
+    while True:
+        message = await receive()
+        if message['type'] == 'lifespan.startup':
+            try:
+                if not started:
+                    await startup()
+                    started = True
+                await send({'type': 'lifespan.startup.complete'})
+            except Exception as e:
+                await send({'type': 'lifespan.startup.failed', 'message': str(e)})
+        elif message['type'] == 'lifespan.shutdown':
+            try:
+                await shutdown()
+                await send({'type': 'lifespan.shutdown.complete'})
+            except Exception as e:
+                await send({'type': 'lifespan.shutdown.failed', 'message': str(e)})
+            break
 
 # Create the ASGI application
-application = ASGIApplication(flask_asgi_app)
+application = asgi_app
 
 if __name__ == "__main__":
     import uvicorn
