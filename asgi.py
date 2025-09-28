@@ -5,7 +5,7 @@ This file provides ASGI compatibility for Uvicorn workers with lifespan support.
 import os
 import sys
 import asyncio
-from a2wsgi import ASGIMiddleware
+from asgiref.wsgi import WsgiToAsgi
 
 # Add the current directory to Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -16,8 +16,8 @@ from openrouter_client import OpenRouterClient
 from ai_analysis_service import AIAnalysisService
 from moderation_service import ModerationService
 
-# Convert Flask WSGI app to ASGI
-flask_asgi_app = ASGIMiddleware(app)
+# Convert Flask WSGI app to ASGI using asgiref
+asgi_app = WsgiToAsgi(app)
 
 # Global variables for shared resources
 openrouter_client = None
@@ -63,13 +63,12 @@ async def shutdown():
     # Any other cleanup tasks can be added here
     print("Shutdown complete")
 
-async def asgi_app(scope, receive, send):
-    """ASGI application that handles both lifespan and HTTP requests."""
+# Wrap the ASGI app with lifespan support
+async def app_with_lifespan(scope, receive, send):
     if scope['type'] == 'lifespan':
         await handle_lifespan(scope, receive, send)
     else:
-        # Delegate to the WSGI app for HTTP requests
-        await flask_asgi_app(scope, receive, send)
+        await asgi_app(scope, receive, send)
 
 async def handle_lifespan(scope, receive, send):
     """Handle ASGI lifespan events."""
@@ -93,7 +92,7 @@ async def handle_lifespan(scope, receive, send):
             break
 
 # Create the ASGI application
-application = asgi_app
+application = app_with_lifespan
 
 if __name__ == "__main__":
     import uvicorn
