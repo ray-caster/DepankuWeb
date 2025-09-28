@@ -1,16 +1,28 @@
+import logging
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file FIRST
+load_dotenv()
+
+# Configure logging IMMEDIATELY after loading environment variables
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Log Algolia credentials for debugging
+algolia_app_id = os.environ.get('ALGOLIA_APP_ID')
+algolia_api_key = os.environ.get('ALGOLIA_API_KEY')
+logger.info(f"Algolia App ID: {'***' if algolia_app_id else 'Not set'}")
+logger.info(f"Algolia API Key: {'***' if algolia_api_key else 'Not set'}")
+
+# Now import other modules (they will use the configured logging)
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, auth, firestore
 from datetime import datetime, timedelta
-import os
 import json
 import asyncio
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Import AI analysis components
 from ai_analysis_service import AIAnalysisService
@@ -1345,9 +1357,12 @@ def get_organization_owner(org_id):
 @app.route('/')
 def index():
     # Inject Algolia credentials into the template
+    algolia_app_id = os.environ.get('ALGOLIA_APP_ID', '')
+    algolia_api_key = os.environ.get('ALGOLIA_API_KEY', '')
+    logger.info(f"Passing Algolia credentials to template - App ID: {'***' if algolia_app_id else 'Not set'}, API Key: {'***' if algolia_api_key else 'Not set'}")
     return render_template('index.html',
-                         ALGOLIA_APP_ID=os.environ.get('ALGOLIA_APP_ID', ''),
-                         ALGOLIA_API_KEY=os.environ.get('ALGOLIA_API_KEY', ''))
+                         ALGOLIA_APP_ID=algolia_app_id,
+                         ALGOLIA_API_KEY=algolia_api_key)
 
 if __name__ == '__main__':
     app.run(debug=True, port=6000)

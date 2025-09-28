@@ -141,8 +141,18 @@ function initializeAlgolia() {
         const appId = window.ALGOLIA_APP_ID;
         const apiKey = window.ALGOLIA_SEARCH_API_KEY;
         
+        // Debug logging to verify credentials
+        console.log('Algolia App ID:', appId ? '***' + appId.slice(-4) : 'Not set');
+        console.log('Algolia API Key:', apiKey ? '***' + apiKey.slice(-4) : 'Not set');
+        console.log('Full window.ALGOLIA_APP_ID:', window.ALGOLIA_APP_ID);
+        console.log('Full window.ALGOLIA_SEARCH_API_KEY:', window.ALGOLIA_SEARCH_API_KEY);
+        
         if (!appId || !apiKey || appId.trim() === '' || apiKey.trim() === '') {
             console.warn('Algolia credentials not configured. Using fallback search functionality.');
+            console.warn('App ID missing:', !appId);
+            console.warn('API Key missing:', !apiKey);
+            console.warn('App ID empty:', appId && appId.trim() === '');
+            console.warn('API Key empty:', apiKey && apiKey.trim() === '');
             return;
         }
         
