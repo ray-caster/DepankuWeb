@@ -458,7 +458,8 @@
         window.ALGOLIA_APP_ID = "{{ ALGOLIA_APP_ID }}";
         window.ALGOLIA_SEARCH_API_KEY = "{{ ALGOLIA_API_KEY }}";
     </script>
-    <script src="{{ url_for('static', filename='js/landing.js') }}" defer></script>
-    
+    <!-- Algolia Autocomplete -->
+    <script src="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js"></script>
+    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
 </body>
 </html>

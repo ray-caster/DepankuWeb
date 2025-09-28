@@ -232,16 +232,29 @@ function setupMobileMenu() {
 
 // Algolia Autocomplete Instance (only initialize if Algolia is properly configured)
 function initializeAutocomplete() {
+    console.log('Initializing Algolia autocomplete...');
+    console.log('autocomplete global:', typeof autocomplete);
+    console.log('index available:', !!index);
+    
     if (!index) {
         // Fallback: basic search without Algolia
-        console.log('Using fallback search functionality - Algolia not configured');
+        console.log('Using fallback search functionality - Algolia index not configured');
         setupBasicSearch();
         return;
     }
     
     if (typeof autocomplete === 'undefined') {
-        console.warn('Algolia autocomplete not available');
-        setupBasicSearch();
+        console.warn('Algolia autocomplete not available - checking if script loaded');
+        // Try to load autocomplete dynamically if not available
+        setTimeout(() => {
+            if (typeof autocomplete === 'undefined') {
+                console.warn('Autocomplete still not available after timeout');
+                setupBasicSearch();
+            } else {
+                console.log('Autocomplete loaded dynamically, retrying initialization');
+                initializeAutocomplete();
+            }
+        }, 1000);
         return;
     }
     
@@ -291,10 +304,13 @@ function initializeAutocomplete() {
                 ];
             },
             onSelect({ item }) {
-                searchInput.value = item.name;
-                handleSearch();
+                if (searchInput) {
+                    searchInput.value = item.name;
+                    handleSearch();
+                }
             }
         });
+        console.log('Algolia autocomplete initialized successfully');
     } catch (error) {
         console.error('Algolia autocomplete error:', error);
         console.log('Falling back to basic search functionality');
@@ -307,8 +323,9 @@ function setupBasicSearch() {
     if (searchInput) {
         // Add real-time search suggestions for basic search
         searchInput.addEventListener('input', debounce(function() {
-            const query = this.value.trim();
-            if (query.length > 2) {
+            if (!searchInput) return;
+            const query = searchInput.value ? searchInput.value.trim() : '';
+            if (query && query.length > 2) {
                 showBasicSearchSuggestions(query);
             } else {
                 hideSearchSuggestions();
