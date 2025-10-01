@@ -2,7 +2,7 @@
 import os
 from app import create_app
 from dotenv import load_dotenv
-from a2wsgi import ASGIMiddleware # Import the ASGI wrapper
+from asgiref.wsgi import WsgiToAsgi # MODIFIED: Import the standard ASGI wrapper
 
 load_dotenv()
 
@@ -12,9 +12,9 @@ env_name = os.getenv('FLASK_ENV', 'development')
 # Create the underlying Flask (WSGI) application
 wsgi_app = create_app(env_name)
 
-# Wrap the WSGI app to create an ASGI-compatible application.
-# This 'app' object is what Gunicorn/Uvicorn will use when you run your command.
-app = ASGIMiddleware(wsgi_app)
+# MODIFIED: Wrap the WSGI app using the standard `asgiref` library
+# This creates a reliable ASGI-compatible application for Gunicorn/Uvicorn.
+app = WsgiToAsgi(wsgi_app)
 
 
 if __name__ == '__main__':
