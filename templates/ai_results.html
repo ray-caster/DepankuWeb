@@ -1,294 +1,145 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Analysis Results - Depanku</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    <style>
-        .results-page {
-            max-width: 1000px;
-            margin: calc(80px + 2rem) auto 2rem;
-            padding: 2rem;
-        }
+{% block title %}AI Analysis Results - Depanku{% endblock %}
 
-        .results-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ai_results.css') }}">
+{% endblock %}
 
-        .results-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
+{% block content %}
+<main class="container results-page">
+    <div class="back-button mb-4">
+        <a href="{{ url_for('ai.ai_analysis_page') }}" class="btn btn-outline">← Start New Analysis</a>
+    </div>
 
-        @media (min-width: 992px) {
-            .results-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
+    <div id="loading-container" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p class="mt-2">Loading your analysis results...</p>
+    </div>
 
-        .section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: var(--shadow-md);
-            margin-bottom: 2rem;
-        }
+    <div id="error-container" class="alert alert-danger" style="display: none;"></div>
 
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--dark-gray);
-            border-bottom: 2px solid var(--primary-blue);
-            padding-bottom: 0.5rem;
-        }
-
-        .persona-card {
-            border-left: 4px solid;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background: #f8f9fa;
-            border-radius: 4px;
-        }
-
-        .persona-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .persona-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 0.75rem;
-            color: white;
-            font-weight: bold;
-        }
-
-        .persona-name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .persona-response {
-            color: #555;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            white-space: pre-wrap;
-        }
-
-        .deepseek {
-            border-color: #007bff;
-        }
-
-        .deepseek .persona-icon {
-            background: #007bff;
-        }
-
-        .maverick {
-            border-color: #28a745;
-        }
-
-        .maverick .persona-icon {
-            background: #28a745;
-        }
-
-        .qwen {
-            border-color: #6f42c1;
-        }
-
-        .qwen .persona-icon {
-            background: #6f42c1;
-        }
-
-        .glm {
-            border-color: #fd7e14;
-        }
-
-        .glm .persona-icon {
-            background: #fd7e14;
-        }
-
-        .critique-card {
-            border-color: #dc3545;
-            background: #fff0f1;
-        }
-
-        .critique-card .persona-icon {
-            background: #dc3545;
-        }
-
-        .consensus-card {
-            border-color: #198754;
-            background: #d1e7dd;
-        }
-
-        .consensus-card .persona-icon {
-            background: #198754;
-        }
-
-        .loading-container {
-            text-align: center;
-            padding: 4rem;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1><a href="{{ url_for('main.index') }}" style="color: inherit; text-decoration: none;">Depanku</a>
-                </h1>
-            </div>
-            <div class="nav-links" id="main-navigation"></div>
-        </nav>
-    </header>
-    <div class="container results-page">
-        <div class="back-button mb-4">
-            <a href="{{ url_for('ai.ai_analysis_page') }}" class="btn btn-outline">← Start New Analysis</a>
+    <div id="results-content" style="display: none;">
+        <div class="results-header">
+            <h1>AI Analysis Results</h1>
+            <p class="lead text-muted">A detailed breakdown of the multi-AI debate for your goal.</p>
         </div>
-
-        <div id="loading-container">
-            <div class="loading-spinner"></div>
-            <p class="mt-2">Loading your analysis results...</p>
-        </div>
-
-        <div id="error-container" class="alert alert-danger" style="display: none;"></div>
-
-        <div id="results-content" style="display: none;">
-            <div class="results-header">
-                <h1>AI Analysis Results</h1>
-                <p class="lead text-muted">A detailed breakdown of the multi-AI debate for your goal.</p>
-            </div>
-            <div class="results-grid">
-                <!-- Left Column -->
-                <div>
-                    <div class="section">
-                        <h3 class="section-title">Final Recommendation</h3>
-                        <div id="consensus-container"></div>
-                    </div>
-                    <div class="section">
-                        <h3 class="section-title">Goal Refinement Journey</h3>
-                        <div id="questions-container"></div>
-                    </div>
+        <div class="results-grid">
+            <!-- Left Column -->
+            <div>
+                <div class="section">
+                    <h3 class="section-title">Final Recommendation</h3>
+                    <div id="consensus-container"></div>
                 </div>
-                <!-- Right Column -->
-                <div>
-                    <div class="section">
-                        <h3 class="section-title">Expert Opinions & Critique</h3>
-                        <div id="personas-container"></div>
-                        <div id="critique-container"></div>
-                    </div>
+                <div class="section">
+                    <h3 class="section-title">Goal Refinement Journey</h3>
+                    <div id="questions-container"></div>
+                </div>
+            </div>
+            <!-- Right Column -->
+            <div>
+                <div class="section">
+                    <h3 class="section-title">Expert Opinions & Critique</h3>
+                    <div id="personas-container"></div>
+                    <div id="critique-container"></div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            const sessionId = "{{ session_id }}";
-            const loadingContainer = document.getElementById('loading-container');
-            const errorContainer = document.getElementById('error-container');
-            const resultsContainer = document.getElementById('results-content');
+</main>
+{% endblock %}
 
-            function showError(message) {
-                loadingContainer.style.display = 'none';
-                errorContainer.textContent = `Error: ${message}`;
-                errorContainer.style.display = 'block';
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        const sessionId = "{{ session_id }}";
+        const loadingContainer = document.getElementById('loading-container');
+        const errorContainer = document.getElementById('error-container');
+        const resultsContainer = document.getElementById('results-content');
+
+        function showError(message) {
+            loadingContainer.style.display = 'none';
+            errorContainer.textContent = `Error: ${message}`;
+            errorContainer.style.display = 'block';
+        }
+
+        try {
+            const user = await window.authHandlers.getCurrentUser();
+            if (!user) {
+                window.location.href = `/login?redirect=/ai/results/${sessionId}`;
+                return;
             }
 
-            try {
-                const user = await window.authHandlers.getCurrentUser();
-                if (!user) {
-                    window.location.href = `/login?redirect=/ai/results/${sessionId}`;
-                    return;
-                }
+            const response = await fetch(`/ai/api/results/${sessionId}`);
+            const data = await response.json();
 
-                // FIX: Corrected API endpoint to match the change in ai.py
-                const response = await fetch(`/ai/api/results/${sessionId}`);
-                const data = await response.json();
-
-                if (!response.ok || !data.success) {
-                    return showError(data.error?.message || 'Failed to load results.');
-                }
-
-                displayResults(data.data);
-
-            } catch (error) {
-                showError(error.message);
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Failed to load results.');
             }
 
-            function displayResults(session) {
-                loadingContainer.style.display = 'none';
-                resultsContainer.style.display = 'block';
+            displayResults(data.data);
 
-                const qContainer = document.getElementById('questions-container');
-                if (session.questions && session.userResponses) {
-                    const refinedGoalHtml = `<div class="persona-card mt-3"><div class="persona-header"><strong class="persona-name">Your Refined Goal:</strong></div><p class="persona-response" style="font-style: italic;">${session.goal || 'N/A'}</p></div>`;
-                    qContainer.innerHTML = session.questions.map((q, i) => `
-                        <div class="question-item">
-                            <div class="question-text">${q}</div>
-                            <div class="response-text text-muted">${session.userResponses[i] || 'No response'}</div>
-                        </div>
-                    `).join('') + refinedGoalHtml;
-                }
+        } catch (error) {
+            showError(error.message);
+        }
 
-                const pContainer = document.getElementById('personas-container');
-                const personas = { deepseek: 'D', maverick: 'M', qwen: 'Q', glm: 'G' };
-                pContainer.innerHTML = Object.entries(personas).map(([key, icon]) => {
-                    if (session.personas && session.personas[key]) {
-                        return `<div class="persona-card ${key}"><div class="persona-header"><div class="persona-icon">${icon}</div><div class="persona-name text-capitalize">${key}</div></div><div class="persona-response">${session.personas[key].response || ''}</div></div>`;
-                    }
-                    return '';
-                }).join('');
+        function displayResults(session) {
+            loadingContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
 
-                const cContainer = document.getElementById('critique-container');
-                if (session.personas && session.personas.grok) {
-                    cContainer.innerHTML = `<div class="persona-card critique-card"><div class="persona-header"><div class="persona-icon">⚡</div><div class="persona-name">Grok (Critique)</div></div><div class="persona-response">${session.personas.grok.critique || ''}</div></div>`;
-                }
-
-                const consContainer = document.getElementById('consensus-container');
-                if (session.consensus) {
-                    const consensusTitle = session.consensus.reached ? 'Consensus Reached' : 'Compromise Recommendation';
-                    consContainer.innerHTML = `<div class="persona-card consensus-card">
-                        <div class="persona-header"><div class="persona-icon">✓</div><div class="persona-name">${consensusTitle}</div></div>
-                        <div class="persona-response"><strong>Recommendation:</strong><br>${session.consensus.finalRecommendation || ''}<br><br><strong>Reasoning:</strong><br>${session.consensus.reasoning || ''}</div>
-                    </div>`;
-                }
+            // Goal Refinement
+            const qContainer = document.getElementById('questions-container');
+            if (session.questions && session.userResponses) {
+                const refinedGoalHtml = `<div class="persona-card mt-3"><div class="persona-header"><strong class="persona-name">Your Refined Goal:</strong></div><p class="persona-response" style="font-style: italic;">${session.refinedGoal || 'N/A'}</p></div>`;
+                qContainer.innerHTML = session.questions.map((q, i) => `
+                    <div class="question-item mb-2">
+                        <div class="question-text"><strong>Q:</strong> ${q}</div>
+                        <div class="response-text text-muted ps-3"><strong>A:</strong> ${session.userResponses[i] || 'No response'}</div>
+                    </div>
+                `).join('') + refinedGoalHtml;
             }
-        });
-    </script>
-</body>
 
-</html>
+            // Expert Opinions
+            const pContainer = document.getElementById('personas-container');
+            const personas = { deepseek: 'Admissions Officer', maverick: 'Student Peer', qwen: 'HR Manager', glm: 'Philosophical Advisor' };
+            pContainer.innerHTML = Object.entries(personas).map(([key, name]) => {
+                if (session.finalResponses && session.finalResponses[key]) {
+                    return `<div class="persona-card ${key}">
+                                <div class="persona-header">
+                                    <div class="persona-icon">${name.charAt(0)}</div>
+                                    <div class="persona-name">${name}</div>
+                                </div>
+                                <div class="persona-response">${session.finalResponses[key]}</div>
+                            </div>`;
+                }
+                return '';
+            }).join('');
+
+            // Critique
+            const cContainer = document.getElementById('critique-container');
+            if (session.personas && session.personas.grok) {
+                cContainer.innerHTML = `<div class="persona-card critique-card">
+                                            <div class="persona-header">
+                                                <div class="persona-icon">!</div>
+                                                <div class="persona-name">Grok (Devil's Advocate)</div>
+                                            </div>
+                                            <div class="persona-response">${session.personas.grok.critique || ''}</div>
+                                        </div>`;
+            }
+
+            // Final Recommendation
+            const consContainer = document.getElementById('consensus-container');
+            if (session.consensus) {
+                const consensusTitle = session.consensus.reached ? 'Consensus Reached' : 'Mediated Recommendation';
+                consContainer.innerHTML = `<div class="persona-card consensus-card">
+                    <div class="persona-header">
+                        <div class="persona-icon">✓</div>
+                        <div class="persona-name">${consensusTitle}</div>
+                    </div>
+                    <div class="persona-response"><strong>Recommendation:</strong><br>${session.consensus.finalRecommendation || ''}<br><br><strong>Reasoning:</strong><br>${session.consensus.reasoning || ''}</div>
+                </div>`;
+            }
+        }
+    });
+</script>
+{% endblock %}

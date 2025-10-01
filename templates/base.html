@@ -23,7 +23,13 @@
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+
+    <!-- This block allows individual pages to add their own specific stylesheet -->
+    {% block page_css %}{% endblock %}
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    {% block head_extra %}{% endblock %}
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">

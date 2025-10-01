@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-
 {% block title %}My Dashboard - Depanku{% endblock %}
-
-{% block content %}
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
 <section class="dashboard-section">
     <div class="container">
         <h2 class="section-title">My Personal Dashboard</h2>

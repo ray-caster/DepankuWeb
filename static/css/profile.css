@@ -1,0 +1,63 @@
+/* static/css/profile.css */
+
+.profile-section {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--light-gray);
+    min-height: calc(100vh - 80px);
+    /* Adjust for header height */
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .profile-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.profile-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+}
+
+.profile-card h3 {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--light-gray);
+    padding-bottom: 0.75rem;
+    color: var(--dark-gray);
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: var(--dark-gray);
+    margin-right: 1rem;
+}
+
+.info-item span {
+    color: var(--gray);
+    text-align: right;
+}
+
+#upgrade-btn {
+    margin-top: 1rem;
+    display: none;
+    /* Controlled by JS */
+}

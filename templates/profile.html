@@ -1,104 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Profile - Depanku</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    <style>
-        .profile-section {
-            padding: calc(80px + 2rem) 0 2rem;
-            background-color: var(--light-gray);
-            min-height: 100vh;
-        }
+{% block title %}Your Profile - Depanku{% endblock %}
 
-        .profile-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
 
-        @media (min-width: 768px) {
-            .profile-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .profile-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .profile-card h3 {
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 0.75rem;
-        }
-
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #f8f9fa;
-        }
-
-        .info-item label {
-            font-weight: 600;
-            color: var(--dark-gray);
-        }
-    </style>
-</head>
-
-<body>
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1><a href="{{ url_for('main.index') }}" style="color: inherit; text-decoration: none;">Depanku</a>
-                </h1>
-            </div>
-            <div class="nav-links" id="main-navigation">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#how-it-works" class="nav-link">How It Works</a>
-                <a href="{{ url_for('login') }}" class="nav-link">Login</a>
-                <a href="{{ url_for('signup') }}" class="btn btn-secondary">Sign Up</a>
-            </div>
-            <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false"
-                aria-controls="main-navigation">
-                <span class="menu-icon">☰</span>
-                <span class="close-icon" style="display: none;">✕</span>
-            </button>
-        </nav>
-    </header>
-    <main class="profile-section">
-        <div class="container">
-            <h2 class="section-title">Your Profile</h2>
-            <div id="loading-container" style="text-align: center;">Loading...</div>
-            <div id="profile-content" class="profile-grid" style="display: none;">
-                <div class="profile-card">
-                    <h3>Account Information</h3>
-                    <div class="profile-info">
-                        <div class="info-item"><label>Display Name:</label><span id="user-display-name"></span></div>
-                        <div class="info-item"><label>Email:</label><span id="user-email"></span></div>
-                        <div class="info-item"><label>Age Group:</label><span id="user-age-group"></span></div>
-                        <div class="info-item"><label>Member Since:</label><span id="user-created-at"></span></div>
-                    </div>
+{% block content %}
+<main class="profile-section">
+    <div class="container">
+        <h2 class="section-title">Your Profile</h2>
+        <div id="loading-container" style="text-align: center;">Loading...</div>
+        <div id="profile-content" class="profile-grid" style="display: none;">
+            <div class="profile-card">
+                <h3>Account Information</h3>
+                <div class="profile-info">
+                    <div class="info-item"><label>Display Name:</label><span id="user-display-name"></span></div>
+                    <div class="info-item"><label>Email:</label><span id="user-email"></span></div>
+                    <div class="info-item"><label>Age Group:</label><span id="user-age-group"></span></div>
+                    <div class="info-item"><label>Member Since:</label><span id="user-created-at"></span></div>
                 </div>
-                <div class="profile-card">
-                    <h3>Subscription Plan</h3>
-                    <div class="info-item"><label>Current Plan:</label><span id="plan-name"></span></div>
-                    <div class="info-item"><label>AI Analyses Remaining:</label><span id="ai-analyses-remaining"></span>
-                    </div>
-                    <button class="btn btn-primary" id="upgrade-btn" style="margin-top: 1rem; display: none;">Upgrade to
-                        Premium</button>
+            </div>
+            <div class="profile-card">
+                <h3>Subscription Plan</h3>
+                <div class="info-item"><label>Current Plan:</label><span id="plan-name"></span></div>
+                <div class="info-item"><label>AI Analyses Remaining:</label><span id="ai-analyses-remaining"></span>
                 </div>
+                <button class="btn btn-primary" id="upgrade-btn">Upgrade to Premium</button>
             </div>
         </div>
-    </main>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
-</body>
+    </div>
+</main>
+{% endblock %}
 
-</html>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

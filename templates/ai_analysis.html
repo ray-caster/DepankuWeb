@@ -1,333 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Analysis - Depanku</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    <style>
-        .ai-analysis-container {
-            max-width: 800px;
-            margin: calc(80px + 2rem) auto 2rem;
-            padding: 2rem;
-        }
+{% block title %}AI Career Analysis - Depanku{% endblock %}
 
-        .analysis-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ai_analysis.css') }}">
+{% endblock %}
 
-        .analysis-steps {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            position: relative;
-        }
+{% block content %}
+<main class="container">
+    <div class="ai-analysis-container">
+        <div class="analysis-header">
+            <h1>AI Career Analysis</h1>
+            <p>Get personalized recommendations from a team of AI experts.</p>
+        </div>
 
-        .step {
-            text-align: center;
-            flex: 1;
-            position: relative;
-            z-index: 2;
-        }
+        <div class="limit-warning" id="limit-warning">
+            <strong>Free Tier Limit:</strong> You have <span id="remaining-analyses">3</span> AI analyses remaining.
+        </div>
+        <div class="error-message" id="error-message"></div>
 
-        .step-number {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.5rem;
-            font-weight: bold;
-            color: #6c757d;
-            transition: all 0.3s ease;
-        }
-
-        .step.active .step-number {
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .step.completed .step-number {
-            background: var(--primary-green);
-            color: white;
-        }
-
-        .step-label {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-
-        .step.active .step-label {
-            color: var(--primary-blue);
-            font-weight: 600;
-        }
-
-        .step.completed .step-label {
-            color: var(--primary-green);
-        }
-
-        .step-connector {
-            position: absolute;
-            top: 20px;
-            left: 20%;
-            right: 20%;
-            height: 2px;
-            background: #e9ecef;
-            z-index: 1;
-        }
-
-        .analysis-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .socratic-chat {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 6px;
-        }
-
-        .message {
-            margin-bottom: 1rem;
-            padding: 0.75rem 1.25rem;
-            border-radius: 18px;
-            max-width: 80%;
-            line-height: 1.5;
-        }
-
-        .ai-message {
-            background: var(--primary-blue);
-            color: white;
-            margin-right: auto;
-            border-bottom-left-radius: 4px;
-        }
-
-        .user-message {
-            background: #e9ecef;
-            color: var(--dark-gray);
-            margin-left: auto;
-            text-align: right;
-            border-bottom-right-radius: 4px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .input-group input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .input-group button {
-            padding: 0.75rem 1.5rem;
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .input-group button:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-        }
-
-        .debate-visualization {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .ai-personas {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .persona-card {
-            padding: 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .persona-card.active {
-            border-color: var(--primary-blue);
-            transform: scale(1.05);
-        }
-
-        .persona-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.5rem;
-            font-weight: bold;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .deepseek .persona-icon {
-            background: #007bff;
-        }
-
-        .maverick .persona-icon {
-            background: #28a745;
-        }
-
-        .qwen .persona-icon {
-            background: #6f42c1;
-        }
-
-        .glm .persona-icon {
-            background: #fd7e14;
-        }
-
-        .grok .persona-icon {
-            background: #dc3545;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary-blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .error-message,
-        .success-message,
-        .limit-warning {
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-        }
-
-        .error-message {
-            color: #dc3545;
-            background: #f8d7da;
-            display: none;
-        }
-
-        .limit-warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-            display: none;
-        }
-    </style>
-</head>
-
-<body>
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1><a href="{{ url_for('main.index') }}" style="color: inherit; text-decoration: none;">Depanku</a>
-                </h1>
+        <div class="analysis-steps">
+            <div class="step-connector"></div>
+            <div class="step active" id="step-1">
+                <div class="step-number">1</div>
+                <div class="step-label">Refine Goal</div>
             </div>
-            <div class="nav-links" id="main-navigation">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#how-it-works" class="nav-link">How It Works</a>
-                <a href="{{ url_for('login') }}" class="nav-link">Login</a>
-                <a href="{{ url_for('signup') }}" class="btn btn-secondary">Sign Up</a>
+            <div class="step" id="step-2">
+                <div class="step-number">2</div>
+                <div class="step-label">AI Debate</div>
             </div>
-            <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false"
-                aria-controls="main-navigation">
-                <span class="menu-icon">☰</span>
-                <span class="close-icon" style="display: none;">✕</span>
-            </button>
-        </nav>
-    </header>
-    <div class="container">
-        <div class="ai-analysis-container">
-            <div class="analysis-header">
-                <h1>AI Career Analysis</h1>
-                <p>Get personalized recommendations from a team of AI experts.</p>
+            <div class="step" id="step-3">
+                <div class="step-number">3</div>
+                <div class="step-label">Results</div>
             </div>
+        </div>
 
-            <div class="limit-warning" id="limit-warning">
-                <strong>Free Tier Limit:</strong> You have <span id="remaining-analyses">3</span> AI analyses remaining.
+        <div class="analysis-content" id="socratic-phase">
+            <h3>Tell us your initial goal</h3>
+            <p>We'll ask a few clarifying questions to understand exactly what you're looking for.</p>
+            <div class="socratic-chat" id="chat-container">
+                <div class="message ai-message">What are you hoping to achieve or discover?</div>
             </div>
-            <div class="error-message" id="error-message"></div>
-
-            <div class="analysis-steps">
-                <div class="step-connector"></div>
-                <div class="step active" id="step-1">
-                    <div class="step-number">1</div>
-                    <div class="step-label">Refine Goal</div>
-                </div>
-                <div class="step" id="step-2">
-                    <div class="step-number">2</div>
-                    <div class="step-label">AI Debate</div>
-                </div>
-                <div class="step" id="step-3">
-                    <div class="step-number">3</div>
-                    <div class="step-label">Results</div>
-                </div>
+            <div class="input-group" id="initial-goal-phase">
+                <input type="text" id="goal-input" placeholder="e.g., 'Find a summer STEM internship'"
+                    autocomplete="off">
+                <button id="start-analysis-btn" class="btn btn-primary">Start</button>
             </div>
-
-            <div class="analysis-content" id="socratic-phase">
-                <h3>Tell us your initial goal</h3>
-                <p>We'll ask a few clarifying questions to understand exactly what you're looking for.</p>
-                <div class="socratic-chat" id="chat-container">
-                    <div class="message ai-message">What are you hoping to achieve or discover?</div>
-                </div>
-                <div class="input-group" id="initial-goal-phase">
-                    <input type="text" id="goal-input" placeholder="e.g., 'Find a summer STEM internship'"
-                        autocomplete="off">
-                    <button id="start-analysis-btn">Start</button>
-                </div>
-                <div class="input-group" id="question-phase" style="display: none;">
-                    <input type="text" id="answer-input" placeholder="Your response..." autocomplete="off">
-                    <button id="submit-answer-btn">Send</button>
-                </div>
+            <div class="input-group" id="question-phase" style="display: none;">
+                <input type="text" id="answer-input" placeholder="Your response..." autocomplete="off">
+                <button id="submit-answer-btn" class="btn btn-primary">Send</button>
             </div>
+        </div>
 
-            <div class="analysis-content debate-visualization" id="debate-phase">
-                <h3>AI Experts are Debating Your Opportunity</h3>
-                <p>Our team of AI specialists is analyzing your goals from different perspectives to build the best
-                    recommendation.</p>
-                <div class="loading-spinner" style="width: 40px; height: 40px; margin-bottom: 1rem;"></div>
-                <p id="debate-status">Building consensus among experts...</p>
-                <div class="ai-personas">
-                    <!-- Persona cards will be updated by JS -->
-                </div>
+        <div class="analysis-content debate-visualization" id="debate-phase">
+            <h3>AI Experts are Debating Your Opportunity</h3>
+            <p>Our team of AI specialists is analyzing your goals from different perspectives to build the best
+                recommendation.</p>
+            <div class="loading-spinner" style="width: 40px; height: 40px; margin-bottom: 1rem;"></div>
+            <p id="debate-status">Building consensus among experts...</p>
+            <div class="ai-personas">
+                <!-- Persona cards will be updated by JS -->
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/ai_analysis.js') }}"></script>
-</body>
+</main>
+{% endblock %}
 
-</html>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ai_analysis.js') }}"></script>
+{% endblock %}

@@ -1,72 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversation - Depanku</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
-    <style>
-        .conversation-page {
-            max-width: 800px;
-            margin: calc(80px + 2rem) auto 2rem;
-        }
-    </style>
-</head>
+{% block title %}Conversation - Depanku{% endblock %}
 
-<body>
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1><a href="{{ url_for('main.index') }}" style="color: inherit; text-decoration: none;">Depanku</a>
-                </h1>
-            </div>
-            <div class="nav-links" id="main-navigation"></div>
-        </nav>
-    </header>
+{% block head_extra %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
 
-    <main class="container conversation-page">
-        <div class="back-button mb-3">
-            <a href="{{ url_for('messaging.messages_page') }}" class="btn btn-outline">← Back to Inbox</a>
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="container messages-page">
+    <div class="mb-3">
+        <a href="{{ url_for('messaging.messages_page') }}" class="btn btn-outline">← Back to Inbox</a>
+    </div>
+
+    <div id="loading-container" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading conversation...</p>
+    </div>
+
+    <div id="chat-window" class="card" style="display: none;">
+        <div class="card-header d-flex align-items-center p-3">
+            <img src="/static/images/default-avatar.png" id="otherUserAvatar" alt="Avatar" class="conversation-avatar">
+            <h5 id="otherUserName" class="mb-0"></h5>
         </div>
 
-        <div id="loading-container" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p class="mt-2">Loading conversation...</p>
+        <div id="messagesContainer" class="card-body message-container">
+            <!-- Messages will be loaded here -->
         </div>
 
-        <div id="chat-window" class="chat-window card" style="display: none;">
-            <div class="card-header chat-header">
-                <img src="/static/images/default-avatar.png" id="otherUserAvatar" alt="Avatar"
-                    class="conversation-avatar me-3">
-                <h5 id="otherUserName" class="mb-0"></h5>
-            </div>
-
-            <div id="messagesContainer" class="card-body">
-                <!-- Messages will be loaded here by messages.js -->
-            </div>
-
-            <div class="card-footer message-input-container">
-                <form id="messageForm" class="d-flex gap-2">
-                    <input type="text" id="messageInput" class="form-control" placeholder="Type your message..."
-                        autocomplete="off" required>
-                    <button class="btn btn-primary" type="submit" id="sendBtn">Send</button>
-                </form>
-            </div>
+        <div class="card-footer message-input-container">
+            <form id="messageForm" class="message-input-form">
+                <input type="text" id="messageInput" class="form-control message-input"
+                    placeholder="Type your message..." autocomplete="off" required>
+                <button class="btn btn-primary" type="submit" id="sendBtn">Send</button>
+            </form>
         </div>
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
-    <script>
-        // FIX: Pass the conversation_id, which is now correctly supplied by the backend route
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
         const conversationId = '{{ conversation_id }}';
-        document.dispatchEvent(new CustomEvent('conversation-ready', { detail: { conversationId: conversationId } }));
-    </script>
-</body>
-
-</html>
+        if (window.messagingSystem) {
+            window.messagingSystem.loadConversation(conversationId);
+        }
+    });
+</script>
+{% endblock %}

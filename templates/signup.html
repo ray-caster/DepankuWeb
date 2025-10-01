@@ -1,46 +1,51 @@
 {% extends "base.html" %}
-
 {% block title %}Sign Up - Depanku{% endblock %}
+
+{% block page_css %}
+{# Reusing login.css as it contains all auth form styles #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
 
 {% block content %}
 <section class="auth-section">
-    <div class="auth-card">
-        <h2>Create Your Account</h2>
-        <p class="text-muted">Join Depanku to unlock your potential.</p>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2 class="auth-title">Create Your Account</h2>
+            <p class="auth-subtitle">Join Depanku to unlock your potential.</p>
 
-        <div id="error-message" class="alert alert-danger" style="display: none; text-align: left;"></div>
+            <div class="error-message" id="signup-error-message"></div>
 
-        <form id="signup-form" class="auth-form" style="margin-top: 2rem;">
-            <div class="form-group">
-                <label for="displayName" class="form-label">Display Name</label>
-                <input type="text" id="displayName" name="displayName" class="form-control" required
-                    placeholder="How should we call you?">
-            </div>
-            <div class="form-group">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" id="email" name="email" class="form-control" required
-                    placeholder="Enter your email">
-            </div>
-            <div class="form-group">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" id="password" name="password" class="form-control" required
-                    placeholder="Create a password (min. 6 characters)" minlength="6">
-            </div>
-            <div class="form-group">
-                <label for="ageGroup" class="form-label">Age Group</label>
-                <select id="ageGroup" name="ageGroup" required class="form-control">
-                    <option value="" disabled selected>Select your age group</option>
-                    <option value="middle_school">Middle School</option>
-                    <option value="high_school">High School</option>
-                    <option value="college">College</option>
-                    <option value="adult">Adult</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary btn-full">Create Account</button>
-        </form>
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <label for="displayName">Display Name</label>
+                    <input type="text" id="displayName" name="displayName" required
+                        placeholder="How should we call you?">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required
+                        placeholder="Create a password (min. 6 characters)" minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="ageGroup">Age Group</label>
+                    <select id="ageGroup" name="ageGroup" required>
+                        <option value="" disabled selected>Select your age group</option>
+                        <option value="middle_school">Middle School</option>
+                        <option value="high_school">High School</option>
+                        <option value="college">College</option>
+                        <option value="adult">Adult</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+            </form>
 
-        <div class="auth-footer">
-            <p>Already have an account? <a href="{{ url_for('main.login_page') }}">Sign in here</a></p>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{{ url_for('main.login_page') }}">Sign in here</a></p>
+            </div>
         </div>
     </div>
 </section>

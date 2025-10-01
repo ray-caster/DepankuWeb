@@ -1,0 +1,153 @@
+/* static/css/ai_results.css */
+
+.results-page {
+    max-width: 1000px;
+    margin: var(--spacing-xl) auto;
+    padding: var(--spacing-lg);
+}
+
+.results-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 992px) {
+    .results-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.section {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--dark-gray);
+    border-bottom: 2px solid var(--primary-blue);
+    padding-bottom: 0.5rem;
+}
+
+.persona-card {
+    border-left: 4px solid;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: var(--light-gray);
+    border-radius: var(--border-radius-sm);
+}
+
+.persona-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.persona-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+    color: var(--white);
+    font-weight: bold;
+}
+
+.persona-name {
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.persona-response {
+    color: var(--gray);
+    line-height: 1.6;
+    font-size: 0.95rem;
+    white-space: pre-wrap;
+    /* Preserves formatting from AI response */
+}
+
+/* Persona-specific colors */
+.deepseek {
+    border-color: #007bff;
+}
+
+.deepseek .persona-icon {
+    background: #007bff;
+}
+
+.maverick {
+    border-color: #28a745;
+}
+
+.maverick .persona-icon {
+    background: #28a745;
+}
+
+.qwen {
+    border-color: #6f42c1;
+}
+
+.qwen .persona-icon {
+    background: #6f42c1;
+}
+
+.glm {
+    border-color: #fd7e14;
+}
+
+.glm .persona-icon {
+    background: #fd7e14;
+}
+
+.critique-card {
+    border-color: #dc3545;
+    background: #fff0f1;
+}
+
+.critique-card .persona-icon {
+    background: #dc3545;
+}
+
+.consensus-card {
+    border-color: var(--primary-green);
+    background: var(--light-green);
+}
+
+.consensus-card .persona-icon {
+    background: var(--primary-green);
+}
+
+/* Loading State */
+.loading-container {
+    text-align: center;
+    padding: 4rem;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
