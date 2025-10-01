@@ -1,0 +1,10 @@
+# --- requirements.txt (MODIFIED) ---
+Flask
+python-dotenv
+firebase-admin
+Flask-Cors
+gunicorn
+uvicorn
+openai
+celery
+redis
