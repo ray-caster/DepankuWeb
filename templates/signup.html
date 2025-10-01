@@ -1,61 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Depanku</title>
-    <meta name="description"
-        content="Create your Depanku account to discover organizations and get AI-powered career planning.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-</head>
+{% block title %}Sign Up - Depanku{% endblock %}
 
-<body>
-    <section class="auth-section">
-        <div class="auth-container">
-            <div class="auth-card">
-                <h2 class="auth-title">Create Your Account</h2>
-                <p class="auth-subtitle">Join Depanku to unlock your potential.</p>
-                <form id="signup-form" class="auth-form">
-                    <div class="form-group">
-                        <label for="displayName">Display Name</label>
-                        <input type="text" id="displayName" name="displayName" required
-                            placeholder="How should we call you?">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required placeholder="Enter your email">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required
-                            placeholder="Create a password (min. 6 characters)" minlength="6">
-                    </div>
-                    <div class="form-group">
-                        <label for="ageGroup">Age Group</label>
-                        <select id="ageGroup" name="ageGroup" required class="form-control"
-                            style="width: 100%; padding: 0.75rem; border: 2px solid var(--light-gray); border-radius: var(--border-radius-md);">
-                            <option value="">Select your age group</option>
-                            <option value="middle_school">Middle School</option>
-                            <option value="high_school">High School</option>
-                            <option value="college">College</option>
-                            <option value="adult">Adult</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Create Account</button>
-                </form>
-                <div class="auth-footer">
-                    <!-- FIX: Corrected endpoint from 'login' to 'main.login_page' -->
-                    <p>Already have an account? <a href="{{ url_for('main.login_page') }}">Sign in here</a></p>
-                </div>
-                <div id="error-message" class="error-message" style="display: none;"></div>
+{% block content %}
+<section class="auth-section">
+    <div class="auth-card">
+        <h2>Create Your Account</h2>
+        <p class="text-muted">Join Depanku to unlock your potential.</p>
+
+        <div id="error-message" class="alert alert-danger" style="display: none; text-align: left;"></div>
+
+        <form id="signup-form" class="auth-form" style="margin-top: 2rem;">
+            <div class="form-group">
+                <label for="displayName" class="form-label">Display Name</label>
+                <input type="text" id="displayName" name="displayName" class="form-control" required
+                    placeholder="How should we call you?">
             </div>
-        </div>
-    </section>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-</body>
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" required
+                    placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required
+                    placeholder="Create a password (min. 6 characters)" minlength="6">
+            </div>
+            <div class="form-group">
+                <label for="ageGroup" class="form-label">Age Group</label>
+                <select id="ageGroup" name="ageGroup" required class="form-control">
+                    <option value="" disabled selected>Select your age group</option>
+                    <option value="middle_school">Middle School</option>
+                    <option value="high_school">High School</option>
+                    <option value="college">College</option>
+                    <option value="adult">Adult</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+        </form>
 
-</html>
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{{ url_for('main.login_page') }}">Sign in here</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}

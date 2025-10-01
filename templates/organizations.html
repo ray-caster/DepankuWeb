@@ -1,189 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Organizations - Depanku</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/satellite-min.css">
-    <style>
-        .search-page {
-            padding: calc(80px + var(--spacing-xl)) 0 var(--spacing-xl);
-            background-color: var(--light-gray);
-            min-height: 100vh;
-        }
+{% block title %}Search Organizations - Depanku{% endblock %}
 
-        .search-page-title {
-            text-align: center;
-            margin-bottom: var(--spacing-2xl);
-        }
+{% block head_extra %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/satellite-min.css">
+{% endblock %}
 
-        .search-container-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: var(--spacing-xl);
-        }
-
-        @media (min-width: 992px) {
-            .search-container-grid {
-                grid-template-columns: 280px 1fr;
-            }
-        }
-
-        .filters-panel {
-            background: var(--white);
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-md);
-            height: fit-content;
-        }
-
-        .ais-Hits-list {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: var(--spacing-lg);
-        }
-
-        @media (min-width: 768px) {
-            .ais-Hits-list {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .ais-Hits-item {
-            box-shadow: none;
-            margin-bottom: 0;
-            background: var(--white);
-            border: 1px solid #e2e8f0;
-            border-radius: var(--border-radius-lg);
-            transition: all 0.3s ease;
-        }
-
-        .ais-Hits-item:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .ais-SearchBox {
-            margin-bottom: 1.5rem;
-        }
-
-        .ais-Panel-header {
-            font-weight: 700;
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-            color: var(--dark-gray);
-            border-bottom: 2px solid var(--light-gray);
-            padding-bottom: 0.5rem;
-        }
-
-        .ais-Pagination {
-            margin-top: 2.5rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        .ais-RefinementList-labelText {
-            text-transform: capitalize;
-            color: var(--dark-gray);
-        }
-
-        .ais-RefinementList-count {
-            background-color: var(--light-blue);
-            color: var(--primary-blue);
-            font-weight: 600;
-        }
-
-        .org-hit-link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            padding: var(--spacing-lg);
-        }
-
-        .org-hit-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .org-hit-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 1px solid #eee;
-        }
-
-        .org-hit-title {
-            font-size: var(--font-size-xl);
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .org-hit-description {
-            font-size: var(--font-size-base);
-            color: var(--gray);
-        }
-    </style>
-</head>
-
-<body>
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1><a href="{{ url_for('main.index') }}" style="color: inherit; text-decoration: none;">Depanku</a>
-                </h1>
-            </div>
-            <div class="nav-links" id="main-navigation">
-                <!-- Links dynamically populated by auth.js -->
-            </div>
-        </nav>
-    </header>
-
-    <main class="search-page">
-        <div class="container">
-            <h1 class="section-title search-page-title">Discover Organizations</h1>
-            <div class="search-container-grid">
-                <aside class="filters-panel">
-                    <div id="category-list"></div>
-                    <div id="location-list" style="margin-top: 2rem;"></div>
-                </aside>
-                <div class="results-panel">
-                    <div id="searchbox"></div>
-                    <div id="hits"></div>
-                    <div id="pagination"></div>
-                </div>
+{% block content %}
+<main class="section-padding" style="background-color: var(--light-gray);">
+    <div class="container">
+        <h1 class="section-title">Discover Organizations</h1>
+        <div class="search-container-grid">
+            <aside class="filters-panel">
+                <div id="category-list"></div>
+                <div id="location-list" style="margin-top: 2rem;"></div>
+            </aside>
+            <div class="results-panel">
+                <div id="searchbox"></div>
+                <div id="hits"></div>
+                <div id="pagination" style="margin-top: 2.5rem;"></div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
+{% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
-    <script>
-        const searchClient = algoliasearch(
-            '{{ ALGOLIA_APP_ID }}',
-            '{{ ALGOLIA_API_KEY }}'
-        );
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchClient = algoliasearch('{{ ALGOLIA_APP_ID }}', '{{ ALGOLIA_API_KEY }}');
 
         const search = instantsearch({
             indexName: 'organizations',
             searchClient,
             initialUiState: {
-                organizations: {
-                    query: '{{ INITIAL_QUERY | safe }}',
-                },
+                organizations: { query: '{{ INITIAL_QUERY | safe }}' },
             },
         });
 
         search.addWidgets([
             instantsearch.widgets.searchBox({
                 container: '#searchbox',
-                placeholder: 'Search for internships, STEM, computer science...',
-                showSubmit: false,
-                showReset: false,
+                placeholder: 'Search by keyword, STEM, etc...',
             }),
 
             instantsearch.widgets.pagination({ container: '#pagination' }),
@@ -208,27 +68,28 @@
                     item(hit, { html, components }) {
                         const logoUrl = hit.logo || "{{ url_for('static', filename='images/default-org.png') }}";
                         return html`
-                            <a href="/organizations/${hit.objectID}" class="org-hit-link">
-                                <div class="org-hit-header">
-                                    <img src="${logoUrl}" alt="${hit.name}" class="org-hit-logo">
-                                    <div>
-                                        <h3 class="org-hit-title">${components.Highlight({ hit, attribute: 'name' })}</h3>
-                                        <div class="popular-tags" style="justify-content: flex-start; margin-top: 0.5rem;">
-                                            ${hit.tags && hit.tags.slice(0, 3).map(tag => html`<span class="tag">${tag}</span>`).join('')}
+                            <div class="ais-Hits-item">
+                                <a href="/organizations/${hit.objectID}" class="org-hit-link">
+                                    <div class="org-hit-header">
+                                        <img src="${logoUrl}" alt="${hit.name}" class="org-hit-logo" onerror="this.src='{{ url_for('static', filename='images/default-org.png') }}'">
+                                        <div>
+                                            <h3 class="org-hit-title">${components.Highlight({ hit, attribute: 'name' })}</h3>
+                                            <div class="tags-container" style="margin-top: 0.5rem;">
+                                                ${hit.tags && hit.tags.slice(0, 3).map(tag => html`<span class="tag">${tag}</span>`).join('')}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <p class="org-hit-description">${components.Snippet({ hit, attribute: 'description', highlightedTagName: 'mark' })}</p>
-                            </a>
+                                    <p>${components.Snippet({ hit, attribute: 'description' })}</p>
+                                </a>
+                            </div>
                         `;
                     },
-                    empty: '<p style="text-align: center; padding: 2rem;">No results found for <q>${search.helper.state.query}</q>. Try another search term.</p>'
+                    empty: '<p style="text-align: center; padding: 2rem;">No results found for <q>${search.helper.state.query}</q>.</p>'
                 }
             })
         ]);
 
         search.start();
-    </script>
-</body>
-
-</html>
+    });
+</script>
+{% endblock %}

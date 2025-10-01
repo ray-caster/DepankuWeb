@@ -1,102 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Dashboard - Depanku</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-</head>
+{% block title %}My Dashboard - Depanku{% endblock %}
 
-<body>
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1><a href="{{ url_for('main.index') }}" style="color: inherit; text-decoration: none;">Depanku</a>
-                </h1>
-            </div>
-            <div class="nav-links" id="main-navigation"></div>
-        </nav>
-    </header>
+{% block content %}
+<section class="dashboard-section">
+    <div class="container">
+        <h2 class="section-title">My Personal Dashboard</h2>
 
-    <section class="dashboard-section">
-        <div class="container">
-            <h2 class="section-title">My Personal Dashboard</h2>
+        <div id="success-message" class="alert alert-success" style="display: none;"></div>
+        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
 
-            <div id="success-message" class="success-message" style="display: none;"></div>
-            <div id="error-message" class="error-message" style="display: none;"></div>
-
-            <div class="overview-grid">
-                <div class="overview-card">
-                    <h3>Plan Status</h3>
-                    <div id="plan-stats">
-                        <div class="stat-item"><span class="stat-label">Total Owned Orgs:</span><span class="stat-value"
-                                id="total-orgs">0</span></div>
-                        <div class="stat-item"><span class="stat-label">High Interest:</span><span class="stat-value"
-                                id="high-interest">0</span></div>
-                        <div class="stat-item"><span class="stat-label">Medium Interest:</span><span class="stat-value"
-                                id="medium-interest">0</span></div>
-                        <div class="stat-item"><span class="stat-label">Low Interest:</span><span class="stat-value"
-                                id="low-interest">0</span></div>
+        <div class="planning-board">
+            <h3>Opportunity Planning Board</h3>
+            <p class="text-muted">Drag organizations from the "Available" list into a category below to plan your
+                applications.</p>
+            <div class="board-columns">
+                <div class="board-column" id="high-interest-column">
+                    <div class="column-header">
+                        <h4>High Interest</h4><span class="column-count" id="high-count">0</span>
                     </div>
+                    <div class="column-content" data-interest-level="high"></div>
                 </div>
-            </div>
-
-            <div class="planning-board">
-                <h3 class="board-title">Opportunity Planning Board</h3>
-                <p class="board-description">Drag organizations from the "Available" list into a category below to plan
-                    your applications.</p>
-
-                <div class="board-columns">
-                    <div class="board-column" id="high-interest-column">
-                        <div class="column-header">
-                            <h4>High Interest</h4><span class="column-count" id="high-count">0</span>
-                        </div>
-                        <div class="column-content" data-interest-level="high">
-                            <div class="empty-state">
-                                <p>Drop here</p>
-                            </div>
-                        </div>
+                <div class="board-column" id="medium-interest-column">
+                    <div class="column-header">
+                        <h4>Medium Interest</h4><span class="column-count" id="medium-count">0</span>
                     </div>
-                    <div class="board-column" id="medium-interest-column">
-                        <div class="column-header">
-                            <h4>Medium Interest</h4><span class="column-count" id="medium-count">0</span>
-                        </div>
-                        <div class="column-content" data-interest-level="medium">
-                            <div class="empty-state">
-                                <p>Drop here</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="board-column" id="low-interest-column">
-                        <div class="column-header">
-                            <h4>Low Interest</h4><span class="column-count" id="low-count">0</span>
-                        </div>
-                        <div class="column-content" data-interest-level="low">
-                            <div class="empty-state">
-                                <p>Drop here</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="column-content" data-interest-level="medium"></div>
                 </div>
-            </div>
-
-            <div class="organization-lists">
-                <div class="org-list-section">
-                    <h3>Available Organizations</h3>
-                    <div class="org-list" id="available-orgs" data-interest-level="none">
-                        <div class="loading-state">Loading your organizations...</div>
+                <div class="board-column" id="low-interest-column">
+                    <div class="column-header">
+                        <h4>Low Interest</h4><span class="column-count" id="low-count">0</span>
                     </div>
+                    <div class="column-content" data-interest-level="low"></div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-</body>
+        <div class="card">
+            <div class="card-header">
+                <h3>Available Organizations</h3>
+            </div>
+            <div class="card-body" id="available-orgs" data-interest-level="none">
+                <p>Loading your organizations...</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
 
-</html>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

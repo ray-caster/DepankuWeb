@@ -1,68 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Depanku - Discover Organizations & AI-Powered Career Planning{% endblock %}
 
-    <!-- SEO Meta Tags -->
-    <title>Depanku - Discover Organizations & AI-Powered Career Planning</title>
-    <meta name="description"
-        content="Depanku: AI-powered platform for students to discover STEM internships, research opportunities, and organizations. Get personalized career planning from middle school to adulthood. Find your perfect match today!">
-    <meta name="keywords"
-        content="STEM internships, career planning, organization discovery, AI analysis, student opportunities">
-
-    <!-- Open Graph & Twitter Card Meta Tags -->
-    <meta property="og:title" content="Depanku - AI-Powered Organization Discovery & Career Planning">
-    <meta property="og:description"
-        content="Discover STEM internships, research opportunities, and organizations tailored to your interests.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://depanku.com">
-    <meta property="og:image" content="{{ url_for('static', filename='images/og-landing.jpg') }}">
-    <meta name="twitter:card" content="summary_large_image">
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-
-    <!-- Firebase SDK (Needed for auth state in header) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-</head>
-
-<body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1><a href="{{ url_for('main.index') }}" style="color: inherit; text-decoration: none;">Depanku</a>
-                </h1>
-            </div>
-            <div class="nav-links" id="main-navigation">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#how-it-works" class="nav-link">How It Works</a>
-                <!-- FIX: Corrected endpoint from 'login' to 'main.login_page' -->
-                <a href="{{ url_for('main.login_page') }}" class="nav-link">Login</a>
-                <!-- FIX: Corrected endpoint from 'signup' to 'main.signup_page' -->
-                <a href="{{ url_for('main.signup_page') }}" class="btn btn-secondary">Sign Up</a>
-            </div>
-            <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false"
-                aria-controls="main-navigation">
-                <span class="menu-icon">☰</span>
-                <span class="close-icon" style="display: none;">✕</span>
-            </button>
-        </nav>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-grid">
             <div class="hero-content">
-                <h1 class="hero-title">Depanku: AI-Powered Organization Discovery & Career Planning</h1>
-                <p class="hero-description">
-                    AI-powered platform helping students from middle school to adulthood find perfect
+                <h2>Your Future, Amplified by AI</h2>
+                <p>
+                    Depanku helps students from middle school to adulthood find perfect
                     STEM internships, research opportunities, and organizations tailored to their interests.
                 </p>
 
@@ -73,131 +21,55 @@
                             class="search-input" aria-label="Search">
                         <button type="submit" class="search-btn" aria-label="Submit search">Search</button>
                     </form>
-                    <div class="popular-tags">
-                        <span class="tag">STEM Internships</span>
-                        <span class="tag">Research Opportunities</span>
-                        <span class="tag">Computer Science</span>
-                        <span class="tag">Engineering</span>
+                    <div class="tags-container" style="justify-content: center; margin-top: 1rem;">
+                        <span class="tag">#STEM</span>
+                        <span class="tag">#Research</span>
+                        <span class="tag">#ComputerScience</span>
                     </div>
                 </div>
 
                 <div class="hero-actions">
-                    <a href="{{ url_for('organizations.organization_create_page') }}" class="btn btn-primary btn-large"
-                        id="create-org-btn">🚀 Create Organization</a>
-                    <a href="#" class="btn btn-outline btn-large" id="ai-analysis-btn">🤖 Get AI Analysis</a>
+                    <a href="{{ url_for('organizations.organization_create_page') }}" class="btn btn-primary"
+                        id="create-org-btn">🚀 List an Opportunity</a>
+                    <a href="{{ url_for('ai.ai_analysis_page') }}" class="btn btn-outline" id="ai-analysis-btn">🤖 Get
+                        AI Analysis</a>
                 </div>
             </div>
 
-            <div class="hero-visual">
-                <div class="hero-image">
-                    <img src="{{ url_for('static', filename='images/hero-illustration.svg') }}"
-                        alt="AI-powered career discovery platform illustration" class="hero-illustration">
-                </div>
+            <div class="hero-image">
+                <img src="{{ url_for('static', filename='images/hero-illustration.svg') }}"
+                    alt="AI-powered career discovery platform illustration">
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title">AI-Powered Features for Your Success</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>Multi-Model AI Career Analysis</h3>
+<!-- Features Section -->
+<section id="features" class="section-padding">
+    <div class="container">
+        <h2 class="section-title">AI-Powered Features for Your Success</h2>
+        <div class="board-columns">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Multi-Model AI Analysis</h3>
                     <p>Get personalized recommendations through our multi-model AI debate system that understands your
                         unique goals.</p>
                 </div>
-                <div class="feature-card">
-                    <h3>Intelligent Organization Matching</h3>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h3>Intelligent Matching</h3>
                     <p>Find curated opportunities matching your age, interests, and career aspirations with advanced
-                        search filters.</p>
+                        search.</p>
                 </div>
-                <div class="feature-card">
-                    <h3>Visual Career Roadmap Planning</h3>
-                    <p>Use a drag-and-drop planning board to organize your opportunities and create actionable career
-                        roadmaps.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Safe Student Communication</h3>
-                    <p>Connect directly with organizations through our encrypted messaging system built for student
-                        safety.</p>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h3>Visual Career Planning</h3>
+                    <p>Use a drag-and-drop board to organize opportunities and create actionable career roadmaps.</p>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section id="how-it-works" class="how-it-works">
-        <div class="container">
-            <h2 class="section-title">How It Works</h2>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Create Profile</h3>
-                    <p>Tell us about your interests and goals.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Find Opportunities</h3>
-                    <p>Browse or search for your perfect match.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>Get AI Insights</h3>
-                    <p>Receive personalized AI recommendations.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h3>Plan Your Roadmap</h3>
-                    <p>Organize and track your opportunities.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Final CTA Section -->
-    <section class="final-cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Start Your AI-Powered Career Journey Today</h2>
-                <p>Join thousands of students who have found their path. Your future starts now.</p>
-                <div class="cta-buttons">
-                    <a href="{{ url_for('main.signup_page') }}" class="btn btn-primary btn-xlarge">Start Your Free
-                        Trial</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Depanku</h3>
-                    <p>AI-powered organization discovery and career planning.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Navigate</h4>
-                    <a href="#features">Features</a>
-                    <a href="{{ url_for('organizations.organizations_page') }}">Organizations</a>
-                    <a href="{{ url_for('dashboard.dashboard_page') }}">Dashboard</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Legal</h4>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Depanku. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
-</body>
-
-</html>
+    </div>
+</section>
+{% endblock %}

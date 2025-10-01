@@ -1,18 +1,22 @@
-// --- static/js/organization_form.js ---
-
 let isEditMode = false;
 let organizationId = null;
 
 // --- INITIALIZATION ---
 function initializeFormForCreate() {
     isEditMode = false;
+    document.getElementById('form-title').textContent = 'Create a New Organization';
+    document.getElementById('submitBtn').textContent = 'Submit for Review';
     setupCommonEventListeners();
     addPosition(); // Add one empty position card by default
+    document.getElementById('loading-container').style.display = 'none';
+    document.getElementById('form-container').style.display = 'block';
 }
 
 async function initializeFormForEdit(orgId) {
     isEditMode = true;
     organizationId = orgId;
+    document.getElementById('form-title').textContent = 'Edit Organization';
+    document.getElementById('submitBtn').textContent = 'Save Changes';
     setupCommonEventListeners();
     await loadOrganizationDataForEdit();
 }
@@ -41,7 +45,7 @@ async function loadOrganizationDataForEdit() {
         loadingEl.style.display = 'none';
         formEl.style.display = 'block';
     } catch (error) {
-        loadingEl.innerHTML = `<p class="error-message">${error.message}</p>`;
+        loadingEl.innerHTML = `<p class="alert alert-danger">${error.message}</p>`;
     }
 }
 
@@ -59,12 +63,17 @@ function populateForm(org) {
     toggleAddressField(locationType);
     document.getElementById('address').value = org.location?.address || '';
 
+    document.getElementById('positionsContainer').innerHTML = ''; // Clear default
     if (org.openPositions && org.openPositions.length > 0) {
         org.openPositions.forEach(pos => addPosition(pos));
+    } else {
+        addPosition(); // Add one empty if none exist
     }
 }
 
 function collectFormData() {
+    // *** THIS IS THE CRITICAL CORRECTION ***
+    // The location data is now nested in an object to match the backend.
     const formData = {
         name: document.getElementById('name').value.trim(),
         description: document.getElementById('description').value.trim(),
@@ -73,18 +82,24 @@ function collectFormData() {
         website: document.getElementById('website').value.trim(),
         contactEmail: document.getElementById('contactEmail').value.trim(),
         logo: document.getElementById('logo').value.trim(),
-        locationType: document.querySelector('input[name="locationType"]:checked').value,
-        address: document.getElementById('address').value.trim(),
+        location: {
+            type: document.querySelector('input[name="locationType"]:checked').value,
+            address: document.getElementById('address').value.trim()
+        },
         openPositions: []
     };
 
     document.querySelectorAll('#positionsContainer .position-card').forEach(card => {
-        formData.openPositions.push({
-            title: card.querySelector('.position-title').value.trim(),
-            description: card.querySelector('.position-description').value.trim(),
-            requirements: card.querySelector('.position-requirements').value.split(',').map(req => req.trim()).filter(Boolean),
-            applicationLink: card.querySelector('.position-link').value.trim()
-        });
+        const title = card.querySelector('.position-title').value.trim();
+        // Only add position if a title is provided
+        if (title) {
+            formData.openPositions.push({
+                title: title,
+                description: card.querySelector('.position-description').value.trim(),
+                requirements: card.querySelector('.position-requirements').value.split(',').map(req => req.trim()).filter(Boolean),
+                applicationLink: card.querySelector('.position-link').value.trim()
+            });
+        }
     });
     return formData;
 }
@@ -107,22 +122,31 @@ async function handleFormSubmit(event) {
             body: JSON.stringify(formData)
         });
         const result = await response.json();
-        if (!response.ok) throw result;
 
-        // Success
-        const viewUrl = `/organizations/${result.data.id || organizationId}`;
-        window.location.href = viewUrl;
+        // Use response.status to check for non-2xx codes which fetch doesn't throw by default
+        if (!response.ok) {
+            // Give the 'error' object from the JSON body to the catch block
+            throw result.error || new Error(`Request failed with status ${response.status}`);
+        }
+
+        // 202 Accepted (moderation task started) is also a success
+        if (response.status === 200 || response.status === 201 || response.status === 202) {
+            const viewUrl = `/organizations/${result.data.id || organizationId}`;
+            // Redirect to the view page after a short delay to show success
+            window.location.href = viewUrl;
+        } else {
+            throw new Error('An unexpected response was received from the server.');
+        }
 
     } catch (error) {
-        if (error.error?.code === 'MODERATION_FAILED') {
-            showModerationError(error.error.details);
+        if (error.code === 'MODERATION_FAILED') {
+            showModerationError(error.details);
         } else {
-            alert(`An error occurred: ${error.error?.message || 'Please try again.'}`);
+            showError(error.message || 'An unknown error occurred. Please try again.');
         }
         setButtonLoading(submitBtn, false, isEditMode ? 'Save Changes' : 'Submit for Review');
     }
 }
-
 
 // --- DYNAMIC FORM ELEMENTS (POSITIONS) ---
 function addPosition(data = {}) {
@@ -151,10 +175,16 @@ function updatePositionNumbers() {
     });
 }
 
-
 // --- UI UTILITIES ---
 function toggleAddressField(locationType) {
     document.getElementById('addressField').style.display = ['hybrid', 'onsite'].includes(locationType) ? 'block' : 'none';
+}
+
+function showError(message) {
+    const alertEl = document.getElementById('generalErrorAlert');
+    alertEl.textContent = message;
+    alertEl.style.display = 'block';
+    alertEl.scrollIntoView({ behavior: 'smooth' });
 }
 
 function showModerationError(details) {
@@ -162,14 +192,15 @@ function showModerationError(details) {
     const summaryEl = document.getElementById('moderationErrorSummary');
     const detailsEl = document.getElementById('moderationErrorDetails');
 
-    summaryEl.textContent = details.moderation_notes || 'Content violates community guidelines.';
-    detailsEl.innerHTML = '<strong>Reasons:</strong><ul>' + (details.reasons || ['N/A']).map(r => `<li>${r}</li>`).join('') + '</ul>';
-    alertEl.classList.remove('d-none');
+    summaryEl.textContent = details?.moderation_notes || 'Content violates community guidelines.';
+    detailsEl.innerHTML = '<strong>Reasons:</strong><ul>' + (details?.reasons || ['N/A']).map(r => `<li>${r}</li>`).join('') + '</ul>';
+    alertEl.style.display = 'block';
     alertEl.scrollIntoView({ behavior: 'smooth' });
 }
 
 function hideModerationError() {
-    document.getElementById('moderationErrorAlert').classList.add('d-none');
+    document.getElementById('moderationErrorAlert').style.display = 'none';
+    document.getElementById('generalErrorAlert').style.display = 'none';
 }
 
 function setButtonLoading(button, isLoading, loadingText) {
@@ -179,9 +210,10 @@ function setButtonLoading(button, isLoading, loadingText) {
             button.dataset.originalText = button.textContent;
         }
         button.disabled = true;
-        button.innerHTML = `<span id="submitSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${loadingText}`;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${loadingText}`;
     } else {
         button.disabled = false;
         button.innerHTML = originalText;
+        delete button.dataset.originalText;
     }
 }

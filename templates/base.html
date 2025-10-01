@@ -1,0 +1,93 @@
+--- templates/base.html (NEW) ---
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}Depanku - AI-Powered Career Planning{% endblock %}</title>
+    <meta name="description"
+        content="Depanku is an AI-powered platform helping students discover STEM internships, research opportunities, and organizations for effective career planning.">
+    <meta name="keywords"
+        content="STEM internships, career planning, organization discovery, AI analysis, student opportunities">
+
+    <!-- Open Graph & Twitter Card -->
+    <meta property="og:title" content="Depanku - AI-Powered Organization Discovery & Career Planning">
+    <meta property="og:description"
+        content="Discover STEM internships, research opportunities, and organizations tailored to your interests.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://depanku.com">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-landing.jpg') }}">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
+    {% block head_extra %}{% endblock %}
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <div class="nav-brand">
+                <h1><a href="{{ url_for('main.index') }}">Depanku</a></h1>
+            </div>
+            <div class="nav-links" id="main-navigation">
+                <!-- Auth.js dynamically populates these links -->
+                <a href="{{ url_for('main.login_page') }}" class="nav-link">Login</a>
+                <a href="{{ url_for('main.signup_page') }}" class="btn btn-secondary">Sign Up</a>
+            </div>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false"
+                aria-controls="main-navigation">
+                <span class="menu-icon">☰</span>
+                <span class="close-icon" style="display: none;">✕</span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Depanku</h3>
+                    <p>AI-powered organization discovery and career planning.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navigate</h4>
+                    <a href="/#features">Features</a>
+                    <a href="{{ url_for('organizations.organizations_page') }}">Organizations</a>
+                    <a href="{{ url_for('dashboard.dashboard_page') }}">Dashboard</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Depanku. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK (Required for auth state) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <!-- Core App Scripts -->
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
