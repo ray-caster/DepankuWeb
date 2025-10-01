@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 # OpenRouter Configuration
 OPENROUTER_CONFIG = {
-    "api_key": os.getenv("OPENROUTER_API_KEY", "your-openrouter-api-key-here"),
+    "api_key": os.getenv("OPENROUTER_API_KEY", None),
     "base_url": "https://openrouter.ai/api/v1",
     "models": {
         "deepseek": "deepseek/deepseek-chat",

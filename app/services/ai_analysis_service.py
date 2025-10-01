@@ -2,17 +2,18 @@ import asyncio
 import json
 import logging
 from datetime import datetime
-from typing import Dict, List, Optional
-from openrouter_client import OpenRouterClient, CostManager
+from typing import Dict, List
+from .openrouter_client import OpenRouterClient, CostManager
 from openrouter_config import SYSTEM_PROMPTS
 
 logger = logging.getLogger(__name__)
 
 class AIAnalysisService:
+    # FIX: Renamed from 'init' to the correct Python constructor '__init__'
     def __init__(self, db):
         self.db = db
         self.cost_manager = CostManager()
-        
+
     async def socratic_questioning(self, user_id: str, initial_goal: str) -> Dict:
         """Conduct Socratic questioning to refine user goals"""
         questions = [
@@ -40,24 +41,16 @@ class AIAnalysisService:
         session_ref.set(session_data)
         
         refined_goal = initial_goal
+        # This is a simulation. In a real app, you would get one response at a time.
+        simulated_responses = [f"Simulated response to: {q}" for q in questions]
+
         for i, question in enumerate(questions):
-            # Store question in session
             session_ref.update({
                 f'questions.{i}': question,
+                f'userResponses.{i}': simulated_responses[i],
                 'updatedAt': datetime.now()
             })
-            
-            # In a real implementation, this would wait for user response via WebSocket/API
-            # For now, we'll simulate user responses
-            user_response = f"Response to: {question}"
-            
-            session_ref.update({
-                f'userResponses.{i}': user_response,
-                'updatedAt': datetime.now()
-            })
-            
-            # Refine goal based on response (simplified)
-            refined_goal += f" | {user_response}"
+            refined_goal += f" | {simulated_responses[i]}"
         
         session_ref.update({
             'goal': refined_goal,
@@ -69,37 +62,41 @@ class AIAnalysisService:
             "sessionId": session_id,
             "refinedGoal": refined_goal,
             "questions": questions,
-            "userResponses": [f"Response to: {q}" for q in questions]  # Simulated responses
+            "userResponses": simulated_responses
         }
-    
+
     async def conduct_round_table_debate(self, session_id: str, refined_goal: str) -> Dict:
         """Conduct round table debate with all AI personas"""
         personas = ["deepseek", "maverick", "qwen", "glm"]
         responses = {}
         
         async with OpenRouterClient() as client:
+            tasks = []
             for persona in personas:
-                try:
-                    response = await client.query_persona(
-                        persona, 
-                        f"Analyze this opportunity and provide recommendations: {refined_goal}"
-                    )
-                    responses[persona] = response
-                    
-                    # Update session with persona response
+                task = client.query_persona(
+                    persona, 
+                    f"Analyze this opportunity and provide recommendations: {refined_goal}"
+                )
+                tasks.append(task)
+            
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+
+            for i, result in enumerate(results):
+                persona = personas[i]
+                if isinstance(result, Exception):
+                    logger.error(f"Error querying {persona}: {str(result)}")
+                    responses[persona] = f"Error: {str(result)}"
+                else:
+                    responses[persona] = result
                     session_ref = self.db.collection('ai_sessions').document(session_id)
                     session_ref.update({
-                        f'personas.{persona}.response': response,
+                        f'personas.{persona}.response': result,
                         f'personas.{persona}.timestamp': datetime.now(),
                         'updatedAt': datetime.now()
                     })
-                    
-                except Exception as e:
-                    logger.error(f"Error querying {persona}: {str(e)}")
-                    responses[persona] = f"Error: {str(e)}"
         
         return responses
-    
+
     async def devil_advocate_analysis(self, session_id: str, responses: Dict[str, str]) -> str:
         """Get devil's advocate critique of the responses"""
         async with OpenRouterClient() as client:
@@ -109,7 +106,6 @@ class AIAnalysisService:
                     f"Critique these analyses and identify potential flaws:\n{json.dumps(responses, indent=2)}"
                 )
                 
-                # Update session with critique
                 session_ref = self.db.collection('ai_sessions').document(session_id)
                 session_ref.update({
                     'personas.grok.critique': critique,
@@ -121,9 +117,8 @@ class AIAnalysisService:
             except Exception as e:
                 logger.error(f"Error in devil's advocate analysis: {str(e)}")
                 return f"Devil's advocate analysis failed: {str(e)}"
-    
-    async def build_consensus(self, session_id: str, responses: Dict[str, str], 
-                           critique: str, max_iterations: int = 3) -> Dict:
+
+    async def build_consensus(self, session_id: str, responses: Dict[str, str], critique: str, max_iterations: int = 3) -> Dict:
         """Build consensus among AI personas through iterative debate"""
         iteration = 0
         consensus_reached = False
@@ -131,31 +126,34 @@ class AIAnalysisService:
         
         async with OpenRouterClient() as client:
             while not consensus_reached and iteration < max_iterations:
-                # Have models respond to critique and each other
                 revised_responses = {}
+                tasks = []
+
                 for persona in current_responses.keys():
-                    try:
-                        revised_response = await client.query_persona(
-                            persona,
-                            f"""Previous responses: {json.dumps(current_responses)}
-                            Critique: {critique}
-                            Revise your analysis considering these perspectives and work towards consensus."""
-                        )
-                        revised_responses[persona] = revised_response
-                        
-                        # Update session
+                    task = client.query_persona(
+                        persona,
+                        f"""Previous responses: {json.dumps(current_responses)}
+                        Critique: {critique}
+                        Revise your analysis considering these perspectives and work towards consensus."""
+                    )
+                    tasks.append(task)
+                
+                results = await asyncio.gather(*tasks, return_exceptions=True)
+                
+                for i, result in enumerate(results):
+                    persona = list(current_responses.keys())[i]
+                    if isinstance(result, Exception):
+                        logger.error(f"Error in consensus iteration {iteration} for {persona}: {str(result)}")
+                        revised_responses[persona] = current_responses.get(persona, "Error in revision.")
+                    else:
+                        revised_responses[persona] = result
                         session_ref = self.db.collection('ai_sessions').document(session_id)
                         session_ref.update({
-                            f'personas.{persona}.response': revised_response,
+                            f'personas.{persona}.response': result,
                             f'personas.{persona}.timestamp': datetime.now(),
                             'updatedAt': datetime.now()
                         })
-                        
-                    except Exception as e:
-                        logger.error(f"Error in consensus iteration {iteration} for {persona}: {str(e)}")
-                        revised_responses[persona] = current_responses[persona]
-                
-                # Check for consensus
+
                 consensus_check = await client.check_consensus(revised_responses)
                 
                 if consensus_check.get("consensus", False):
@@ -163,146 +161,98 @@ class AIAnalysisService:
                     final_recommendation = consensus_check.get("recommendation", "")
                     reasoning = consensus_check.get("reasoning", "")
                     
-                    # Update session with consensus
-                    session_ref = self.db.collection('ai_sessions').document(session_id)
-                    session_ref.update({
+                    self.db.collection('ai_sessions').document(session_id).update({
                         'consensus.reached': True,
                         'consensus.finalRecommendation': final_recommendation,
                         'consensus.reasoning': reasoning,
-                        'consensus.timestamp': datetime.now(),
                         'status': 'completed',
                         'updatedAt': datetime.now()
                     })
                     
-                    return {
-                        "consensus": True,
-                        "recommendation": final_recommendation,
-                        "reasoning": reasoning,
-                        "iterations": iteration + 1
-                    }
+                    return {"consensus": True, "recommendation": final_recommendation, "reasoning": reasoning, "iterations": iteration + 1}
                 else:
                     current_responses = revised_responses
                     iteration += 1
         
-        # If no consensus after max iterations, create compromise recommendation
         compromise = await self.create_compromise_recommendation(current_responses)
         
-        session_ref = self.db.collection('ai_sessions').document(session_id)
-        session_ref.update({
+        self.db.collection('ai_sessions').document(session_id).update({
             'consensus.reached': False,
             'consensus.finalRecommendation': compromise,
             'consensus.reasoning': 'Compromise recommendation after maximum iterations',
-            'consensus.timestamp': datetime.now(),
             'status': 'completed',
             'updatedAt': datetime.now()
         })
         
-        return {
-            "consensus": False,
-            "recommendation": compromise,
-            "reasoning": "Compromise recommendation after maximum debate iterations",
-            "iterations": iteration
-        }
-    
+        return {"consensus": False, "recommendation": compromise, "reasoning": "Compromise after max iterations", "iterations": iteration}
+
     async def create_compromise_recommendation(self, responses: Dict[str, str]) -> str:
         """Create a compromise recommendation when consensus isn't reached"""
         async with OpenRouterClient() as client:
             try:
-                compromise_prompt = f"""
-                Create a balanced compromise recommendation from these conflicting analyses:
-                
+                compromise_prompt = f"""Create a balanced compromise recommendation from these conflicting analyses:
                 {json.dumps(responses, indent=2)}
-                
-                Provide a comprehensive recommendation that incorporates the best aspects of each perspective.
-                """
+                Provide a comprehensive recommendation that incorporates the best aspects of each perspective."""
                 
                 return await client.query_model("deepseek", [
-                    {"role": "system", "content": "You are a mediator creating balanced recommendations from conflicting perspectives."},
+                    {"role": "system", "content": "You are a mediator creating balanced recommendations."},
                     {"role": "user", "content": compromise_prompt}
                 ])
             except Exception as e:
                 logger.error(f"Error creating compromise recommendation: {str(e)}")
-                return "Unable to create compromise recommendation due to technical issues."
-    
-    async def complete_ai_analysis(self, user_id: str, session_id: str):
+                return "Unable to create compromise recommendation."
+
+    async def complete_ai_analysis_record(self, user_id: str, session_id: str):
         """Complete the AI analysis and update user's analysis count"""
         try:
-            # Update user's analysis count
             user_ref = self.db.collection('users').document(user_id)
-            user_data = user_ref.get()
+            user_doc = user_ref.get()
             
-            if user_data.exists:
-                user_dict = user_data.to_dict()
+            if user_doc.exists:
+                user_dict = user_doc.to_dict()
                 subscription = user_dict.get('subscription', {})
-                plan = subscription.get('plan', 'free')
-                
-                if plan == 'free':
+                if subscription.get('plan', 'free') == 'free':
                     remaining = subscription.get('aiAnalysesRemaining', 3)
                     if remaining > 0:
-                        user_ref.update({
-                            'subscription.aiAnalysesRemaining': remaining - 1,
-                            'updatedAt': datetime.now()
-                        })
+                        user_ref.update({'subscription.aiAnalysesRemaining': remaining - 1})
                 
-                # Create analysis record
                 analysis_ref = self.db.collection('ai_analyses').document()
                 analysis_ref.set({
                     'userId': user_id,
                     'sessionId': session_id,
                     'type': 'career_guidance',
-                    'cost': 1,  # 1 credit per analysis
+                    'cost': 1, # Placeholder cost
                     'status': 'success',
                     'createdAt': datetime.now(),
                     'modelUsed': 'multi-model-debate'
                 })
-                
         except Exception as e:
-            logger.error(f"Error completing AI analysis: {str(e)}")
-    
-    async def full_ai_analysis(self, user_id: str, initial_goal: str) -> Dict:
+            logger.error(f"Error completing AI analysis record: {str(e)}")
+
+    async def full_ai_analysis_flow(self, user_id: str, initial_goal: str) -> Dict:
         """Complete AI analysis workflow from start to finish"""
+        session_id = None
         try:
-            # Phase 1: Socratic Questioning
             questioning_result = await self.socratic_questioning(user_id, initial_goal)
             refined_goal = questioning_result["refinedGoal"]
             session_id = questioning_result["sessionId"]
             
-            # Phase 2: Round Table Debate
             responses = await self.conduct_round_table_debate(session_id, refined_goal)
-            
-            # Phase 3: Devil's Advocate Analysis
             critique = await self.devil_advocate_analysis(session_id, responses)
-            
-            # Phase 4: Consensus Building
             consensus_result = await self.build_consensus(session_id, responses, critique)
             
-            # Complete analysis
-            await self.complete_ai_analysis(user_id, session_id)
+            await self.complete_ai_analysis_record(user_id, session_id)
             
             return {
-                "success": True,
-                "sessionId": session_id,
-                "refinedGoal": refined_goal,
-                "responses": responses,
-                "critique": critique,
-                "consensus": consensus_result,
-                "questions": questioning_result["questions"],
-                "userResponses": questioning_result["userResponses"]
+                "success": True, "sessionId": session_id, "refinedGoal": refined_goal,
+                "responses": responses, "critique": critique, "consensus": consensus_result,
+                "questions": questioning_result["questions"], "userResponses": questioning_result["userResponses"]
             }
             
         except Exception as e:
-            logger.error(f"AI analysis failed: {str(e)}")
-            
-            # Update session status if it exists
-            if 'session_id' in locals():
-                session_ref = self.db.collection('ai_sessions').document(session_id)
-                session_ref.update({
-                    'status': 'failed',
-                    'error': str(e),
-                    'updatedAt': datetime.now()
+            logger.error(f"Full AI analysis failed: {str(e)}")
+            if session_id:
+                self.db.collection('ai_sessions').document(session_id).update({
+                    'status': 'failed', 'error': str(e), 'updatedAt': datetime.now()
                 })
-            
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": "The AI analysis process encountered an unexpected error."}

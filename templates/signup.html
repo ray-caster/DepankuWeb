@@ -1,62 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Depanku</title>
-    <meta name="description" content="Create your Depanku account to discover organizations and get AI-powered career planning">
-    
-    <!-- CSS -->
+    <meta name="description"
+        content="Create your Depanku account to discover organizations and get AI-powered career planning.">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-    
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1>Depanku</h1>
-            </div>
-            <div class="nav-links">
-                <a href="{{ url_for('index') }}" class="nav-link">Home</a>
-                <a href="{{ url_for('login') }}" class="nav-link">Login</a>
-            </div>
-        </nav>
-    </header>
 
-    <!-- Signup Section -->
+<body>
     <section class="auth-section">
         <div class="auth-container">
             <div class="auth-card">
                 <h2 class="auth-title">Create Your Account</h2>
-                <p class="auth-subtitle">Join Depanku to discover organizations and get AI-powered career planning</p>
-                
+                <p class="auth-subtitle">Join Depanku to unlock your potential.</p>
                 <form id="signup-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="displayName">Display Name</label>
+                        <input type="text" id="displayName" name="displayName" required
+                            placeholder="How should we call you?">
+                    </div>
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" id="email" name="email" required placeholder="Enter your email">
                     </div>
-                    
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required placeholder="Create a password" minlength="6">
+                        <input type="password" id="password" name="password" required
+                            placeholder="Create a password (min. 6 characters)" minlength="6">
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="displayName">Display Name</label>
-                        <input type="text" id="displayName" name="displayName" required placeholder="How should we call you?">
-                    </div>
-                    
                     <div class="form-group">
                         <label for="ageGroup">Age Group</label>
-                        <select id="ageGroup" name="ageGroup" required>
+                        <select id="ageGroup" name="ageGroup" required class="form-control"
+                            style="width: 100%; padding: 0.75rem; border: 2px solid var(--light-gray); border-radius: var(--border-radius-md);">
                             <option value="">Select your age group</option>
                             <option value="middle_school">Middle School</option>
                             <option value="high_school">High School</option>
@@ -64,28 +45,17 @@
                             <option value="adult">Adult</option>
                         </select>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="terms" name="terms" required>
-                            <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
-                        </label>
-                    </div>
-                    
                     <button type="submit" class="btn btn-primary btn-full">Create Account</button>
                 </form>
-                
                 <div class="auth-footer">
-                    <p>Already have an account? <a href="{{ url_for('login') }}">Sign in here</a></p>
+                    <!-- FIX: Corrected endpoint from 'login' to 'main.login_page' -->
+                    <p>Already have an account? <a href="{{ url_for('main.login_page') }}">Sign in here</a></p>
                 </div>
-                
                 <div id="error-message" class="error-message" style="display: none;"></div>
-                <div id="success-message" class="success-message" style="display: none;"></div>
             </div>
         </div>
     </section>
-
-    <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 </body>
+
 </html>

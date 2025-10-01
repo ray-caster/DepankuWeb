@@ -1,139 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- SEO Meta Tags -->
     <title>Depanku - Discover Organizations & AI-Powered Career Planning</title>
-    <meta name="description" content="Depanku: AI-powered platform for students to discover STEM internships, research opportunities, and organizations. Get personalized career planning from middle school to adulthood. Find your perfect match today!">
-    <meta name="keywords" content="STEM internships, career planning, organization discovery, AI analysis, student opportunities">
-    
-    <!-- Open Graph Meta Tags -->
+    <meta name="description"
+        content="Depanku: AI-powered platform for students to discover STEM internships, research opportunities, and organizations. Get personalized career planning from middle school to adulthood. Find your perfect match today!">
+    <meta name="keywords"
+        content="STEM internships, career planning, organization discovery, AI analysis, student opportunities">
+
+    <!-- Open Graph & Twitter Card Meta Tags -->
     <meta property="og:title" content="Depanku - AI-Powered Organization Discovery & Career Planning">
-    <meta property="og:description" content="Discover STEM internships, research opportunities, and organizations tailored to your interests. AI-powered career planning for students from middle school to adulthood.">
+    <meta property="og:description"
+        content="Discover STEM internships, research opportunities, and organizations tailored to your interests.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://depanku.com">
     <meta property="og:image" content="{{ url_for('static', filename='images/og-landing.jpg') }}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Depanku - AI-Powered Organization Discovery Platform">
-    <meta property="og:site_name" content="Depanku">
-    <meta property="og:locale" content="en_US">
-    
-    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Depanku - Discover Your Perfect Organization Match">
-    <meta name="twitter:description" content="AI-powered platform helping students find STEM internships, research opportunities, and organizations. Get personalized career planning today!">
-    <meta name="twitter:image" content="{{ url_for('static', filename='images/twitter-card.jpg') }}">
-    <meta name="twitter:site" content="@depanku">
-    <meta name="twitter:creator" content="@depanku">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://depanku.com" />
-    
-    <!-- Structured Data / Schema.org -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Depanku",
-        "description": "AI-powered organization discovery and career planning platform for students from middle school to adulthood",
-        "url": "https://depanku.com",
-        "applicationCategory": "EducationalApplication",
-        "operatingSystem": "Web Browser",
-        "permissions": "Requires JavaScript",
-        "featureList": [
-            "AI-Powered Analysis",
-            "Smart Organization Discovery",
-            "Interactive Planning",
-            "Secure Messaging"
-        ],
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock"
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "reviewCount": "150"
-        }
-    }
-    </script>
-    
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Depanku",
-        "url": "https://depanku.com",
-        "logo": "{{ url_for('static', filename='images/logo.png') }}",
-        "description": "AI-powered platform helping students discover STEM internships, research opportunities, and organizations tailored to their interests",
-        "sameAs": [
-            "https://twitter.com/depanku",
-            "https://www.linkedin.com/company/depanku",
-            "https://www.instagram.com/depanku"
-        ],
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+1-555-0123",
-            "contactType": "customer service",
-            "email": "support@depanku.com",
-            "areaServed": "US"
-        }
-    }
-    </script>
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    
-    <!-- InstantSearch.js -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8.1.0/themes/satellite-min.css">
-    <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.69.0/dist/instantsearch.production.min.js"></script>
-    
-    <!-- Algolia Autocomplete.js -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js@1.19.4/dist/umd/index.production.js"
-      integrity="VaQwRODmAHrukHfV+gCLjVfzWyj0veQpSK9hu77pt6A="
-      crossorigin="anonymous"
-    ></script>
-    <!-- Algolia Autocomplete Preset -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-preset-algolia@1.9.4/dist/umd/index.production.js"
-      integrity="sha256-+8h3Qh1hQh1hQh1hQh1hQh1hQh1hQh1hQh1hQh1hQh1hQ="
-      crossorigin="anonymous"
-    ></script>
-    
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    
-    <!-- Firebase SDK -->
+
+    <!-- Firebase SDK (Needed for auth state in header) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    
-    <!-- Resource Hints for Performance -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
         <nav class="nav">
             <div class="nav-brand">
-                <h1>Depanku</h1>
+                <h1><a href="{{ url_for('main.index') }}" style="color: inherit; text-decoration: none;">Depanku</a>
+                </h1>
             </div>
             <div class="nav-links" id="main-navigation">
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#how-it-works" class="nav-link">How It Works</a>
-                <a href="/login" class="nav-link">Login</a>
-                <a href="/signup" class="btn btn-secondary">Sign Up</a>
+                <!-- FIX: Corrected endpoint from 'login' to 'main.login_page' -->
+                <a href="{{ url_for('main.login_page') }}" class="nav-link">Login</a>
+                <!-- FIX: Corrected endpoint from 'signup' to 'main.signup_page' -->
+                <a href="{{ url_for('main.signup_page') }}" class="btn btn-secondary">Sign Up</a>
             </div>
-            <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="main-navigation">
+            <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false"
+                aria-controls="main-navigation">
                 <span class="menu-icon">☰</span>
                 <span class="close-icon" style="display: none;">✕</span>
             </button>
@@ -144,46 +60,38 @@
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
-                <h1 class="hero-title">Depanku: AI-Powered Organization Discovery & Career Planning Platform</h1>
+                <h1 class="hero-title">Depanku: AI-Powered Organization Discovery & Career Planning</h1>
                 <p class="hero-description">
                     AI-powered platform helping students from middle school to adulthood find perfect
                     STEM internships, research opportunities, and organizations tailored to their interests.
                 </p>
-                
-                <!-- Search Bar -->
+
                 <div class="search-container">
-                    <div class="search-box" id="search-box">
-                        <input type="text" placeholder="Search organizations, internships, or opportunities..." class="search-input">
-                        <button class="search-btn">Search</button>
-                    </div>
+                    <form id="landing-search-form" action="{{ url_for('organizations.organizations_page') }}"
+                        method="GET" class="search-box">
+                        <input type="text" name="search" placeholder="Search for STEM, internships, etc..."
+                            class="search-input" aria-label="Search">
+                        <button type="submit" class="search-btn" aria-label="Submit search">Search</button>
+                    </form>
                     <div class="popular-tags">
                         <span class="tag">STEM Internships</span>
                         <span class="tag">Research Opportunities</span>
-                        <span class="tag">Extracurricular Activities</span>
-                        <span class="tag">Career Guidance</span>
+                        <span class="tag">Computer Science</span>
+                        <span class="tag">Engineering</span>
                     </div>
                 </div>
-                
-                <!-- Call to Action Buttons -->
+
                 <div class="hero-actions">
-                    <a href="/organizations/create" class="btn btn-primary btn-large" id="create-org-btn">
-                         🚀 Create Your Organization
-                    </a>
-                    <a href="/ai-analysis" class="btn btn-outline btn-large" id="ai-analysis-btn">
-                         🤖 Get AI Analysis
-                    </a>
+                    <a href="{{ url_for('organizations.organization_create_page') }}" class="btn btn-primary btn-large"
+                        id="create-org-btn">🚀 Create Organization</a>
+                    <a href="#" class="btn btn-outline btn-large" id="ai-analysis-btn">🤖 Get AI Analysis</a>
                 </div>
             </div>
-            
+
             <div class="hero-visual">
-                <!-- Professional hero illustration -->
                 <div class="hero-image">
-                    <img src="{{ url_for('static', filename='images/hero-illustration.svg') }}" alt="AI-powered career discovery platform illustration" class="hero-illustration" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjUwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiNlM2YyZmQiIHJ4PSIyMCIvPgogIDxjaXJjbGUgY3g9IjI1MCIgY3k9IjE1MCIgcj0iNTAiIGZpbGw9IiMwMDdiZmYiIG9wYWNpdHk9IjAuNyIvPgogIDxjaXJjbGUgY3g9IjE1MCIgY3k9IjI1MCIgcj0iNDAiIGZpbGw9IiMyOGE3NDUiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjM1MCIgY3k9IjI1MCIgcj0iNDAiIGZpbGw9IiNmZDdlMTQiIG9wYWNpdHk9IjAuNiIvPgogIDx0ZXh0IHg9IjI1MCIgeT0iMzUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiMzNDNhNDAiPkFJIFBvd2VyZWQgQ2FyZWVyIERpc2NvdmVyeTwvdGV4dD4KPC9zdmc+';">
-                    <div class="floating-elements">
-                        <div class="floating-element element-1">🔍</div>
-                        <div class="floating-element element-2">📊</div>
-                        <div class="floating-element element-3">🚀</div>
-                    </div>
+                    <img src="{{ url_for('static', filename='images/hero-illustration.svg') }}"
+                        alt="AI-powered career discovery platform illustration" class="hero-illustration">
                 </div>
             </div>
         </div>
@@ -192,39 +100,27 @@
     <!-- Features Section -->
     <section id="features" class="features">
         <div class="container">
-            <h2 class="section-title">AI-Powered Features for Student Career Success</h2>
-            
+            <h2 class="section-title">AI-Powered Features for Your Success</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{{ url_for('static', filename='images/ai-analysis-icon.svg') }}" alt="AI Analysis Icon" class="feature-icon-img" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxOCIgZmlsbD0iIzAwN2JmZiIgb3BhY2l0eT0iMC4xIi8+CiAgPHBhdGggZD0iTTIwIDEwVjMwTTEwIDIwSDMwIiBzdHJva2U9IiMwMDdiZmYiIHN0cm9rZS13aWR0aD0iMiIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjUiIGZpbGw9IiMwMDdiZmYiLz4KPC9zdmc+';">
-                    </div>
                     <h3>Multi-Model AI Career Analysis</h3>
-                    <p>Get personalized recommendations through our multi-model AI debate system that understands your unique goals and interests.</p>
+                    <p>Get personalized recommendations through our multi-model AI debate system that understands your
+                        unique goals.</p>
                 </div>
-                
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{{ url_for('static', filename='images/search-icon.svg') }}" alt="Search Icon" class="feature-icon-img" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxOCIgZmlsbD0iIzI4YTc0NSIgb3BhY2l0eT0iMC4xIi8+CiAgPGNpcmNsZSBjeD0iMTgiIGN5PSIxOCIgcj0iMiIgc3Ryb2tlPSIjMjhhNzQ1IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cGF0aCBkPSJNMjUgMjVMMzUgMzUiIHN0cm9rZT0iIzI4YTc0NSIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPg==';">
-                    </div>
-                    <h3>Intelligent STEM Organization Matching</h3>
-                    <p>Find curated opportunities matching your age group, interests, and career aspirations with advanced search filters.</p>
+                    <h3>Intelligent Organization Matching</h3>
+                    <p>Find curated opportunities matching your age, interests, and career aspirations with advanced
+                        search filters.</p>
                 </div>
-                
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{{ url_for('static', filename='images/roadmap-icon.svg') }}" alt="Roadmap Icon" class="feature-icon-img" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyMCIgcyB5PSIyMCIgcj0iMTgiIGZpbGw9IiNmZDdlMTQiIG9wYWNpdHk9IjAuMSIvPgogIDxwYXRoIGQ9Ik0xMCAxMEwzMCAzME0xMCAzMEwzMCAxMCIgc3Ryb2tlPSIjZmQ3ZTE0IiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+';">
-                    </div>
                     <h3>Visual Career Roadmap Planning</h3>
-                    <p>Drag-drop planning board to organize your opportunities and create actionable career roadmaps.</p>
+                    <p>Use a drag-and-drop planning board to organize your opportunities and create actionable career
+                        roadmaps.</p>
                 </div>
-                
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{{ url_for('static', filename='images/messaging-icon.svg') }}" alt="Messaging Icon" class="feature-icon-img" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxOCIgZmlsbD0iIzZkNzU3ZCIgb3BhY2l0eT0iMC4xIi8+CiAgPHJlY3QgeD0iMTIiIHk9IjE1IiB3aWR0aD0iMTYiIGhlaWdodD0iMTAiIHJ4PSIyIiBmaWxsPSIjNmQ3NTdkIiBvcGFjaXR5PSIwLjMiLz4KICA8cmVjdCB4PSIxOCIgeT0iMTIiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxMCIgcng9IjIiIGZpbGw9IiM2ZDc1N2QiIG9wYWNpdHk9IjAuNSIvPgo8L3N2Zz4=';">
-                    </div>
-                    <h3>Safe Student-Organization Communication</h3>
-                    <p>Connect directly with organizations through our encrypted messaging system built for student safety.</p>
+                    <h3>Safe Student Communication</h3>
+                    <p>Connect directly with organizations through our encrypted messaging system built for student
+                        safety.</p>
                 </div>
             </div>
         </div>
@@ -233,191 +129,41 @@
     <!-- How It Works Section -->
     <section id="how-it-works" class="how-it-works">
         <div class="container">
-            <h2 class="section-title">How Our AI Career Platform Works</h2>
-            
+            <h2 class="section-title">How It Works</h2>
             <div class="steps">
                 <div class="step">
                     <div class="step-number">1</div>
-                    <h3>Create Your Profile</h3>
-                    <p>Tell us about your interests, age group, and career goals.</p>
+                    <h3>Create Profile</h3>
+                    <p>Tell us about your interests and goals.</p>
                 </div>
-                
                 <div class="step">
                     <div class="step-number">2</div>
-                    <h3>Find Perfect STEM Opportunities</h3>
-                    <p>Browse curated opportunities or use our AI search to find perfect matches.</p>
+                    <h3>Find Opportunities</h3>
+                    <p>Browse or search for your perfect match.</p>
                 </div>
-                
                 <div class="step">
                     <div class="step-number">3</div>
-                    <h3>Receive Personalized AI Insights</h3>
-                    <p>Receive personalized recommendations from our multi-model AI system.</p>
+                    <h3>Get AI Insights</h3>
+                    <p>Receive personalized AI recommendations.</p>
                 </div>
-                
                 <div class="step">
                     <div class="step-number">4</div>
-                    <h3>Create Your Career Roadmap</h3>
-                    <p>Use our interactive planning tools to organize and track opportunities.</p>
+                    <h3>Plan Your Roadmap</h3>
+                    <p>Organize and track your opportunities.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Testimonials Section with Enhanced Social Proof -->
-    <section class="testimonials">
-        <div class="container">
-            <h2 class="section-title">Trusted by 15,000+ Students & Educators Worldwide</h2>
-            <p class="section-subtitle">Join the community that's transforming career discovery</p>
-            
-            <div class="testimonial-cards">
-                <div class="testimonial-card">
-                    <div class="testimonial-rating">
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="rating-text">4.9/5</span>
-                    </div>
-                    <p>"Depanku helped me find the perfect STEM internship that matched my interests in robotics and AI. I landed my dream opportunity!"</p>
-                    <div class="testimonial-author">
-                        <img src="{{ url_for('static', filename='images/avatar-sarah.svg') }}" alt="Sarah" class="author-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI2UzZjJmZCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjAiIHI9IjUiIGZpbGw9IiMwMDdiZmYiLz4KICA8cGF0aCBkPSJNMTUgMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMzVIMz极简主义风格，使用纯色圆形作为头像占位符。';">
-                        <div class="author-info">
-                            <strong>Sarah, High School Student</strong>
-                            <span class="author-role">Robotics Enthusiast</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial-card">
-                    <div class="testimonial-rating">
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="rating-text">4.8/5</span>
-                    </div>
-                    <p>"The AI analysis gave me insights I never considered. It's like having a personal career coach that understands my unique journey!"</p>
-                    <div class="testimonial-author">
-                        <img src="{{ url_for('static', filename='images/avatar-michael.svg') }}" alt="Michael" class="author-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI2UzZjJmZCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjAiIHI9IjUiIGZpbGw9IiMyOGE3NDUiLz4KPC9zdmc+';">
-                        <div class="author-info">
-                            <strong>Michael, College Student</strong>
-                            <span class="author-role">Computer Science Major</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial-card">
-                    <div class="testimonial-rating">
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="star">⭐</span>
-                        <span class="rating-text">4.9/5</span>
-                    </div>
-                    <p>"As an educator, I've seen Depanku transform how students discover opportunities. 92% of my students found relevant programs!"</p>
-                    <div class="testimonial-author">
-                        <img src="{{ url_for('static', filename='images/avatar-dr-chen.svg') }}" alt="Dr. Chen" class="author-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI2UzZjJmZCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjAiIHI9IjUi IGZpbGw9IiNmZDdlMTQiLz4KPC9zdmc+';">
-                        <div class="author-info">
-                            <strong>Dr. Chen, Science Teacher</strong>
-                            <span class="author-role">STEM Educator</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Social Proof Statistics -->
-            <div class="social-proof-stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="stat-students">15,000+</div>
-                    <div class="stat-label">Students Helped</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="stat-organizations">500+</div>
-                    <div class="stat-label">Organizations</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="stat-success">94%</div>
-                    <div class="stat-label">Success Rate</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="stat-countries">50+</div>
-                    <div class="stat-label">Countries</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Final Call to Action with Scarcity and Authority Elements -->
+    <!-- Final CTA Section -->
     <section class="final-cta">
         <div class="container">
             <div class="cta-content">
                 <h2>Start Your AI-Powered Career Journey Today</h2>
-                <p>Join <span class="highlight">15,000+ students</span> who found their path through Depanku's AI-powered platform. <strong>Limited spots available this month!</strong></p>
-                
-                <!-- Scarcity Timer -->
-                <div class="scarcity-timer">
-                    <div class="timer-label">Offer ends in:</div>
-                    <div class="timer-display" id="countdown-timer">
-                        <span class="timer-unit">
-                            <span class="timer-value" id="days">07</span>
-                            <span class="timer-label">Days</span>
-                        </span>
-                        <span class="timer-unit">
-                            <span class="timer-value" id="hours">23</span>
-                            <span class="timer-label">Hours</span>
-                        </span>
-                        <span class="timer-unit">
-                            <span class="timer-value" id="minutes">59</span>
-                            <span class="timer-label">Minutes</span>
-                        </span>
-                    </div>
-                </div>
-                
+                <p>Join thousands of students who have found their path. Your future starts now.</p>
                 <div class="cta-buttons">
-                    <a href="/signup" class="btn btn-primary btn-xlarge">
-                        <span class="btn-icon">🚀</span>
-                        Start Your Free Trial
-                        <span class="badge">Limited Spots</span>
-                    </a>
-                    <a href="/features" class="btn btn-outline btn-xlarge">Learn More</a>
-                </div>
-                
-                <!-- Trust Badges and Security Indicators -->
-                <div class="trust-badges">
-                    <div class="trust-badge">
-                        <img src="{{ url_for('static', filename='images/secure-badge.svg') }}" alt="Secure & Encrypted" class="badge-icon" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI4IiBmaWxsPSIjMDA3YmZmIiBvcGFjaXR5PSIwLjIiLz4KICA8cGF0aCBkPSJNNyAxMEwxMCAxM0wxNSA4IiBzdHJva2U9IiMwMDdiZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==';">
-                        <span>Secure & Encrypted</span>
-                    </div>
-                    <div class="trust-badge">
-                        <img src="{{ url_for('static', filename='images/privacy-badge.svg') }}" alt="Privacy First" class="badge-icon" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI4IiBmaWxsPSIjMjhhNzQ1IiBvcGFjaXR5PSIwLjIiLz4KICA8cGF0aCBkPSJNMTAgNlYxNE0xNCAxMEg2IiBzdHJva2U9IiMyOGE3NDUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==';">
-                        <span>Privacy First</span>
-                    </div>
-                    <div class="trust-badge">
-                        <img src="{{ url_for('static', filename='images/trusted-badge.svg') }}" alt="Trusted by Educators" class="badge-icon" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI4IiBmaWxsPSIjZmQ3ZTE0IiBvcGFjaXR5PSIwLjIiLz4KICA8cGF0aCBkPSJNMTAgNkwxMiA4TDE0IDYiIHN0cm9rZT0iI2ZkN2UxNCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+';">
-                        <span>Trusted by Educators</span>
-                    </div>
-                </div>
-                
-                <!-- Social Sharing Buttons -->
-                <div class="social-sharing">
-                    <p>Share Depanku with others:</p>
-                    <div class="social-buttons">
-                        <button class="social-btn facebook" onclick="shareOnFacebook()" aria-label="Share on Facebook">
-                            <span>Facebook</span>
-                        </button>
-                        <button class="social-btn twitter" onclick="shareOnTwitter()" aria-label="Share on Twitter">
-                            <span>Twitter</span>
-                        </button>
-                        <button class="social-btn linkedin" onclick="shareOnLinkedIn()" aria-label="Share on LinkedIn">
-                            <span>LinkedIn</span>
-                        </button>
-                        <button class="social-btn whatsapp" onclick="shareOnWhatsApp()" aria-label="Share on WhatsApp">
-                            <span>WhatsApp</span>
-                        </button>
-                    </div>
+                    <a href="{{ url_for('main.signup_page') }}" class="btn btn-primary btn-xlarge">Start Your Free
+                        Trial</a>
                 </div>
             </div>
         </div>
@@ -429,34 +175,20 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Depanku</h3>
-                    <p>AI-powered organization discovery and career planning platform.</p>
+                    <p>AI-powered organization discovery and career planning.</p>
                 </div>
-                
                 <div class="footer-section">
-                    <h4>Features</h4>
-                    <a href="/ai-analysis">AI Analysis</a>
-                    <a href="/organizations">Organization Discovery</a>
-                    <a href="/planning">Planning Tools</a>
-                    <a href="/messages">Messaging</a>
+                    <h4>Navigate</h4>
+                    <a href="#features">Features</a>
+                    <a href="{{ url_for('organizations.organizations_page') }}">Organizations</a>
+                    <a href="{{ url_for('dashboard.dashboard_page') }}">Dashboard</a>
                 </div>
-                
                 <div class="footer-section">
-                    <h4>Resources</h4>
-                    <a href="/blog">Blog</a>
-                    <a href="/help">Help Center</a>
-                    <a href="/privacy">Privacy Policy</a>
-                    <a href="/terms">Terms of Service</a>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Connect</h4>
-                    <a href="/contact">Contact Us</a>
-                    <a href="https://twitter.com/depanku" rel="noopener noreferrer">Twitter</a>
-                    <a href="https://www.linkedin.com/company/depanku" rel="noopener noreferrer">LinkedIn</a>
-                    <a href="https://www.instagram.com/depanku" rel="noopener noreferrer">Instagram</a>
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
                 </div>
             </div>
-            
             <div class="footer-bottom">
                 <p>&copy; 2024 Depanku. All rights reserved.</p>
             </div>
@@ -464,149 +196,8 @@
     </footer>
 
     <!-- JavaScript -->
-    <script>
-        // Inject Algolia credentials from Flask
-        window.ALGOLIA_APP_ID = "{{ ALGOLIA_APP_ID }}";
-        window.ALGOLIA_SEARCH_API_KEY = "{{ ALGOLIA_API_KEY }}";
-    </script>
-    <script>
-        // Initialize InstantSearch with Algolia credentials
-        const searchClient = algoliasearch(window.ALGOLIA_APP_ID, window.ALGOLIA_SEARCH_API_KEY);
-        
-        const search = instantsearch({
-          indexName: 'organizations',
-          searchClient,
-        });
-        
-        // Add search box widget
-        search.addWidgets([
-          instantsearch.widgets.searchBox({
-            container: '#search-box',
-            placeholder: 'Search organizations, internships, or opportunities...',
-            showReset: false,
-            showSubmit: true,
-            searchAsYouType: false,
-          })
-        ]);
-        
-        // Handle search redirect to organizations page
-        search.on('render', () => {
-          const form = document.querySelector('#search-box .ais-SearchBox-form');
-          if (form) {
-            form.addEventListener('submit', (event) => {
-              event.preventDefault();
-              const input = document.querySelector('#search-box .ais-SearchBox-input');
-              const query = input.value;
-              window.location.href = `/organizations?search=${encodeURIComponent(query)}`;
-            });
-          }
-        });
-        
-        // Initialize autocomplete after instantsearch is set up
-        document.addEventListener('DOMContentLoaded', function() {
-          const searchInput = document.querySelector('#search-box .ais-SearchBox-input');
-          
-          if (searchInput) {
-            autocomplete({
-              container: '#search-box',
-              placeholder: 'Search organizations...',
-              getSources({ query }) {
-                return [
-                  {
-                    sourceId: 'organizations',
-                    getItems() {
-                      return autocompleteAlgolia.getAlgoliaResults({
-                        searchClient,
-                        queries: [{
-                          indexName: 'organizations',
-                          query,
-                          params: {
-                            hitsPerPage: 4,
-                          },
-                        }],
-                      });
-                    },
-                    getItemUrl({ item }) {
-                      return `/organizations?search=${encodeURIComponent(item.name)}`;
-                    },
-                    onSelect({ item }) {
-                      searchInput.value = item.name;
-                      search.helper.setQuery(item.name).search();
-                      // Also redirect to maintain consistency
-                      setTimeout(() => {
-                        window.location.href = `/organizations?search=${encodeURIComponent(item.name)}`;
-                      }, 100);
-                    },
-                    templates: {
-                      item({ item }) {
-                        return `
-                          <div class="aa-ItemWrapper">
-                            <div class="aa-ItemContent">
-                              <div class="aa-ItemTitle">${item.name}</div>
-                              ${item.description ? `<div class="aa-ItemDescription">${item.description}</div>` : ''}
-                              ${item.tags ? `<div class="aa-ItemTags">${item.tags.join(', ')}</div>` : ''}
-                            </div>
-                          </div>
-                        `;
-                      }
-                    }
-                  }
-                ];
-              }
-            });
-          }
-        });
-        
-        search.start();
-    </script>
-    
-    <style>
-        /* Autocomplete styling to match existing theme */
-        .aa-Panel {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            margin-top: 8px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .aa-Item {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f1f5f9;
-            cursor: pointer;
-        }
-        
-        .aa-Item:last-child {
-            border-bottom: none;
-        }
-        
-        .aa-Item:hover {
-            background-color: #f8fafc;
-        }
-        
-        .aa-ItemTitle {
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 4px;
-        }
-        
-        .aa-ItemDescription {
-            color: #64748b;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        
-        .aa-ItemTags {
-            color: #475569;
-            font-size: 12px;
-            font-style: italic;
-        }
-        
-        .aa-DetachedContainer .aa-Source {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-    </style>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
     <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
 </body>
+
 </html>

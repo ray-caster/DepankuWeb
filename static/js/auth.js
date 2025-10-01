@@ -1,359 +1,196 @@
-// Firebase Client SDK Authentication Handling
-// This file handles client-side authentication with Firebase
+// --- static/js/auth.js ---
 
-// Firebase configuration (will be loaded from firebase_config.json)
-const firebaseConfig = {
-    // This will be populated from firebase_config.json
-};
-
-// Initialize Firebase
+// Global Firebase variables
 let firebaseApp;
 let auth;
-let db;
 
-try {
-    // Load Firebase configuration
+// Function to initialize Firebase
+function initializeFirebase() {
     fetch('/static/firebase_config.json')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Firebase config not found at /static/firebase_config.json');
+            }
+            return response.json();
+        })
         .then(config => {
-            firebaseApp = firebase.initializeApp(config);
-            auth = firebaseApp.auth();
-            db = firebaseApp.firestore();
-            console.log('Firebase initialized successfully');
-            
-            // Check authentication state
-            checkAuthState();
+            try {
+                // Ensure Firebase is not initialized more than once
+                if (!firebase.apps.length) {
+                    firebaseApp = firebase.initializeApp(config);
+                } else {
+                    firebaseApp = firebase.app();
+                }
+                auth = firebase.auth();
+                console.log('Firebase initialized successfully.');
+
+                // Set up the listener for authentication state changes
+                setupAuthStateObserver();
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                updateUIForUnauthenticatedUser(); // Fallback if initialization fails
+            }
         })
         .catch(error => {
             console.error('Error loading Firebase config:', error);
+            updateUIForUnauthenticatedUser(); // Fallback if config loading fails
         });
-} catch (error) {
-    console.error('Firebase initialization error:', error);
 }
 
-// Check authentication state
-function checkAuthState() {
+// Sets up the observer for user sign-in state.
+function setupAuthStateObserver() {
     if (!auth) return;
-    
-    auth.onAuthStateChanged((user) => {
+
+    auth.onAuthStateChanged(user => {
         if (user) {
-            // User is signed in
-            console.log('User signed in:', user.email);
+            // User is signed in.
+            console.log('User is signed in:', user.email);
             updateUIForAuthenticatedUser(user);
         } else {
-            // User is signed out
-            console.log('User signed out');
+            // User is signed out.
+            console.log('User is signed out.');
             updateUIForUnauthenticatedUser();
         }
     });
 }
 
-// Update UI for authenticated user
+// Updates UI elements for an authenticated user.
 function updateUIForAuthenticatedUser(user) {
-    // Update navigation
     const navLinks = document.querySelector('.nav-links');
     if (navLinks) {
         navLinks.innerHTML = `
-            <a href="#features" class="nav-link">Features</a>
-            <a href="#how-it-works" class="nav-link">How It Works</a>
-            <a href="/profile" class="nav-link">Profile</a>
+            <a href="{{ url_for('main.index') }}" class="nav-link">Home</a>
+            <a href="{{ url_for('organizations.organizations_page') }}" class="nav-link">Organizations</a>
+            <a href="{{ url_for('dashboard.dashboard_page') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('profile_page') }}" class="nav-link">Profile</a>
             <a href="#" class="btn btn-secondary" id="logout-btn">Logout</a>
         `;
-        document.getElementById('logout-btn').addEventListener('click', handleLogout);
-    }
-    
-    // Update landing page CTA buttons
-    const aiAnalysisBtn = document.getElementById('ai-analysis-btn');
-    if (aiAnalysisBtn) {
-        aiAnalysisBtn.textContent = '🤖 Start AI Analysis';
-        aiAnalysisBtn.href = '/ai-analysis'; // This would be your AI analysis page
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
     }
 }
 
-// Update UI for unauthenticated user
+// Updates UI elements for a signed-out user.
 function updateUIForUnauthenticatedUser() {
-    // Update navigation
     const navLinks = document.querySelector('.nav-links');
     if (navLinks) {
         navLinks.innerHTML = `
             <a href="#features" class="nav-link">Features</a>
             <a href="#how-it-works" class="nav-link">How It Works</a>
-            <a href="/login" class="nav-link">Login</a>
-            <a href="/signup" class="btn btn-secondary">Sign Up</a>
+            <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+            <a href="{{ url_for('signup') }}" class="btn btn-secondary">Sign Up</a>
         `;
-    }
-    
-    // Update landing page CTA buttons
-    const aiAnalysisBtn = document.getElementById('ai-analysis-btn');
-    if (aiAnalysisBtn) {
-        aiAnalysisBtn.textContent = '🤖 Get AI Analysis';
-        aiAnalysisBtn.href = '/signup'; // Redirect to signup
     }
 }
 
-// Handle signup form submission
-function handleSignup(event) {
+// Handles the signup form submission.
+async function handleSignup(event) {
     event.preventDefault();
-    
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
     const displayName = form.displayName.value;
     const ageGroup = form.ageGroup.value;
-    
-    const errorMessage = document.getElementById('error-message');
-    const successMessage = document.getElementById('success-message');
-    
-    // Basic validation
-    if (!email || !password || !displayName || !ageGroup) {
-        showError(errorMessage, 'Please fill in all fields');
-        return;
-    }
-    
-    if (password.length < 6) {
-        showError(errorMessage, 'Password must be at least 6 characters');
-        return;
-    }
-    
-    // Show loading state
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Creating account...';
-    submitBtn.disabled = true;
-    
-    // Get redirect destination if available
-    const redirectDestination = sessionStorage.getItem('redirectAfterSignup');
-    sessionStorage.removeItem('redirectAfterSignup'); // Clean up
 
-    // Send signup request to backend
-    fetch('/signup', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            email,
-            password,
-            displayName,
-            ageGroup,
-            redirectAfterSignup: redirectDestination
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Sign in with custom token
-            return auth.signInWithCustomToken(data.data.customToken);
-        } else {
-            throw new Error(data.error.message);
-        }
-    })
-    .then((data) => {
-        showSuccess(successMessage, 'Account created successfully! Redirecting...');
-        
-        // Use redirect destination from backend response if available
-        const redirectDestination = data.data.redirectAfterSignup;
-        
-        setTimeout(() => {
-            window.location.href = redirectDestination || '/profile';
-        }, 2000);
-    })
-    .catch(error => {
-        showError(errorMessage, error.message);
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    });
+    const submitBtn = form.querySelector('button[type="submit"]');
+    setButtonLoading(submitBtn, true, 'Creating Account...');
+
+    try {
+        const redirectDestination = sessionStorage.getItem('redirectAfterSignup');
+        sessionStorage.removeItem('redirectAfterSignup'); // Clean up
+
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, displayName, ageGroup, redirectAfterSignup: redirectDestination })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error.message);
+
+        // Sign in with the custom token from the backend
+        await auth.signInWithCustomToken(data.data.customToken);
+
+        // Redirect to the intended page or dashboard
+        window.location.href = data.data.redirectAfterSignup || '/dashboard';
+    } catch (error) {
+        showError('signup-form', error.message);
+        setButtonLoading(submitBtn, false, 'Create Account');
+    }
 }
 
-// Handle login form submission
-function handleLogin(event) {
+// Handles the login form submission.
+async function handleLogin(event) {
     event.preventDefault();
-    
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
-    
-    const errorMessage = document.getElementById('error-message');
-    const successMessage = document.getElementById('success-message');
-    
-    if (!email || !password) {
-        showError(errorMessage, 'Please fill in all fields');
-        return;
-    }
-    
-    // Show loading state
+
     const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Signing in...';
-    submitBtn.disabled = true;
-    
-    // Sign in with Firebase Auth to get ID token
-    auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            // Get the ID token
-            return userCredential.user.getIdToken();
-        })
-        .then((idToken) => {
-            // Send ID token to backend for verification
-            return fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    idToken: idToken
-                })
-            });
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showSuccess(successMessage, 'Login successful! Redirecting...');
-                setTimeout(() => {
-                    window.location.href = '/profile';
-                }, 2000);
-            } else {
-                throw new Error(data.error.message);
-            }
-        })
-        .catch((error) => {
-            // Sign out from Firebase if backend verification fails
-            auth.signOut();
-            showError(errorMessage, error.message);
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+    setButtonLoading(submitBtn, true, 'Signing In...');
+
+    try {
+        // Step 1: Sign in with Firebase client SDK to get user and ID token
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const idToken = await userCredential.user.getIdToken();
+
+        // Step 2: Send ID token to backend to create a server session
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken: idToken })
         });
+
+        if (!response.ok) {
+            // If backend fails, sign out from client to prevent inconsistent state
+            auth.signOut();
+            const data = await response.json();
+            throw new Error(data.error.message);
+        }
+
+        // Redirect to dashboard on successful server session creation
+        window.location.href = '/dashboard';
+    } catch (error) {
+        showError('login-form', error.message);
+        setButtonLoading(submitBtn, false, 'Sign In');
+    }
 }
 
-// Handle logout
+// Handles user logout.
 function handleLogout(event) {
     event.preventDefault();
-    
-    auth.signOut()
-        .then(() => {
-            console.log('User signed out');
-            window.location.href = '/';
-        })
-        .catch((error) => {
-            console.error('Logout error:', error);
-        });
-}
-
-// Utility functions
-function showError(element, message) {
-    element.textContent = message;
-    element.style.display = 'block';
-    setTimeout(() => {
-        element.style.display = 'none';
-    }, 5000);
-}
-
-function showSuccess(element, message) {
-    element.textContent = message;
-    element.style.display = 'block';
-    setTimeout(() => {
-        element.style.display = 'none';
-    }, 5000);
-}
-
-function getFirebaseErrorMessage(error) {
-    switch (error.code) {
-        case 'auth/invalid-email':
-            return 'Invalid email address';
-        case 'auth/user-disabled':
-            return 'User account is disabled';
-        case 'auth/user-not-found':
-            return 'No user found with this email';
-        case 'auth/wrong-password':
-            return 'Incorrect password';
-        case 'auth/too-many-requests':
-            return 'Too many attempts. Please try again later';
-        default:
-            return 'Authentication failed. Please try again';
+    if (auth) {
+        auth.signOut()
+            .then(() => {
+                // After Firebase sign-out, also clear the server session
+                fetch('/api/auth/logout', { method: 'POST' })
+                    .finally(() => {
+                        window.location.href = '/';
+                    });
+            })
+            .catch(error => console.error('Logout error:', error));
     }
 }
 
-// Initialize event listeners when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Signup form
-    const signupForm = document.getElementById('signup-form');
-    if (signupForm) {
-        signupForm.addEventListener('submit', handleSignup);
-    }
-    
-    // Login form
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-    }
-    
-    // Logout button (if exists on page load)
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
-    }
-    
-    // Logout link in profile
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', handleLogout);
-    }
-    
-    // Check if we need to redirect authenticated users
-    if (auth && window.location.pathname === '/signup') {
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                window.location.href = '/profile';
-            }
-        });
-    }
-    
-    if (auth && window.location.pathname === '/login') {
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                window.location.href = '/profile';
-            }
-        });
-    }
-});
+// ----- Utility Functions -----
 
-// Check AI analysis limits
-async function checkAIAnalysisLimit() {
-    try {
-        const user = await getCurrentUser();
-        if (!user) {
-            return { hasAccess: false, plan: 'free', remaining: 0 };
-        }
-
-        const response = await fetch(`/api/auth/check-ai-limit?uid=${user.uid}`);
-        const data = await response.json();
-        
-        if (data.success) {
-            return data.data;
-        } else {
-            console.error('Error checking AI limit:', data.error);
-            return { hasAccess: false, plan: 'free', remaining: 0 };
-        }
-    } catch (error) {
-        console.error('Error checking AI analysis limit:', error);
-        return { hasAccess: false, plan: 'free', remaining: 0 };
-    }
-}
-
-// Get current authenticated user
-async function getCurrentUser() {
+// Gets the current authenticated user.
+function getCurrentUser() {
     return new Promise((resolve) => {
         if (!auth) {
-            resolve(null);
-            return;
-        }
-        
-        const user = auth.currentUser;
-        if (user) {
-            resolve(user);
+            const observer = setInterval(() => {
+                if (auth) {
+                    clearInterval(observer);
+                    const unsubscribe = auth.onAuthStateChanged(user => {
+                        unsubscribe();
+                        resolve(user);
+                    });
+                }
+            }, 50);
         } else {
-            // Wait for auth state to be determined
-            const unsubscribe = auth.onAuthStateChanged((user) => {
+            const unsubscribe = auth.onAuthStateChanged(user => {
                 unsubscribe();
                 resolve(user);
             });
@@ -361,12 +198,53 @@ async function getCurrentUser() {
     });
 }
 
-// Export for use in other files
+// Shows an error message within a specific form.
+function showError(formId, message) {
+    const form = document.getElementById(formId);
+    if (form) {
+        const errorElement = form.parentElement.querySelector('.error-message');
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            setTimeout(() => { errorElement.style.display = 'none'; }, 5000);
+        }
+    }
+}
+
+// Sets the loading state of a button.
+function setButtonLoading(button, isLoading, loadingText = 'Loading...') {
+    if (!button) return;
+    const originalText = button.dataset.originalText || button.textContent;
+    if (isLoading) {
+        if (!button.dataset.originalText) {
+            button.dataset.originalText = button.textContent;
+        }
+        button.disabled = true;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${loadingText}`;
+    } else {
+        button.disabled = false;
+        button.innerHTML = originalText;
+    }
+}
+
+
+// ----- Main Execution -----
+
+// Initialize Firebase as soon as the script loads.
+initializeFirebase();
+
+// Add event listeners once the DOM is fully loaded.
+document.addEventListener('DOMContentLoaded', () => {
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) signupForm.addEventListener('submit', handleSignup);
+
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) loginForm.addEventListener('submit', handleLogin);
+
+    // The logout button is added dynamically, so its listener is in updateUIForAuthenticatedUser.
+});
+
+// Expose necessary functions globally for other scripts to use
 window.authHandlers = {
-    checkAuthState,
-    handleSignup,
-    handleLogin,
-    handleLogout,
-    checkAIAnalysisLimit,
     getCurrentUser
 };

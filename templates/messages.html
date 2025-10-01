@@ -1,118 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messages - Depanku</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="/static/css/landing.css" rel="stylesheet">
-    <link href="/static/css/messages.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Depanku</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1><a href="{{ url_for('main.index') }}" style="color: inherit; text-decoration: none;">Depanku</a>
+                </h1>
+            </div>
+            <div class="nav-links" id="main-navigation"></div>
+        </nav>
+    </header>
+
+    <main class="container messages-page" style="max-width: 900px; margin-top: calc(80px + 2rem);">
+        <div class="page-header d-flex justify-content-between align-items-center mb-4">
+            <h1 class="section-title mb-0">My Messages</h1>
+            <button class="btn btn-primary" id="newConversationBtn" data-bs-toggle="modal"
+                data-bs-target="#newConversationModal">
+                New Message
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/organizations">My Organizations</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/messages">Messages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile">Profile</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Logout</a>
-                    </li>
-                </ul>
+        </div>
+
+        <div id="loading-container" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Loading conversations...</p>
+        </div>
+
+        <div class="conversation-list-container card" id="list-container" style="display: none;">
+            <div id="conversationsList" class="list-group list-group-flush">
+                <!-- Conversations loaded by messages.js -->
             </div>
         </div>
-    </nav>
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h2 mb-0">Messages</h1>
-                    <button class="btn btn-primary" id="newConversationBtn">
-                        <i class="fas fa-plus me-2"></i>New Conversation
-                    </button>
-                </div>
-
-                <!-- Search Box -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                            <input type="text" class="form-control" id="searchInput" placeholder="Search conversations...">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Conversations List -->
-                <div class="card">
-                    <div class="card-body p-0">
-                        <div id="conversationsList">
-                            <div class="text-center py-5">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading conversations...</span>
-                                </div>
-                                <p class="mt-2">Loading conversations...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Empty State -->
-                <div id="emptyState" class="text-center py-5" style="display: none;">
-                    <i class="fas fa-comments fa-3x text-muted mb-3"></i>
-                    <h3>No conversations yet</h3>
-                    <p class="text-muted">Start a conversation with an organization owner to get help with your career planning.</p>
-                    <button class="btn btn-primary" id="startConversationBtn">
-                        Start a Conversation
-                    </button>
-                </div>
-            </div>
+        <div id="empty-state-container" class="text-center p-5 bg-light rounded" style="display: none;">
+            <h3>No conversations yet</h3>
+            <p class="text-muted">Start a new message to get in touch with organization owners.</p>
         </div>
-    </div>
+    </main>
 
     <!-- New Conversation Modal -->
     <div class="modal fade" id="newConversationModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Start New Conversation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Start New Conversation</h5><button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="newConversationForm">
                         <div class="mb-3">
-                            <label for="receiverSelect" class="form-label">Select Organization Owner</label>
+                            <label for="receiverSelect" class="form-label">To:</label>
                             <select class="form-select" id="receiverSelect" required>
                                 <option value="">Choose an organization owner...</option>
-                                <!-- Options will be populated dynamically -->
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="subjectInput" class="form-label">Subject</label>
-                            <input type="text" class="form-control" id="subjectInput" placeholder="Enter subject..." required>
+                            <input type="text" class="form-control" id="subjectInput" placeholder="Enter subject..."
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="messageContent" class="form-label">Message</label>
-                            <textarea class="form-control" id="messageContent" rows="4" placeholder="Type your message..." required></textarea>
+                            <textarea class="form-control" id="messageContent" rows="4"
+                                placeholder="Type your message..." required></textarea>
                         </div>
                     </form>
                 </div>
@@ -123,9 +82,13 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FIX: Added missing Axios dependency -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="/static/js/messages.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
 </body>
+
 </html>
