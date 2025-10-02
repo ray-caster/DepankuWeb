@@ -1,4 +1,3 @@
-
 /* Depanku Advanced Color System - Enhanced Color Theory Implementation */
 
 /* ============================================================================
@@ -15,293 +14,462 @@
      Neutral: Clarity & Professionalism (Grays/Whites) - Expanded scale
      Emotional: Context-based colors for different user states
   */
-  
+
   /* Extended Primary Color System - Blues for Trust & Security */
-  --color-primary-25: #f8fafc;    /* Extra light blue for backgrounds */
-  --color-primary-75: #e0f2fe;   /* Very light blue */
-  --color-primary-125: #bae6fd;  /* Light blue */
-  --color-primary-175: #7dd3fc;  /* Medium light blue */
-  --color-primary-225: #38bdf8;  /* Medium blue */
-  --color-primary-275: #0ea5e9;  /* Primary blue - Main brand color */
-  --color-primary-325: #0284c7;  /* Dark blue - Hover states */
-  --color-primary-375: #0369a1;  /* Darker blue - Active states */
-  --color-primary-425: #075985;  /* Darkest blue - Text on light backgrounds */
-  --color-primary-475: #0c4a6e;  /* Very dark blue - Text on very light backgrounds */
-  --color-primary-525: #082f49;  /* Extra dark blue */
-  --color-primary-575: #061e3a;  /* Darkest blue */
-  --color-primary-625: #041229;  /* Extremely dark blue */
-  --color-primary-675: #020617;  /* Near black blue */
-  --color-primary-725: #000000;  /* Black for deepest contrast */
-  
+  --color-primary-25: #f8fafc;
+  /* Extra light blue for backgrounds */
+  --color-primary-75: #e0f2fe;
+  /* Very light blue */
+  --color-primary-125: #bae6fd;
+  /* Light blue */
+  --color-primary-175: #7dd3fc;
+  /* Medium light blue */
+  --color-primary-225: #38bdf8;
+  /* Medium blue */
+  --color-primary-275: #0ea5e9;
+  /* Primary blue - Main brand color */
+  --color-primary-325: #0284c7;
+  /* Dark blue - Hover states */
+  --color-primary-375: #0369a1;
+  /* Darker blue - Active states */
+  --color-primary-425: #075985;
+  /* Darkest blue - Text on light backgrounds */
+  --color-primary-475: #0c4a6e;
+  /* Very dark blue - Text on very light backgrounds */
+  --color-primary-525: #082f49;
+  /* Extra dark blue */
+  --color-primary-575: #061e3a;
+  /* Darkest blue */
+  --color-primary-625: #041229;
+  /* Extremely dark blue */
+  --color-primary-675: #020617;
+  /* Near black blue */
+  --color-primary-725: #000000;
+  /* Black for deepest contrast */
+
   /* Extended Secondary Color System - Greens for Growth & Learning */
-  --color-secondary-25: #f0fdf4;   /* Very light green */
-  --color-secondary-75: #dcfce7;  /* Light green */
-  --color-secondary-125: #bbf7d0; /* Medium light green */
-  --color-secondary-175: #86efac;  /* Medium green */
-  --color-secondary-225: #4ade80;  /* Primary green */
-  --color-secondary-275: #22c55e;  /* Dark green - Success states */
-  --color-secondary-325: #16a34a;  /* Darker green */
-  --color-secondary-375: #15803d;  /* Darkest green */
-  --color-secondary-425: #166534;  /* Very dark green */
-  --color-secondary-475: #14532d;  /* Extremely dark green */
-  --color-secondary-525: #0f2917;  /* Extra dark green */
-  --color-secondary-575: #0a1f0f;  /* Darkest green */
-  --color-secondary-625: #050e07;  /* Near black green */
-  --color-secondary-675: #020402;  /* Extremely dark green */
-  --color-secondary-725: #000000;  /* Black for deepest contrast */
-  
+  --color-secondary-25: #f0fdf4;
+  /* Very light green */
+  --color-secondary-75: #dcfce7;
+  /* Light green */
+  --color-secondary-125: #bbf7d0;
+  /* Medium light green */
+  --color-secondary-175: #86efac;
+  /* Medium green */
+  --color-secondary-225: #4ade80;
+  /* Primary green */
+  --color-secondary-275: #22c55e;
+  /* Dark green - Success states */
+  --color-secondary-325: #16a34a;
+  /* Darker green */
+  --color-secondary-375: #15803d;
+  /* Darkest green */
+  --color-secondary-425: #166534;
+  /* Very dark green */
+  --color-secondary-475: #14532d;
+  /* Extremely dark green */
+  --color-secondary-525: #0f2917;
+  /* Extra dark green */
+  --color-secondary-575: #0a1f0f;
+  /* Darkest green */
+  --color-secondary-625: #050e07;
+  /* Near black green */
+  --color-secondary-675: #020402;
+  /* Extremely dark green */
+  --color-secondary-725: #000000;
+  /* Black for deepest contrast */
+
   /* Extended Accent Color System - Innovation & Creativity */
-  --color-accent-25: #fff7ed;     /* Very light orange */
-  --color-accent-75: #ffedd5;    /* Light orange */
-  --color-accent-125: #fed7aa;    /* Medium light orange */
-  --color-accent-175: #fdba74;    /* Medium orange */
-  --color-accent-225: #fb923c;    /* Primary orange - Call-to-action */
-  --color-accent-275: #f97316;    /* Dark orange */
-  --color-accent-325: #ea580c;    /* Darker orange */
-  --color-accent-375: #c2410c;    /* Darkest orange */
-  --color-accent-425: #9a3412;    /* Very dark orange */
-  --color-accent-475: #7c2d12;    /* Extremely dark orange */
-  --color-accent-525: #5d1f0a;    /* Extra dark orange */
-  --color-accent-575: #3e1407;    /* Darkest orange */
-  --color-accent-625: #250a04;    /* Near black orange */
-  --color-accent-675: #130502;    /* Extremely dark orange */
-  --color-accent-725: #000000;    /* Black for deepest contrast */
-  
+  --color-accent-25: #fff7ed;
+  /* Very light orange */
+  --color-accent-75: #ffedd5;
+  /* Light orange */
+  --color-accent-125: #fed7aa;
+  /* Medium light orange */
+  --color-accent-175: #fdba74;
+  /* Medium orange */
+  --color-accent-225: #fb923c;
+  /* Primary orange - Call-to-action */
+  --color-accent-275: #f97316;
+  /* Dark orange */
+  --color-accent-325: #ea580c;
+  /* Darker orange */
+  --color-accent-375: #c2410c;
+  /* Darkest orange */
+  --color-accent-425: #9a3412;
+  /* Very dark orange */
+  --color-accent-475: #7c2d12;
+  /* Extremely dark orange */
+  --color-accent-525: #5d1f0a;
+  /* Extra dark orange */
+  --color-accent-575: #3e1407;
+  /* Darkest orange */
+  --color-accent-625: #250a04;
+  /* Near black orange */
+  --color-accent-675: #130502;
+  /* Extremely dark orange */
+  --color-accent-725: #000000;
+  /* Black for deepest contrast */
+
   /* Extended Purple Accent for Innovation */
-  --color-purple-25: #faf5ff;      /* Very light purple */
-  --color-purple-75: #f3e8ff;    /* Light purple */
-  --color-purple-125: #e9d5ff;    /* Medium light purple */
-  --color-purple-175: #d8b4fe;    /* Medium purple */
-  --color-purple-225: #c084fc;    /* Primary purple */
-  --color-purple-275: #a855f7;    /* Dark purple */
-  --color-purple-325: #9333ea;    /* Darker purple */
-  --color-purple-375: #7c3aed;    /* Darkest purple */
-  --color-purple-425: #6d28d9;    /* Very dark purple */
-  --color-purple-475: #5b21b6;    /* Extremely dark purple */
-  --color-purple-525: #491c8b;    /* Extra dark purple */
-  --color-purple-575: #371561;    /* Darkest purple */
-  --color-purple-625: #280f47;    /* Near black purple */
-  --color-purple-675: #180a2d;    /* Extremely dark purple */
-  --color-purple-725: #090417;    /* Near black purple */
-  --color-purple-750: #000000;    /* Black for deepest contrast */
-  
+  --color-purple-25: #faf5ff;
+  /* Very light purple */
+  --color-purple-75: #f3e8ff;
+  /* Light purple */
+  --color-purple-125: #e9d5ff;
+  /* Medium light purple */
+  --color-purple-175: #d8b4fe;
+  /* Medium purple */
+  --color-purple-225: #c084fc;
+  /* Primary purple */
+  --color-purple-275: #a855f7;
+  /* Dark purple */
+  --color-purple-325: #9333ea;
+  /* Darker purple */
+  --color-purple-375: #7c3aed;
+  /* Darkest purple */
+  --color-purple-425: #6d28d9;
+  /* Very dark purple */
+  --color-purple-475: #5b21b6;
+  /* Extremely dark purple */
+  --color-purple-525: #491c8b;
+  /* Extra dark purple */
+  --color-purple-575: #371561;
+  /* Darkest purple */
+  --color-purple-625: #280f47;
+  /* Near black purple */
+  --color-purple-675: #180a2d;
+  /* Extremely dark purple */
+  --color-purple-725: #090417;
+  /* Near black purple */
+  --color-purple-750: #000000;
+  /* Black for deepest contrast */
+
   /* Extended Neutral Color System - Clarity & Professionalism */
-  --color-neutral-25: #fafafa;    /* Very light gray */
-  --color-neutral-75: #f3f4f6;    /* Light gray */
-  --color-neutral-125: #e5e7eb;   /* Medium light gray */
-  --color-neutral-175: #d1d5db;   /* Medium gray */
-  --color-neutral-225: #9ca3af;   /* Medium dark gray */
-  --color-neutral-275: #6b7280;   /* Dark gray - Primary text */
-  --color-neutral-325: #4b5563;   /* Darker gray */
-  --color-neutral-375: #374151;   /* Darkest gray */
-  --color-neutral-425: #1f2937;   /* Very dark gray */
-  --color-neutral-475: #111827;   /* Extremely dark gray */
-  --color-neutral-525: #0c0e11;   /* Extra dark gray */
-  --color-neutral-575: #060709;   /* Darkest gray */
-  --color-neutral-625: #030405;   /* Near black gray */
-  --color-neutral-675: #010203;   /* Extremely dark gray */
-  --color-neutral-725: #000000;   /* Black for deepest contrast */
-  
+  --color-neutral-25: #fafafa;
+  /* Very light gray */
+  --color-neutral-75: #f3f4f6;
+  /* Light gray */
+  --color-neutral-125: #e5e7eb;
+  /* Medium light gray */
+  --color-neutral-175: #d1d5db;
+  /* Medium gray */
+  --color-neutral-225: #9ca3af;
+  /* Medium dark gray */
+  --color-neutral-275: #6b7280;
+  /* Dark gray - Primary text */
+  --color-neutral-325: #4b5563;
+  /* Darker gray */
+  --color-neutral-375: #374151;
+  /* Darkest gray */
+  --color-neutral-425: #1f2937;
+  /* Very dark gray */
+  --color-neutral-475: #111827;
+  /* Extremely dark gray */
+  --color-neutral-525: #0c0e11;
+  /* Extra dark gray */
+  --color-neutral-575: #060709;
+  /* Darkest gray */
+  --color-neutral-625: #030405;
+  /* Near black gray */
+  --color-neutral-675: #010203;
+  /* Extremely dark gray */
+  --color-neutral-725: #000000;
+  /* Black for deepest contrast */
+
   /* Extended Semantic Colors with Enhanced Variations */
-  --color-success-50: #dcfce7;    /* Very light success */
-  --color-success-100: #bbf7d0;   /* Light success */
-  --color-success-200: #86efac;   /* Medium success */
-  --color-success-300: #4ade80;   /* Primary success */
-  --color-success-400: #22c55e;   /* Dark success */
-  --color-success-500: #16a34a;   /* Darkest success */
-  --color-success-600: #15803d;   /* Extra dark success */
-  --color-success-700: #166534;   /* Near black success */
-  
-  --color-warning-50: #fef3c7;    /* Very light warning */
-  --color-warning-100: #fde68a;   /* Light warning */
-  --color-warning-200: #fcd34d;   /* Medium warning */
-  --color-warning-300: #fbbf24;   /* Primary warning */
-  --color-warning-400: #f59e0b;   /* Dark warning */
-  --color-warning-500: #d97706;   /* Darkest warning */
-  --color-warning-600: #b45309;   /* Extra dark warning */
-  --color-warning-700: #92400e;   /* Near black warning */
-  
-  --color-error-50: #fee2e2;      /* Very light error */
-  --color-error-100: #fecaca;     /* Light error */
-  --color-error-200: #fca5a5;     /* Medium error */
-  --color-error-300: #f87171;     /* Primary error */
-  --color-error-400: #ef4444;     /* Dark error */
-  --color-error-500: #dc2626;     /* Darkest error */
-  --color-error-600: #b91c1c;     /* Extra dark error */
-  --color-error-700: #991b1b;     /* Near black error */
-  
-  --color-info-50: #dbeafe;      /* Very light info */
-  --color-info-100: #bfdbfe;     /* Light info */
-  --color-info-200: #93c5fd;     /* Medium info */
-  --color-info-300: #60a5fa;     /* Primary info */
-  --color-info-400: #3b82f6;     /* Dark info */
-  --color-info-500: #2563eb;     /* Darkest info */
-  --color-info-600: #1d4ed8;     /* Extra dark info */
-  --color-info-700: #1e40af;     /* Near black info */
-  
+  --color-success-50: #dcfce7;
+  /* Very light success */
+  --color-success-100: #bbf7d0;
+  /* Light success */
+  --color-success-200: #86efac;
+  /* Medium success */
+  --color-success-300: #4ade80;
+  /* Primary success */
+  --color-success-400: #22c55e;
+  /* Dark success */
+  --color-success-500: #16a34a;
+  /* Darkest success */
+  --color-success-600: #15803d;
+  /* Extra dark success */
+  --color-success-700: #166534;
+  /* Near black success */
+
+  --color-warning-50: #fef3c7;
+  /* Very light warning */
+  --color-warning-100: #fde68a;
+  /* Light warning */
+  --color-warning-200: #fcd34d;
+  /* Medium warning */
+  --color-warning-300: #fbbf24;
+  /* Primary warning */
+  --color-warning-400: #f59e0b;
+  /* Dark warning */
+  --color-warning-500: #d97706;
+  /* Darkest warning */
+  --color-warning-600: #b45309;
+  /* Extra dark warning */
+  --color-warning-700: #92400e;
+  /* Near black warning */
+
+  --color-error-50: #fee2e2;
+  /* Very light error */
+  --color-error-100: #fecaca;
+  /* Light error */
+  --color-error-200: #fca5a5;
+  /* Medium error */
+  --color-error-300: #f87171;
+  /* Primary error */
+  --color-error-400: #ef4444;
+  /* Dark error */
+  --color-error-500: #dc2626;
+  /* Darkest error */
+  --color-error-600: #b91c1c;
+  /* Extra dark error */
+  --color-error-700: #991b1b;
+  /* Near black error */
+
+  --color-info-50: #dbeafe;
+  /* Very light info */
+  --color-info-100: #bfdbfe;
+  /* Light info */
+  --color-info-200: #93c5fd;
+  /* Medium info */
+  --color-info-300: #60a5fa;
+  /* Primary info */
+  --color-info-400: #3b82f6;
+  /* Dark info */
+  --color-info-500: #2563eb;
+  /* Darkest info */
+  --color-info-600: #1d4ed8;
+  /* Extra dark info */
+  --color-info-700: #1e40af;
+  /* Near black info */
+
   /* ============================================================================
      CONTEXT-BASED COLOR SYSTEMS
      ============================================================================
      Colors for different moods, contexts, and user states
   */
-  
+
   /* Focus & Concentration Colors (Cool tones for learning) */
-  --color-focus-50: #f0f9ff;      /* Very light focus blue */
-  --color-focus-100: #e0f2fe;     /* Light focus blue */
-  --color-focus-200: #bae6fd;     /* Medium focus blue */
-  --color-focus-300: #7dd3fc;     /* Primary focus blue */
-  --color-focus-400: #38bdf8;     /* Dark focus blue */
-  --color-focus-500: #0ea5e9;     /* Darkest focus blue */
-  
+  --color-focus-50: #f0f9ff;
+  /* Very light focus blue */
+  --color-focus-100: #e0f2fe;
+  /* Light focus blue */
+  --color-focus-200: #bae6fd;
+  /* Medium focus blue */
+  --color-focus-300: #7dd3fc;
+  /* Primary focus blue */
+  --color-focus-400: #38bdf8;
+  /* Dark focus blue */
+  --color-focus-500: #0ea5e9;
+  /* Darkest focus blue */
+
   /* Achievement & Success Colors (Energetic greens) */
-  --color-achievement-50: #f0fdf4;   /* Very light achievement */
-  --color-achievement-100: #dcfce7;  /* Light achievement */
-  --color-achievement-200: #bbf7d0;  /* Medium achievement */
-  --color-achievement-300: #86efac;  /* Primary achievement */
-  --color-achievement-400: #4ade80;  /* Dark achievement */
-  --color-achievement-500: #22c55e;  /* Darkest achievement */
-  
+  --color-achievement-50: #f0fdf4;
+  /* Very light achievement */
+  --color-achievement-100: #dcfce7;
+  /* Light achievement */
+  --color-achievement-200: #bbf7d0;
+  /* Medium achievement */
+  --color-achievement-300: #86efac;
+  /* Primary achievement */
+  --color-achievement-400: #4ade80;
+  /* Dark achievement */
+  --color-achievement-500: #22c55e;
+  /* Darkest achievement */
+
   /* Innovation & Creativity Colors (Vibrant purples/oranges) */
-  --color-innovation-50: #faf5ff;    /* Very light innovation */
-  --color-innovation-100: #f3e8ff;   /* Light innovation */
-  --color-innovation-200: #e9d5ff;   /* Medium innovation */
-  --color-innovation-300: #d8b4fe;   /* Primary innovation */
-  --color-innovation-400: #c084fc;   /* Dark innovation */
-  --color-innovation-500: #a855f7;   /* Darkest innovation */
-  
+  --color-innovation-50: #faf5ff;
+  /* Very light innovation */
+  --color-innovation-100: #f3e8ff;
+  /* Light innovation */
+  --color-innovation-200: #e9d5ff;
+  /* Medium innovation */
+  --color-innovation-300: #d8b4fe;
+  /* Primary innovation */
+  --color-innovation-400: #c084fc;
+  /* Dark innovation */
+  --color-innovation-500: #a855f7;
+  /* Darkest innovation */
+
   /* Calm & Relaxation Colors (Soft neutrals) */
-  --color-calm-50: #fafafa;      /* Very light calm */
-  --color-calm-100: #f3f4f6;     /* Light calm */
-  --color-calm-200: #e5e7eb;     /* Medium calm */
-  --color-calm-300: #d1d5db;     /* Primary calm */
-  --color-calm-400: #9ca3af;     /* Dark calm */
-  --color-calm-500: #6b7280;     /* Darkest calm */
-  
+  --color-calm-50: #fafafa;
+  /* Very light calm */
+  --color-calm-100: #f3f4f6;
+  /* Light calm */
+  --color-calm-200: #e5e7eb;
+  /* Medium calm */
+  --color-calm-300: #d1d5db;
+  /* Primary calm */
+  --color-calm-400: #9ca3af;
+  /* Dark calm */
+  --color-calm-500: #6b7280;
+  /* Darkest calm */
+
   /* Urgency & Attention Colors (Warm oranges) */
-  --color-urgency-50: #fff7ed;    /* Very light urgency */
-  --color-urgency-100: #ffedd5;   /* Light urgency */
-  --color-urgency-200: #fed7aa;   /* Medium urgency */
-  --color-urgency-300: #fdba74;   /* Primary urgency */
-  --color-urgency-400: #fb923c;   /* Dark urgency */
-  --color-urgency-500: #f97316;   /* Darkest urgency */
-  
+  --color-urgency-50: #fff7ed;
+  /* Very light urgency */
+  --color-urgency-100: #ffedd5;
+  /* Light urgency */
+  --color-urgency-200: #fed7aa;
+  /* Medium urgency */
+  --color-urgency-300: #fdba74;
+  /* Primary urgency */
+  --color-urgency-400: #fb923c;
+  /* Dark urgency */
+  --color-urgency-500: #f97316;
+  /* Darkest urgency */
+
   /* ============================================================================
      COLOR HARMONY SYSTEMS
      ============================================================================
      Pre-defined color combinations for different UI sections and contexts
   */
-  
+
   /* Primary Harmony - Blues and Greens (70-20-10 Rule) */
   --harmony-primary-70: var(--color-primary-300);
   --harmony-primary-20: var(--color-secondary-300);
   --harmony-primary-10: var(--color-accent-300);
-  
+
   /* Success Harmony - Greens and Blues */
   --harmony-success-70: var(--color-secondary-300);
   --harmony-success-20: var(--color-primary-300);
   --harmony-success-10: var(--color-purple-300);
-  
+
   /* Innovation Harmony - Purples and Oranges */
   --harmony-innovation-70: var(--color-purple-300);
   --harmony-innovation-20: var(--color-accent-300);
   --harmony-innovation-10: var(--color-primary-300);
-  
+
   /* Learning Focus Harmony - Cool Blues */
   --harmony-focus-70: var(--color-focus-300);
   --harmony-focus-20: var(--color-calm-300);
   --harmony-focus-10: var(--color-info-300);
-  
+
   /* Achievement Harmony - Vibrant Greens */
   --harmony-achievement-70: var(--color-achievement-300);
   --harmony-achievement-20: var(--color-success-300);
   --harmony-achievement-10: var(--color-secondary-300);
-  
+
   /* Error State Harmony - Careful Red Application */
   --harmony-error-70: var(--color-error-300);
   --harmony-error-20: var(--color-warning-300);
   --harmony-error-10: var(--color-neutral-300);
-  
+
   /* ============================================================================
      DATA VISUALIZATION COLOR SYSTEMS
      ============================================================================
      Accessible color palettes for charts, graphs, and data representation
   */
-  
+
   /* Chart Primary Colors - High Contrast */
-  --chart-primary-1: #0ea5e9;     /* Blue */
-  --chart-primary-2: #22c55e;     /* Green */
-  --chart-primary-3: #f97316;     /* Orange */
-  --chart-primary-4: #a855f7;     /* Purple */
-  --chart-primary-5: #ef4444;     /* Red */
-  --chart-primary-6: #eab308;     /* Yellow */
-  --chart-primary-7: #06b6d4;     /* Cyan */
-  --chart-primary-8: #84cc16;     /* Lime */
-  
+  --chart-primary-1: #0ea5e9;
+  /* Blue */
+  --chart-primary-2: #22c55e;
+  /* Green */
+  --chart-primary-3: #f97316;
+  /* Orange */
+  --chart-primary-4: #a855f7;
+  /* Purple */
+  --chart-primary-5: #ef4444;
+  /* Red */
+  --chart-primary-6: #eab308;
+  /* Yellow */
+  --chart-primary-7: #06b6d4;
+  /* Cyan */
+  --chart-primary-8: #84cc16;
+  /* Lime */
+
   /* Chart Secondary Colors - Lower Contrast */
-  --chart-secondary-1: #38bdf8;   /* Light Blue */
-  --chart-secondary-2: #4ade80;   /* Light Green */
-  --chart-secondary-3: #fb923c;   /* Light Orange */
-  --chart-secondary-4: #c084fc;   /* Light Purple */
-  --chart-secondary-5: #f87171;   /* Light Red */
-  --chart-secondary-6: #fcd34d;   /* Light Yellow */
-  --chart-secondary-7: #22d3ee;   /* Light Cyan */
-  --chart-secondary-8: #a3e635;   /* Light Lime */
-  
+  --chart-secondary-1: #38bdf8;
+  /* Light Blue */
+  --chart-secondary-2: #4ade80;
+  /* Light Green */
+  --chart-secondary-3: #fb923c;
+  /* Light Orange */
+  --chart-secondary-4: #c084fc;
+  /* Light Purple */
+  --chart-secondary-5: #f87171;
+  /* Light Red */
+  --chart-secondary-6: #fcd34d;
+  /* Light Yellow */
+  --chart-secondary-7: #22d3ee;
+  /* Light Cyan */
+  --chart-secondary-8: #a3e635;
+  /* Light Lime */
+
   /* Chart Neutral Colors */
-  --chart-neutral-1: #f3f4f6;     /* Lightest neutral */
-  --chart-neutral-2: #e5e7eb;     /* Light neutral */
-  --chart-neutral-3: #d1d5db;     /* Medium neutral */
-  --chart-neutral-4: #9ca3af;     /* Dark neutral */
-  --chart-neutral-5: #6b7280;     /* Darkest neutral */
-  
+  --chart-neutral-1: #f3f4f6;
+  /* Lightest neutral */
+  --chart-neutral-2: #e5e7eb;
+  /* Light neutral */
+  --chart-neutral-3: #d1d5db;
+  /* Medium neutral */
+  --chart-neutral-4: #9ca3af;
+  /* Dark neutral */
+  --chart-neutral-5: #6b7280;
+  /* Darkest neutral */
+
   /* Chart Gradient Colors */
   --chart-gradient-1: linear-gradient(135deg, var(--color-primary-300), var(--color-secondary-300));
   --chart-gradient-2: linear-gradient(135deg, var(--color-purple-300), var(--color-accent-300));
   --chart-gradient-3: linear-gradient(135deg, var(--color-focus-300), var(--color-calm-300));
   --chart-gradient-4: linear-gradient(135deg, var(--color-achievement-300), var(--color-success-300));
-  
+
   /* ============================================================================
      INTERACTIVE STATE COLORS
      ============================================================================
      Colors for hover, active, focus, and disabled states
   */
-  
+
   /* Interactive State Variations */
-  --interactive-hover: 1.1;       /* Brightness multiplier for hover */
-  --interactive-active: 0.9;      /* Brightness multiplier for active */
-  --interactive-focus: 1.15;      /* Brightness multiplier for focus */
-  --interactive-disabled: 0.5;    /* Opacity for disabled */
-  
+  --interactive-hover: 1.1;
+  /* Brightness multiplier for hover */
+  --interactive-active: 0.9;
+  /* Brightness multiplier for active */
+  --interactive-focus: 1.15;
+  /* Brightness multiplier for focus */
+  --interactive-disabled: 0.5;
+  /* Opacity for disabled */
+
   /* State Color Calculations */
   --state-hover-primary: color-mix(in srgb, var(--color-primary-500) 90%, white);
   --state-hover-secondary: color-mix(in srgb, var(--color-secondary-500) 90%, white);
   --state-hover-accent: color-mix(in srgb, var(--color-accent-500) 90%, white);
   --state-hover-purple: color-mix(in srgb, var(--color-purple-500) 90%, white);
-  
+
   --state-active-primary: color-mix(in srgb, var(--color-primary-500) 80%, black);
   --state-active-secondary: color-mix(in srgb, var(--color-secondary-500) 80%, black);
   --state-active-accent: color-mix(in srgb, var(--color-accent-500) 80%, black);
   --state-active-purple: color-mix(in srgb, var(--color-purple-500) 80%, black);
-  
+
   --state-focus-primary: color-mix(in srgb, var(--color-primary-500) 85%, white);
   --state-focus-secondary: color-mix(in srgb, var(--color-secondary-500) 85%, white);
   --state-focus-accent: color-mix(in srgb, var(--color-accent-500) 85%, white);
   --state-focus-purple: color-mix(in srgb, var(--color-purple-500) 85%, white);
-  
+
   /* ============================================================================
      PROGRESS & STATUS COLORS
      ============================================================================
      Colors for progress indicators, status displays, and analytics
   */
-  
+
   /* Progress System Colors */
-  --progress-0: var(--color-error-400);      /* 0-20%: Error/Warning */
-  --progress-20: var(--color-warning-400);   /* 20-40%: Warning */
-  --progress-40: var(--color-accent-400);    /* 40-60%: Progress */
-  --progress-60: var(--color-focus-400);     /* 60-80%: Good Progress */
-  --progress-80: var(--color-secondary-400); /* 80-100%: Success */
-  --progress-100: var(--color-success-400);  /* 100%: Complete */
-  
+  --progress-0: var(--color-error-400);
+  /* 0-20%: Error/Warning */
+  --progress-20: var(--color-warning-400);
+  /* 20-40%: Warning */
+  --progress-40: var(--color-accent-400);
+  /* 40-60%: Progress */
+  --progress-60: var(--color-focus-400);
+  /* 60-80%: Good Progress */
+  --progress-80: var(--color-secondary-400);
+  /* 80-100%: Success */
+  --progress-100: var(--color-success-400);
+  /* 100%: Complete */
+
   /* Status System Colors */
   --status-pending: var(--color-warning-400);
   --status-in-progress: var(--color-accent-400);
@@ -309,84 +477,110 @@
   --status-approved: var(--color-success-400);
   --status-rejected: var(--color-error-400);
   --status-completed: var(--color-secondary-400);
-  
+
   /* Priority System Colors */
   --priority-low: var(--color-calm-400);
   --priority-medium: var(--color-accent-400);
   --priority-high: var(--color-warning-400);
   --priority-critical: var(--color-error-400);
   --priority-urgent: var(--color-urgency-400);
-  
+
   /* ============================================================================
      SEASONAL & CONTEXTUAL COLOR VARIATIONS
      ============================================================================
      Adaptive colors for different times, contexts, and user preferences
   */
-  
+
   /* Seasonal Color Variations */
-  --spring-primary: var(--color-secondary-300);    /* Fresh greens */
-  --spring-accent: var(--color-purple-300);        /* Light purples */
-  
-  --summer-primary: var(--color-accent-300);       /* Vibrant oranges */
-  --summer-accent: var(--color-primary-300);       /* Bright blues */
-  
-  --autumn-primary: var(--color-urgency-300);      /* Warm oranges */
-  --autumn-accent: var(--color-focus-300);         /* Deep blues */
-  
-  --winter-primary: var(--color-focus-300);        /* Cool blues */
-  --winter-accent: var(--color-calm-300);          /* Soft grays */
-  
+  --spring-primary: var(--color-secondary-300);
+  /* Fresh greens */
+  --spring-accent: var(--color-purple-300);
+  /* Light purples */
+
+  --summer-primary: var(--color-accent-300);
+  /* Vibrant oranges */
+  --summer-accent: var(--color-primary-300);
+  /* Bright blues */
+
+  --autumn-primary: var(--color-urgency-300);
+  /* Warm oranges */
+  --autumn-accent: var(--color-focus-300);
+  /* Deep blues */
+
+  --winter-primary: var(--color-focus-300);
+  /* Cool blues */
+  --winter-accent: var(--color-calm-300);
+  /* Soft grays */
+
   /* Time-based Context Colors */
-  --morning-primary: var(--color-focus-300);       /* Energizing blues */
-  --morning-accent: var(--color-accent-300);       /* Bright oranges */
-  
-  --afternoon-primary: var(--color-secondary-300); /* Balanced greens */
-  --afternoon-accent: var(--color-purple-300);     /* Creative purples */
-  
-  --evening-primary: var(--color-calm-300);        /* Relaxing neutrals */
-  --evening-accent: var(--color-focus-400);        /* Deep blues */
-  
-  --night-primary: var(--color-neutral-400);       /* Dark neutrals */
-  --night-accent: var(--color-focus-500);          /* Deep blues */
-  
+  --morning-primary: var(--color-focus-300);
+  /* Energizing blues */
+  --morning-accent: var(--color-accent-300);
+  /* Bright oranges */
+
+  --afternoon-primary: var(--color-secondary-300);
+  /* Balanced greens */
+  --afternoon-accent: var(--color-purple-300);
+  /* Creative purples */
+
+  --evening-primary: var(--color-calm-300);
+  /* Relaxing neutrals */
+  --evening-accent: var(--color-focus-400);
+  /* Deep blues */
+
+  --night-primary: var(--color-neutral-400);
+  /* Dark neutrals */
+  --night-accent: var(--color-focus-500);
+  /* Deep blues */
+
   /* ============================================================================
      ENHANCED ACCESSIBILITY COLORS
      ============================================================================
      WCAG AA/AAA compliant colors with enhanced contrast ratios
   */
-  
+
   /* High Contrast Mode Colors */
-  --contrast-primary: #004085;     /* Deep blue for high contrast */
-  --contrast-secondary: #155724;   /* Deep green for high contrast */
-  --contrast-accent: #843534;      /* Deep orange for high contrast */
-  --contrast-neutral: #000000;     /* Black for maximum contrast */
-  --contrast-background: #ffffff;  /* White for maximum contrast */
-  
+  --contrast-primary: #004085;
+  /* Deep blue for high contrast */
+  --contrast-secondary: #155724;
+  /* Deep green for high contrast */
+  --contrast-accent: #843534;
+  /* Deep orange for high contrast */
+  --contrast-neutral: #000000;
+  /* Black for maximum contrast */
+  --contrast-background: #ffffff;
+  /* White for maximum contrast */
+
   /* Color Blind Friendly Colors */
-  --cbf-primary: #0066cc;         /* Blue for color blind users */
-  --cbf-secondary: #009933;       /* Green for color blind users */
-  --cbf-accent: #ff6600;          /* Orange for color blind users */
-  --cbf-info: #cc0000;            /* Red for color blind users */
-  --cbf-success: #006600;         /* Dark green for color blind users */
-  
+  --cbf-primary: #0066cc;
+  /* Blue for color blind users */
+  --cbf-secondary: #009933;
+  /* Green for color blind users */
+  --cbf-accent: #ff6600;
+  /* Orange for color blind users */
+  --cbf-info: #cc0000;
+  /* Red for color blind users */
+  --cbf-success: #006600;
+  /* Dark green for color blind users */
+
   /* ============================================================================
      PERFORMANCE OPTIMIZED COLORS
      ============================================================================
      Colors optimized for different devices and performance scenarios
   */
-  
+
   /* Low Bandwidth Colors */
   --lbw-primary: var(--color-primary-500);
   --lbw-secondary: var(--color-secondary-500);
   --lbw-accent: var(--color-accent-500);
   --lbw-neutral: var(--color-neutral-500);
-  
+
   /* Dark Mode Optimized Colors */
   --dm-primary: var(--color-primary-400);
   --dm-secondary: var(--color-secondary-400);
   --dm-accent: var(--color-accent-400);
   --dm-neutral: var(--color-neutral-400);
-  
+
   /* Print Optimized Colors */
   --print-primary: var(--color-neutral-900);
   --print-secondary: var(--color-neutral-700);
@@ -513,6 +707,3 @@
 .context-calm .card {
   border-left: 4px solid var(--color-calm-400);
 }
-
-.context-calm .btn-primary {
-  background
