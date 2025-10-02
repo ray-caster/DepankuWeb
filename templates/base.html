@@ -2,38 +2,22 @@
 <html lang="en">
 
 <head>
-    <!-- Basic Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- SEO Meta Tags -->
     <title>{% block title %}Depanku - AI-Powered Career Planning{% endblock %}</title>
+
     <meta name="description"
         content="Depanku helps students discover STEM internships, research opportunities, and organizations for effective career planning.">
-    <link rel="canonical" href="{{ canonical_url|default('https://depanku.com' + request.path) }}">
-
-    <!-- Open Graph & Twitter Card -->
-    <meta property="og:title" content="{% block og_title %}Depanku - AI-Powered Career Planning{% endblock %}">
-    <meta property="og:description"
-        content="{% block og_description %}Discover STEM internships and research opportunities tailored to your interests.{% endblock %}">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ canonical_url|default('https://depanku.com' + request.path) }}">
-    <meta property="og:image" content="{{ url_for('static', filename='images/og-landing.jpg') }}">
-    <meta name="twitter:card" content="summary_large_image">
-
-    <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
 
-    <!-- Resource Hints for Performance -->
+    <!-- Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@700;800&display=swap"
         rel="stylesheet">
 
-    <!-- STYLESHEETS -->
-    <!-- Consolidated Main Stylesheet -->
+    <!-- Main Stylesheet (Loads First) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <!-- Page-specific Stylesheet Block -->
@@ -43,17 +27,15 @@
 </head>
 
 <body>
-    <!-- Skip to main content link for accessibility -->
-    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
 
-    <!-- Header -->
     <header class="header" role="banner">
-        <nav class="nav container" role="navigation" aria-label="Main navigation">
+        <nav class="nav container" aria-label="Main navigation">
             <a href="{{ url_for('main.index') }}" class="nav-brand" aria-label="Depanku Home">
                 <h1>Depanku</h1>
             </a>
             <div class="nav-links" id="main-navigation">
-                <!-- Links are dynamically populated by auth.js -->
+                <!-- Links dynamically populated by auth.js -->
                 <a href="{{ url_for('main.login_page') }}" class="nav-link">Login</a>
                 <a href="{{ url_for('main.signup_page') }}" class="btn btn-primary">Sign Up</a>
             </div>
@@ -68,18 +50,19 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-bottom">
-                <p>&copy; 2024 Depanku. All rights reserved.</p>
+                <p>&copy; 2024 Depanku. All Rights Reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <!-- Core App Scripts -->
     <script src="{{ url_for('static', filename='js/auth.js') }}" defer></script>
     {% block scripts %}{% endblock %}
 </body>

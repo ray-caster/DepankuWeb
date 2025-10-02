@@ -2,12 +2,14 @@
 
 {% block title %}Sign Up - Depanku{% endblock %}
 {% block og_title %}Sign Up - Depanku{% endblock %}
-{% block og_description %}Create your Depanku account to start discovering AI-powered career planning and organization opportunities.{% endblock %}
+{% block og_description %}Create your Depanku account to start discovering AI-powered career planning and organization
+opportunities.{% endblock %}
 {% block twitter_title %}Sign Up - Depanku{% endblock %}
-{% block twitter_description %}Create your Depanku account to start discovering AI-powered career planning and organization opportunities.{% endblock %}
+{% block twitter_description %}Create your Depanku account to start discovering AI-powered career planning and
+organization opportunities.{% endblock %}
 
 {% block page_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -20,7 +22,8 @@
             </div>
 
             <!-- Error Message Area -->
-            <div id="signup-error-message" class="alert alert-danger" role="alert" aria-live="polite" style="display: none;">
+            <div id="signup-error-message" class="alert alert-danger" role="alert" aria-live="polite"
+                style="display: none;">
                 <div class="alert-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -35,7 +38,8 @@
             </div>
 
             <!-- Success Message Area -->
-            <div id="success-message" class="alert alert-success" role="alert" aria-live="polite" style="display: none;">
+            <div id="success-message" class="alert alert-success" role="alert" aria-live="polite"
+                style="display: none;">
                 <div class="alert-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -44,7 +48,8 @@
                 </div>
                 <div class="alert-content">
                     <h4 class="alert-title">Success!</h4>
-                    <p class="alert-message">Account created successfully. Please check your email to verify your account.</p>
+                    <p class="alert-message">Account created successfully. Please check your email to verify your
+                        account.</p>
                 </div>
             </div>
 
@@ -52,15 +57,9 @@
             <form id="signup-form" class="auth-form" aria-label="Create account form">
                 <div class="form-group">
                     <label for="displayName" class="form-label">Display Name</label>
-                    <input type="text" 
-                           id="displayName" 
-                           name="displayName" 
-                           class="form-control" 
-                           required 
-                           autocomplete="name"
-                           aria-required="true"
-                           aria-describedby="displayname-help"
-                           placeholder="How should we call you?">
+                    <input type="text" id="displayName" name="displayName" class="form-control" required
+                        autocomplete="name" aria-required="true" aria-describedby="displayname-help"
+                        placeholder="How should we call you?">
                     <div id="displayname-help" class="form-help-text">
                         This will be your public display name on Depanku.
                     </div>
@@ -69,15 +68,8 @@
 
                 <div class="form-group">
                     <label for="email" class="form-label">Email Address</label>
-                    <input type="email" 
-                           id="email" 
-                           name="email" 
-                           class="form-control" 
-                           required 
-                           autocomplete="email"
-                           aria-required="true"
-                           aria-describedby="email-help"
-                           placeholder="Enter your email address">
+                    <input type="email" id="email" name="email" class="form-control" required autocomplete="email"
+                        aria-required="true" aria-describedby="email-help" placeholder="Enter your email address">
                     <div id="email-help" class="form-help-text">
                         We'll use this to sign you in and send important updates.
                     </div>
@@ -87,27 +79,22 @@
                 <div class="form-group">
                     <label for="password" class="form-label">Password</label>
                     <div class="password-input-container">
-                        <input type="password" 
-                               id="password" 
-                               name="password" 
-                               class="form-control" 
-                               required 
-                               autocomplete="new-password"
-                               aria-required="true"
-                               aria-describedby="password-help password-toggle"
-                               placeholder="Create a password (min. 6 characters)"
-                               minlength="6">
-                        <button type="button" 
-                                id="password-toggle" 
-                                class="password-toggle" 
-                                aria-label="Show password"
-                                aria-expanded="false">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <input type="password" id="password" name="password" class="form-control" required
+                            autocomplete="new-password" aria-required="true"
+                            aria-describedby="password-help password-toggle"
+                            placeholder="Create a password (min. 6 characters)" minlength="6">
+                        <button type="button" id="password-toggle" class="password-toggle" aria-label="Show password"
+                            aria-expanded="false">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
-                            <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" style="display: none;">
+                                <path
+                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                                </path>
                                 <line x1="1" y1="1" x2="23" y2="23"></line>
                             </svg>
                         </button>
@@ -127,26 +114,22 @@
                 <div class="form-group">
                     <label for="confirmPassword" class="form-label">Confirm Password</label>
                     <div class="password-input-container">
-                        <input type="password" 
-                               id="confirmPassword" 
-                               name="confirmPassword" 
-                               class="form-control" 
-                               required 
-                               autocomplete="new-password"
-                               aria-required="true"
-                               aria-describedby="confirmpassword-help password-toggle-confirm"
-                               placeholder="Confirm your password">
-                        <button type="button" 
-                                id="password-toggle-confirm" 
-                                class="password-toggle" 
-                                aria-label="Show password"
-                                aria-expanded="false">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required
+                            autocomplete="new-password" aria-required="true"
+                            aria-describedby="confirmpassword-help password-toggle-confirm"
+                            placeholder="Confirm your password">
+                        <button type="button" id="password-toggle-confirm" class="password-toggle"
+                            aria-label="Show password" aria-expanded="false">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
-                            <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" style="display: none;">
+                                <path
+                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                                </path>
                                 <line x1="1" y1="1" x2="23" y2="23"></line>
                             </svg>
                         </button>
@@ -159,12 +142,8 @@
 
                 <div class="form-group">
                     <label for="ageGroup" class="form-label">Age Group</label>
-                    <select id="ageGroup" 
-                            name="ageGroup" 
-                            class="form-control" 
-                            required 
-                            aria-required="true"
-                            aria-describedby="agegroup-help">
+                    <select id="ageGroup" name="ageGroup" class="form-control" required aria-required="true"
+                        aria-describedby="agegroup-help">
                         <option value="" disabled selected>Select your age group</option>
                         <option value="middle_school">Middle School (11-14 years)</option>
                         <option value="high_school">High School (15-18 years)</option>
@@ -179,14 +158,10 @@
 
                 <div class="form-group">
                     <label class="form-label">
-                        <input type="checkbox" 
-                               id="terms" 
-                               name="terms" 
-                               class="form-checkbox" 
-                               required 
-                               aria-required="true"
-                               aria-describedby="terms-help">
-                        I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a>
+                        <input type="checkbox" id="terms" name="terms" class="form-checkbox" required
+                            aria-required="true" aria-describedby="terms-help">
+                        I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#"
+                            class="auth-link">Privacy Policy</a>
                     </label>
                     <div id="terms-help" class="form-help-text">
                         By creating an account, you agree to our terms and privacy policy.
@@ -195,10 +170,12 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary btn-full" id="submit-btn" aria-describedby="submit-help">
+                    <button type="submit" class="btn btn-primary btn-full" id="submit-btn"
+                        aria-describedby="submit-help">
                         <span class="btn-text">Create Account</span>
                         <span class="btn-loading" style="display: none;">
-                            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <path d="M12 2v10l7 7"></path>
                             </svg>
@@ -216,27 +193,33 @@
                 <div class="divider">
                     <span class="divider-text">Or continue with</span>
                 </div>
-                
+
                 <div class="social-login">
                     <button type="button" class="social-btn google-btn" aria-label="Sign up with Google">
                         <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            <path
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                            <path
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                         </svg>
                         Google
                     </button>
                     <button type="button" class="social-btn github-btn" aria-label="Sign up with GitHub">
                         <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                         </svg>
                         GitHub
                     </button>
                 </div>
 
                 <div class="auth-links">
-                    <p>Already have an account? <a href="{{ url_for('main.login_page') }}" class="auth-link" aria-label="Sign in to your account">Sign in here</a></p>
+                    <p>Already have an account? <a href="{{ url_for('main.login_page') }}" class="auth-link"
+                            aria-label="Sign in to your account">Sign in here</a></p>
                 </div>
             </div>
         </div>
@@ -312,7 +295,7 @@
 
 {% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('signup-form');
         const displayNameInput = document.getElementById('displayName');
         const emailInput = document.getElementById('email');
@@ -331,8 +314,8 @@
         function setupPasswordToggle(inputId, toggleId) {
             const input = document.getElementById(inputId);
             const toggle = document.getElementById(toggleId);
-            
-            toggle.addEventListener('click', function() {
+
+            toggle.addEventListener('click', function () {
                 const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
                 input.setAttribute('type', type);
                 this.setAttribute('aria-expanded', type === 'text');
@@ -345,25 +328,25 @@
         setupPasswordToggle('confirmPassword', 'password-toggle-confirm');
 
         // Password strength checker
-        passwordInput.addEventListener('input', function() {
+        passwordInput.addEventListener('input', function () {
             const password = this.value;
             const strengthContainer = document.getElementById('password-strength');
             const strengthFill = document.getElementById('strength-fill');
             const strengthText = document.getElementById('strength-text');
-            
+
             if (password.length > 0) {
                 strengthContainer.style.display = 'block';
-                
+
                 let strength = 0;
                 if (password.length >= 8) strength++;
                 if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
                 if (password.match(/[0-9]/)) strength++;
                 if (password.match(/[^a-zA-Z0-9]/)) strength++;
-                
+
                 const strengthLevels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
                 const strengthColors = ['#dc3545', '#fd7e14', '#ffc107', '#28a745', '#198754'];
                 const strengthWidths = ['20%', '40%', '60%', '80%', '100%'];
-                
+
                 strengthFill.style.width = strengthWidths[strength];
                 strengthFill.style.backgroundColor = strengthColors[strength];
                 strengthText.textContent = strengthLevels[strength];
@@ -413,7 +396,7 @@
         }
 
         // Real-time validation
-        displayNameInput.addEventListener('blur', function() {
+        displayNameInput.addEventListener('blur', function () {
             if (this.value && this.value.length < 2) {
                 showFieldError('displayname', 'Display name must be at least 2 characters long');
             } else {
@@ -421,7 +404,7 @@
             }
         });
 
-        emailInput.addEventListener('blur', function() {
+        emailInput.addEventListener('blur', function () {
             if (this.value && !validateEmail(this.value)) {
                 showFieldError('email', 'Please enter a valid email address');
             } else {
@@ -429,7 +412,7 @@
             }
         });
 
-        passwordInput.addEventListener('blur', function() {
+        passwordInput.addEventListener('blur', function () {
             if (this.value && !validatePassword(this.value)) {
                 showFieldError('password', 'Password must be at least 6 characters long');
             } else {
@@ -437,7 +420,7 @@
             }
         });
 
-        confirmPasswordInput.addEventListener('blur', function() {
+        confirmPasswordInput.addEventListener('blur', function () {
             if (this.value && this.value !== passwordInput.value) {
                 showFieldError('confirmpassword', 'Passwords do not match');
             } else {
@@ -446,9 +429,9 @@
         });
 
         // Form submission
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             // Clear previous errors
             hideError();
             hideFieldError('displayname');
@@ -460,7 +443,7 @@
 
             // Validate form
             let isValid = true;
-            
+
             if (!displayNameInput.value) {
                 showFieldError('displayname', 'Display name is required');
                 isValid = false;
@@ -515,17 +498,17 @@
             try {
                 // Simulate API call
                 await new Promise(resolve => setTimeout(resolve, 2000));
-                
+
                 // Simulate successful signup
                 showSuccess('Account created successfully! Please check your email to verify your account.');
                 form.reset();
                 document.getElementById('password-strength').style.display = 'none';
-                
+
                 // Redirect after 3 seconds
                 setTimeout(() => {
                     window.location.href = "{{ url_for('main.login_page') }}";
                 }, 3000);
-                
+
             } catch (error) {
                 btnText.style.display = 'block';
                 btnLoading.style.display = 'none';
@@ -535,12 +518,12 @@
         });
 
         // Social signup handlers
-        document.querySelector('.google-btn').addEventListener('click', function() {
+        document.querySelector('.google-btn').addEventListener('click', function () {
             // Implement Google OAuth
             console.log('Google signup clicked');
         });
 
-        document.querySelector('.github-btn').addEventListener('click', function() {
+        document.querySelector('.github-btn').addEventListener('click', function () {
             // Implement GitHub OAuth
             console.log('GitHub signup clicked');
         });
