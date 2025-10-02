@@ -1,0 +1,605 @@
+/* Depanku Design System - Accessibility Guidelines & Standards */
+
+/* ============================================================================
+   ACCESSIBILITY GUIDELINES & STANDARDS
+   ============================================================================ */
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-primary-500: #004085;
+    --color-primary-600: #002752;
+    --color-secondary-500: #155724;
+    --color-secondary-600: #0f3d1a;
+    --color-accent-400: #843534;
+    --color-neutral-500: #000000;
+    --color-neutral-700: #000000;
+    --color-neutral-300: #666666;
+    --color-neutral-100: #cccccc;
+    
+    /* Ensure minimum contrast ratios */
+    --text-on-primary: #ffffff;
+    --text-on-secondary: #ffffff;
+    --text-on-accent: #ffffff;
+  }
+  
+  .btn-primary,
+  .btn-secondary,
+  .btn-accent {
+    border: 2px solid currentColor;
+  }
+  
+  .card {
+    border: 2px solid var(--color-neutral-700);
+  }
+  
+  .form-input,
+  .form-select,
+  .form-textarea {
+    border-width: 3px;
+  }
+}
+
+/* Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+  
+  .btn:hover,
+  .card:hover,
+  .nav-link:hover {
+    transform: none;
+  }
+  
+  .toast {
+    animation: none;
+  }
+}
+
+/* Focus States for Accessibility */
+.btn:focus,
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus,
+.nav-link:focus,
+.card:focus {
+  outline: 3px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Skip to Content Link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary-600);
+  color: var(--white);
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-md) 0;
+  z-index: var(--z-fixed);
+  transition: top var(--transition-normal);
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ARIA Labels and Roles */
+[aria-hidden="true"] {
+  display: none;
+}
+
+/* Keyboard Navigation Indicators */
+.keyboard-focus {
+  outline: 3px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   COLOR CONTRAST CHECKLIST
+   ============================================================================ */
+
+/* Text Color Contrast Requirements */
+.text-contrast-check {
+  /* Ensure all text meets minimum contrast ratios */
+  --text-min-contrast: 4.5; /* AA standard */
+  --text-large-min-contrast: 3; /* AA standard for large text */
+  
+  /* High contrast text */
+  .text-high-contrast {
+    color: var(--color-neutral-900);
+    background-color: var(--white);
+  }
+  
+  /* Medium contrast text */
+  .text-medium-contrast {
+    color: var(--color-neutral-700);
+    background-color: var(--color-neutral-100);
+  }
+  
+  /* Low contrast text (for decorative elements only) */
+  .text-low-contrast {
+    color: var(--color-neutral-400);
+    background-color: transparent;
+  }
+}
+
+/* ============================================================================
+   TYPOGRAPHY ACCESSIBILITY
+   ============================================================================ */
+
+/* Minimum Font Size Requirements */
+body {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Responsive Typography for Accessibility */
+@media (max-width: 768px) {
+  h1, .h1 {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
+  }
+  
+  h2, .h2 {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+  
+  h3, .h3 {
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+  }
+  
+  p {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+  }
+}
+
+/* Text Spacing for Readability */
+.text-spacing-improved {
+  letter-spacing: 0.02em;
+  word-spacing: 0.1em;
+}
+
+/* ============================================================================
+   FORM ACCESSIBILITY
+   ============================================================================ */
+
+/* Form Labels */
+.form-group label {
+  display: block;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Required Field Indicators */
+.form-required {
+  color: var(--color-error);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Error States */
+.form-error {
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+  display: block;
+}
+
+/* Input Group Accessibility */
+.input-group {
+  position: relative;
+}
+
+.input-group .form-input {
+  width: 100%;
+}
+
+/* ============================================================================
+   COMPONENT ACCESSIBILITY
+   ============================================================================ */
+
+/* Button Accessibility */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Card Accessibility */
+.card {
+  position: relative;
+}
+
+.card:focus {
+  outline: 3px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Navigation Accessibility */
+.nav-link {
+  position: relative;
+}
+
+.nav-link:focus {
+  outline: 3px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   COLOR BLINDNESS SUPPORT
+   ============================================================================ */
+
+/* Color Blind Friendly Color Palette */
+.color-blind-friendly {
+  /* Use patterns and textures in addition to colors */
+  --pattern-primary: repeating-linear-gradient(
+    45deg,
+    var(--color-primary-500),
+    var(--color-primary-500) 10px,
+    var(--color-primary-600) 10px,
+    var(--color-primary-600) 20px
+  );
+  
+  --pattern-secondary: repeating-linear-gradient(
+    -45deg,
+    var(--color-secondary-500),
+    var(--color-secondary-500) 10px,
+    var(--color-secondary-600) 10px,
+    var(--color-secondary-600) 20px
+  );
+}
+
+/* Deuteranopia (Red-Green Color Blindness) Support */
+@media (prefers-color-scheme: light) {
+  .deuteranopia-friendly {
+    --color-primary-500: #0066cc;
+    --color-secondary-500: #009933;
+    --color-accent-400: #ff6600;
+  }
+}
+
+/* Protanopia (Red Color Blindness) Support */
+@media (prefers-color-scheme: light) {
+  .protanopia-friendly {
+    --color-primary-500: #0066cc;
+    --color-secondary-500: #009933;
+    --color-accent-400: #ff6600;
+  }
+}
+
+/* Tritanopia (Blue-Yellow Color Blindness) Support */
+@media (prefers-color-scheme: light) {
+  .tritanopia-friendly {
+    --color-primary-500: #cc0000;
+    --color-secondary-500: #006600;
+    --color-accent-400: #cc6600;
+  }
+}
+
+/* ============================================================================
+   DYSLEXIA FRIENDLY DESIGN
+   ============================================================================ */
+
+/* Dyslexia Friendly Typography */
+.dyslexia-friendly {
+  font-family: var(--font-family-primary);
+  line-height: var(--line-height-relaxed);
+  letter-spacing: 0.02em;
+  
+  /* Avoid justified text */
+  text-align: left;
+  
+  /* Increase spacing between paragraphs */
+  p {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  /* Use sans-serif fonts */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-primary);
+  }
+}
+
+/* ============================================================================
+   SEIZURE SAFE DESIGN
+   ============================================================================ */
+
+/* Seizure Safe Animations */
+.seizure-safe {
+  /* Remove flashing animations */
+  .btn:hover,
+  .card:hover {
+    transform: none;
+  }
+  
+  /* Use smooth transitions instead of animations */
+  * {
+    transition: all var(--transition-normal);
+  }
+  
+  /* Avoid rapid color changes */
+  .alert {
+    transition: background-color var(--transition-slow);
+  }
+}
+
+/* ============================================================================
+   MOBILE ACCESSIBILITY
+   ============================================================================ */
+
+/* Touch Target Sizes */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--spacing-sm);
+}
+
+/* Responsive Touch Targets */
+@media (hover: none) and (pointer: coarse) {
+  .btn {
+    min-height: 48px;
+    min-width: 48px;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .nav-link {
+    min-height: 48px;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .form-input,
+  .form-select,
+  .form-textarea {
+    min-height: 48px;
+    font-size: var(--font-size-base);
+  }
+}
+
+/* ============================================================================
+   DOCUMENTATION & GUIDELINES
+   ============================================================================ */
+
+/* Design System Documentation */
+.design-system-docs {
+  /* Documentation styling */
+  .docs-section {
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .docs-section h2 {
+    color: var(--color-neutral-900);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .docs-section h3 {
+    color: var(--color-neutral-800);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .docs-example {
+    background: var(--color-neutral-50);
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .docs-code {
+    background: var(--color-neutral-900);
+    color: var(--color-neutral-100);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    overflow-x: auto;
+  }
+}
+
+/* Accessibility Checklist */
+.accessibility-checklist {
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .checklist-item input[type="checkbox"] {
+    margin-top: var(--spacing-xs);
+  }
+  
+  .checklist-item label {
+    flex: 1;
+    cursor: pointer;
+  }
+  
+  .checklist-item .status {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-500);
+  }
+  
+  .checklist-item.completed .status {
+    color: var(--color-success);
+  }
+}
+
+/* ============================================================================
+   TESTING TOOLS
+   ============================================================================ */
+
+/* Color Contrast Testing Tool */
+.contrast-tester {
+  .contrast-sample {
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--radius-md);
+  }
+  
+  .contrast-ratio {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-600);
+    margin-top: var(--spacing-xs);
+  }
+}
+
+/* ============================================================================
+   IMPLEMENTATION CHECKLIST
+   ============================================================================ */
+
+/* Implementation Guidelines */
+.implementation-checklist {
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .checklist li {
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--color-neutral-200);
+  }
+  
+  .checklist li:last-child {
+    border-bottom: none;
+  }
+  
+  .checklist li::before {
+    content: "✓";
+    color: var(--color-success);
+    font-weight: bold;
+    margin-right: var(--spacing-sm);
+  }
+  
+  .checklist li.pending::before {
+    content: "○";
+    color: var(--color-warning);
+  }
+  
+  .checklist li.error::before {
+    content: "✗";
+    color: var(--color-error);
+  }
+}
+
+/* ============================================================================
+   PERFORMANCE OPTIMIZATION
+   ============================================================================ */
+
+/* Performance Optimization */
+.performance-optimized {
+  /* Use CSS variables for theming */
+  :root {
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+    --transition-slow: 500ms ease;
+  }
+  
+  /* Optimize animations */
+  .btn,
+  .card,
+  .nav-link {
+    will-change: transform, box-shadow;
+  }
+  
+  /* Use hardware acceleration */
+  .transform {
+    transform: translateZ(0);
+  }
+  
+  /* Optimize font loading */
+  .font-optimized {
+    font-display: swap;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE ACCESSIBILITY
+   ============================================================================ */
+
+/* Responsive Accessibility */
+.responsive-accessibility {
+  /* Mobile first approach */
+  @media (max-width: 768px) {
+    .touch-target {
+      min-width: 48px;
+      min-height: 48px;
+    }
+    
+    .form-input,
+    .form-select,
+    .form-textarea {
+      font-size: 16px; /* Prevent zoom on iOS */
+    }
+  }
+  
+  /* Tablet and desktop */
+  @media (min-width: 769px) {
+    .desktop-accessibility {
+      /* Desktop specific accessibility features */
+    }
+  }
+}
+
+/* ============================================================================
+   FINAL ACCESSIBILITY STANDARDS
+   ============================================================================ */
+
+/* Final Accessibility Standards */
+.accessibility-standards {
+  /* WCAG 2.1 AA Compliance */
+  --wcag-aa-min-contrast: 4.5;
+  --wcag-aa-large-min-contrast: 3;
+  --wcag-aaa-min-contrast: 7;
+  --wcag-aaa-large-min-contrast: 4.5;
+  
+  /* Minimum font sizes */
+  --min-font-size: 16px;
+  --min-large-font-size: 18px;
+  
+  /* Maximum line length for readability */
+  --max-line-length: 75ch;
+  
+  /* Minimum tap target size */
+  --min-tap-target: 44px;
+}
+
+/* ============================================================================
+   END OF ACCESSIBILITY STYLES
+   ============================================================================ */

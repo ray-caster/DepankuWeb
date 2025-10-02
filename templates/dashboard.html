@@ -1,53 +1,569 @@
 {% extends "base.html" %}
+
 {% block title %}My Dashboard - Depanku{% endblock %}
+{% block og_title %}My Dashboard - Depanku{% endblock %}
+{% block og_description %}Manage your career planning and organization opportunities with your personal dashboard.{% endblock %}
+{% block twitter_title %}My Dashboard - Depanku{% endblock %}
+{% block twitter_description %}Manage your career planning and organization opportunities with your personal dashboard.{% endblock %}
+
 {% block page_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 {% endblock %}
-<section class="dashboard-section">
-    <div class="container">
-        <h2 class="section-title">My Personal Dashboard</h2>
 
-        <div id="success-message" class="alert alert-success" style="display: none;"></div>
-        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+{% block content %}
+<main class="dashboard-page" id="main-content">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" aria-label="Home">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">My Dashboard</li>
+        </ol>
+    </nav>
 
-        <div class="planning-board">
-            <h3>Opportunity Planning Board</h3>
-            <p class="text-muted">Drag organizations from the "Available" list into a category below to plan your
-                applications.</p>
-            <div class="board-columns">
-                <div class="board-column" id="high-interest-column">
-                    <div class="column-header">
-                        <h4>High Interest</h4><span class="column-count" id="high-count">0</span>
-                    </div>
-                    <div class="column-content" data-interest-level="high"></div>
+    <section class="dashboard-section" aria-labelledby="dashboard-heading">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 id="dashboard-heading" class="section-title">My Personal Dashboard</h1>
+                <p class="section-subtitle">Organize and track your career opportunities with AI-powered planning tools.</p>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="success-message" class="alert alert-success" role="alert" aria-live="polite" style="display: none;">
+                <div class="alert-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
                 </div>
-                <div class="board-column" id="medium-interest-column">
-                    <div class="column-header">
-                        <h4>Medium Interest</h4><span class="column-count" id="medium-count">0</span>
-                    </div>
-                    <div class="column-content" data-interest-level="medium"></div>
-                </div>
-                <div class="board-column" id="low-interest-column">
-                    <div class="column-header">
-                        <h4>Low Interest</h4><span class="column-count" id="low-count">0</span>
-                    </div>
-                    <div class="column-content" data-interest-level="low"></div>
+                <div class="alert-content">
+                    <h4 class="alert-title">Success</h4>
+                    <p class="alert-message" id="success-text"></p>
                 </div>
             </div>
+
+            <div id="error-message" class="alert alert-danger" role="alert" aria-live="polite" style="display: none;">
+                <div class="alert-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="alert-content">
+                    <h4 class="alert-title">Error</h4>
+                    <p class="alert-message" id="error-text"></p>
+                </div>
+            </div>
+
+            <!-- Planning Board Section -->
+            <section class="planning-board-section" aria-labelledby="planning-board-heading">
+                <div class="planning-board-header">
+                    <h2 id="planning-board-heading" class="board-title">Opportunity Planning Board</h2>
+                    <p class="board-description">Drag organizations from the "Available" list into a category below to plan your applications.</p>
+                    <div class="board-actions">
+                        <button type="button" class="btn btn-secondary" id="reset-board-btn" aria-label="Reset planning board">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                            </svg>
+                            Reset Board
+                        </button>
+                        <button type="button" class="btn btn-primary" id="save-board-btn" aria-label="Save planning board">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            Save Progress
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Drag and Drop Board -->
+                <div class="board-container" role="application" aria-label="Opportunity planning board">
+                    <div class="board-columns" role="list">
+                        <!-- High Interest Column -->
+                        <div class="board-column" id="high-interest-column" role="listitem" aria-label="High interest organizations">
+                            <div class="column-header">
+                                <h3 class="column-title">High Interest</h3>
+                                <span class="column-count" id="high-count" aria-label="Number of high interest organizations">0</span>
+                            </div>
+                            <div class="column-content" 
+                                 data-interest-level="high" 
+                                 role="list" 
+                                 aria-label="High interest organizations list"
+                                 tabindex="0"
+                                 aria-describedby="high-instructions">
+                                <p id="high-instructions" class="column-instructions">Drag organizations here</p>
+                            </div>
+                        </div>
+
+                        <!-- Medium Interest Column -->
+                        <div class="board-column" id="medium-interest-column" role="listitem" aria-label="Medium interest organizations">
+                            <div class="column-header">
+                                <h3 class="column-title">Medium Interest</h3>
+                                <span class="column-count" id="medium-count" aria-label="Number of medium interest organizations">0</span>
+                            </div>
+                            <div class="column-content" 
+                                 data-interest-level="medium" 
+                                 role="list" 
+                                 aria-label="Medium interest organizations list"
+                                 tabindex="0"
+                                 aria-describedby="medium-instructions">
+                                <p id="medium-instructions" class="column-instructions">Drag organizations here</p>
+                            </div>
+                        </div>
+
+                        <!-- Low Interest Column -->
+                        <div class="board-column" id="low-interest-column" role="listitem" aria-label="Low interest organizations">
+                            <div class="column-header">
+                                <h3 class="column-title">Low Interest</h3>
+                                <span class="column-count" id="low-count" aria-label="Number of low interest organizations">0</span>
+                            </div>
+                            <div class="column-content" 
+                                 data-interest-level="low" 
+                                 role="list" 
+                                 aria-label="Low interest organizations list"
+                                 tabindex="0"
+                                 aria-describedby="low-instructions">
+                                <p id="low-instructions" class="column-instructions">Drag organizations here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Available Organizations Section -->
+            <section class="available-orgs-section" aria-labelledby="available-orgs-heading">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 id="available-orgs-heading" class="card-title">Available Organizations</h2>
+                        <div class="org-controls">
+                            <div class="search-box" role="search">
+                                <input type="text" 
+                                       id="org-search" 
+                                       class="search-input" 
+                                       placeholder="Search organizations..."
+                                       aria-label="Search organizations">
+                                <button type="button" class="search-btn" aria-label="Search organizations">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.35-4.35"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <select id="sort-orgs" class="sort-select" aria-label="Sort organizations">
+                                <option value="name">Sort by Name</option>
+                                <option value="date">Sort by Date Added</option>
+                                <option value="category">Sort by Category</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body" id="available-orgs" 
+                         data-interest-level="none" 
+                         role="list" 
+                         aria-label="Available organizations list">
+                        <div class="loading-state">
+                            <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+                            <p class="loading-text">Loading your organizations...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions Section -->
+            <section class="quick-actions-section" aria-labelledby="quick-actions-heading">
+                <h2 id="quick-actions-heading" class="section-title">Quick Actions</h2>
+                <div class="quick-actions-grid" role="list">
+                    <button type="button" class="quick-action-btn" aria-label="Start new AI analysis">
+                        <svg class="action-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                        <span class="action-text">AI Analysis</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" aria-label="Browse organizations">
+                        <svg class="action-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                        <span class="action-text">Browse Orgs</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" aria-label="View messages">
+                        <svg class="action-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        <span class="action-text">Messages</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" aria-label="Create organization">
+                        <svg class="action-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M2 12h20"></path>
+                        </svg>
+                        <span class="action-text">Create Org</span>
+                    </button>
+                </div>
+            </section>
         </div>
+    </section>
+</main>
 
-        <div class="card">
-            <div class="card-header">
-                <h3>Available Organizations</h3>
-            </div>
-            <div class="card-body" id="available-orgs" data-interest-level="none">
-                <p>Loading your organizations...</p>
-            </div>
-        </div>
-    </div>
-</section>
-{% endblock %}
+<!-- Structured Data for User Dashboard -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "My Dashboard - Depanku",
+    "description": "Personal dashboard for managing career opportunities and organization planning",
+    "url": "{{ canonical_url|default('https://depanku.com' + request.path) }}",
+    "author": {
+        "@type": "Organization",
+        "name": "Depanku"
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ canonical_url|default('https://depanku.com') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "My Dashboard",
+                "item": "{{ canonical_url|default('https://depanku.com' + request.path) }}"
+            }
+        ]
+    },
+    "mainEntity": {
+        "@type": "Application",
+        "name": "Depanku Dashboard",
+        "applicationCategory": "CareerPlanningApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+}
+</script>
+
+<!-- ARIA Live Region for Dynamic Updates -->
+<div id="aria-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ARIA Live Region Updates
+        const ariaLiveRegion = document.getElementById('aria-live-region');
+        
+        function announceToScreenReader(message) {
+            ariaLiveRegion.textContent = message;
+            setTimeout(() => {
+                ariaLiveRegion.textContent = '';
+            }, 1000);
+        }
+
+        // Drag and Drop Functionality
+        let draggedElement = null;
+        let draggedFromColumn = null;
+
+        // Initialize drag and drop
+        function initializeDragAndDrop() {
+            const availableOrgs = document.getElementById('available-orgs');
+            const columnContents = document.querySelectorAll('.column-content');
+
+            // Make available organizations draggable
+            availableOrgs.addEventListener('dragstart', handleDragStart);
+            availableOrgs.addEventListener('dragend', handleDragEnd);
+
+            // Make column contents drop targets
+            columnContents.forEach(column => {
+                column.addEventListener('dragover', handleDragOver);
+                column.addEventListener('drop', handleDrop);
+                column.addEventListener('dragenter', handleDragEnter);
+                column.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        function handleDragStart(e) {
+            if (e.target.classList.contains('org-item')) {
+                draggedElement = e.target;
+                draggedFromColumn = e.target.closest('.column-content') || document.getElementById('available-orgs');
+                e.target.style.opacity = '0.5';
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', e.target.innerHTML);
+            }
+        }
+
+        function handleDragEnd(e) {
+            if (e.target.classList.contains('org-item')) {
+                e.target.style.opacity = '';
+            }
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (e.target.classList.contains('column-content')) {
+                e.target.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            if (e.target.classList.contains('column-content')) {
+                e.target.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (e.target.classList.contains('column-content') && draggedElement) {
+                e.target.classList.remove('drag-over');
+                
+                // Remove instructions text
+                const instructions = e.target.querySelector('.column-instructions');
+                if (instructions) {
+                    instructions.style.display = 'none';
+                }
+
+                // Clone the dragged element
+                const clonedElement = draggedElement.cloneNode(true);
+                clonedElement.draggable = true;
+                
+                // Add to new column
+                e.target.appendChild(clonedElement);
+                
+                // Update counters
+                updateColumnCounters();
+                
+                // Announce to screen reader
+                const columnName = e.target.closest('.board-column').querySelector('.column-title').textContent;
+                const orgName = draggedElement.querySelector('.org-name').textContent;
+                announceToScreenReader(`${orgName} moved to ${columnName}`);
+                
+                // Remove original if it was from a column (not available orgs)
+                if (draggedFromColumn !== document.getElementById('available-orgs')) {
+                    draggedElement.remove();
+                    updateColumnCounters();
+                }
+            }
+
+            return false;
+        }
+
+        function updateColumnCounters() {
+            const columns = document.querySelectorAll('.board-column');
+            columns.forEach(column => {
+                const content = column.querySelector('.column-content');
+                const count = content.querySelectorAll('.org-item').length;
+                const counter = column.querySelector('.column-count');
+                counter.textContent = count;
+                counter.setAttribute('aria-label', `Number of ${column.querySelector('.column-title').textContent.toLowerCase()} organizations: ${count}`);
+            });
+        }
+
+        // Board Controls
+        document.getElementById('reset-board-btn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to reset the planning board? This will move all organizations back to the available list.')) {
+                const columns = document.querySelectorAll('.column-content');
+                const availableOrgs = document.getElementById('available-orgs');
+                
+                columns.forEach(column => {
+                    const orgItems = column.querySelectorAll('.org-item');
+                    orgItems.forEach(item => {
+                        availableOrgs.appendChild(item);
+                    });
+                    // Show instructions again
+                    const instructions = column.querySelector('.column-instructions');
+                    if (instructions) {
+                        instructions.style.display = 'block';
+                    }
+                });
+                
+                updateColumnCounters();
+                announceToScreenReader('Planning board reset successfully');
+            }
+        });
+
+        document.getElementById('save-board-btn').addEventListener('click', function() {
+            const boardData = collectBoardData();
+            localStorage.setItem('depanku-board-data', JSON.stringify(boardData));
+            announceToScreenReader('Board progress saved successfully');
+        });
+
+        function collectBoardData() {
+            const columns = document.querySelectorAll('.board-column');
+            const boardData = {};
+            
+            columns.forEach(column => {
+                const interestLevel = column.querySelector('.column-content').dataset.interestLevel;
+                const orgItems = column.querySelectorAll('.org-item');
+                boardData[interestLevel] = Array.from(orgItems).map(item => ({
+                    id: item.dataset.orgId,
+                    name: item.querySelector('.org-name').textContent
+                }));
+            });
+            
+            return boardData;
+        }
+
+        // Search functionality
+        document.getElementById('org-search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const orgItems = document.querySelectorAll('.org-item');
+            
+            orgItems.forEach(item => {
+                const orgName = item.querySelector('.org-name').textContent.toLowerCase();
+                const orgDesc = item.querySelector('.org-description').textContent.toLowerCase();
+                
+                if (orgName.includes(searchTerm) || orgDesc.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Sort functionality
+        document.getElementById('sort-orgs').addEventListener('change', function(e) {
+            const sortBy = e.target.value;
+            const availableOrgs = document.getElementById('available-orgs');
+            const orgItems = Array.from(availableOrgs.querySelectorAll('.org-item'));
+            
+            orgItems.sort((a, b) => {
+                switch(sortBy) {
+                    case 'name':
+                        return a.querySelector('.org-name').textContent.localeCompare(b.querySelector('.org-name').textContent);
+                    case 'date':
+                        return new Date(b.dataset.dateAdded) - new Date(a.dataset.dateAdded);
+                    case 'category':
+                        return a.querySelector('.org-category').textContent.localeCompare(b.querySelector('.org-category').textContent);
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Re-append sorted items
+            orgItems.forEach(item => availableOrgs.appendChild(item));
+        });
+
+        // Quick Actions
+        document.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const actionText = this.querySelector('.action-text').textContent;
+                announceToScreenReader(`${actionText} action clicked`);
+                
+                // Implement navigation based on action
+                switch(actionText) {
+                    case 'AI Analysis':
+                        window.location.href = "{{ url_for('ai.ai_analysis_page') }}";
+                        break;
+                    case 'Browse Orgs':
+                        window.location.href = "{{ url_for('organizations.organizations_page') }}";
+                        break;
+                    case 'Messages':
+                        window.location.href = "{{ url_for('messaging.messages_page') }}";
+                        break;
+                    case 'Create Org':
+                        window.location.href = "{{ url_for('organizations.organization_create_page') }}";
+                        break;
+                }
+            });
+        });
+
+        // Initialize drag and drop
+        initializeDragAndDrop();
+
+        // Load saved board data
+        const savedBoardData = localStorage.getItem('depanku-board-data');
+        if (savedBoardData) {
+            // Implement board restoration logic
+            console.log('Saved board data found:', savedBoardData);
+        }
+
+        // Simulate loading organizations
+        setTimeout(() => {
+            const loadingState = document.querySelector('.loading-state');
+            if (loadingState) {
+                loadingState.style.display = 'none';
+                // Here you would load actual organization data
+                loadOrganizations();
+            }
+        }, 1500);
+    });
+
+    function loadOrganizations() {
+        const availableOrgs = document.getElementById('available-orgs');
+        
+        // Sample organization data - replace with actual data from your backend
+        const sampleOrgs = [
+            {
+                id: 1,
+                name: "Tech Innovations Inc.",
+                description: "Leading AI research company offering internships for students interested in machine learning.",
+                category: "Technology",
+                dateAdded: "2024-01-15"
+            },
+            {
+                id: 2,
+                name: "Green Future Labs",
+                description: "Environmental research organization focusing on sustainable technology solutions.",
+                category: "Environment",
+                dateAdded: "2024-01-10"
+            },
+            {
+                id: 3,
+                name: "Code Academy Pro",
+                description: "Online platform offering coding bootcamps and mentorship programs.",
+                category: "Education",
+                dateAdded: "2024-01-08"
+            }
+        ];
+
+        sampleOrgs.forEach(org => {
+            const orgElement = createOrganizationElement(org);
+            availableOrgs.appendChild(orgElement);
+        });
+    }
+
+    function createOrganizationElement(org) {
+        const div = document.createElement('div');
+        div.className = 'org-item';
+        div.draggable = true;
+        div.dataset.orgId = org.id;
+        div.dataset.dateAdded = org.dateAdded;
+        
+        div.innerHTML = `
+            <div class="org-header">
+                <h3 class="org-name">${org.name}</h3>
+                <span class="org-category">${org.category}</span>
+            </div>
+            <p class="org-description">${org.description}</p>
+            <div class="org-actions">
+                <button type="button" class="org-action-btn view-btn" aria-label="View ${org.name} details">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+                <button type="button" class="org-action-btn details-btn" aria-label="View details for ${org.name}">
+                    Details
+                </button>
+            </div>
+        `;
+        
+        return div;
+    }
+</script>
 {% endblock %}

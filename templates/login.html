@@ -1,33 +1,300 @@
 {% extends "base.html" %}
+
 {% block title %}Login - Depanku{% endblock %}
+{% block og_title %}Login - Depanku{% endblock %}
+{% block og_description %}Sign in to your Depanku account to access AI-powered career planning and organization discovery tools.{% endblock %}
+{% block twitter_title %}Login - Depanku{% endblock %}
+{% block twitter_description %}Sign in to your Depanku account to access AI-powered career planning and organization discovery tools.{% endblock %}
+
 {% block page_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 {% endblock %}
+
 {% block content %}
-<section class="auth-section">
-    <div class="auth-card">
-        <h2>Welcome Back</h2>
-        <p class="text-muted">Sign in to your Depanku account to continue.</p>
-
-        <div id="error-message" class="alert alert-danger" style="display: none; text-align: left;"></div>
-
-        <form id="login-form" class="auth-form" style="margin-top: 2rem;">
-            <div class="form-group">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" id="email" name="email" class="form-control" required
-                    placeholder="Enter your email">
+<main class="auth-page" id="main-content">
+    <section class="auth-section" aria-labelledby="auth-heading">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 id="auth-heading" class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your Depanku account to continue your career journey.</p>
             </div>
-            <div class="form-group">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" id="password" name="password" class="form-control" required
-                    placeholder="Enter your password">
-            </div>
-            <button type="submit" class="btn btn-primary btn-full">Sign In</button>
-        </form>
 
-        <div class="auth-footer">
-            <p>Don't have an account? <a href="{{ url_for('main.signup_page') }}">Sign up here</a></p>
+            <!-- Error Message Area -->
+            <div id="error-message" class="alert alert-danger" role="alert" aria-live="polite" style="display: none;">
+                <div class="alert-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="alert-content">
+                    <h4 class="alert-title">Sign In Error</h4>
+                    <p class="alert-message" id="error-text"></p>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form" aria-label="Sign in form">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           class="form-control" 
+                           required 
+                           autocomplete="email"
+                           aria-required="true"
+                           aria-describedby="email-help"
+                           placeholder="Enter your email address">
+                    <div id="email-help" class="form-help-text">
+                        We'll use this to sign you in to your account.
+                    </div>
+                    <div class="form-error" id="email-error" role="alert" aria-live="polite"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="password-input-container">
+                        <input type="password" 
+                               id="password" 
+                               name="password" 
+                               class="form-control" 
+                               required 
+                               autocomplete="current-password"
+                               aria-required="true"
+                               aria-describedby="password-help password-toggle"
+                               placeholder="Enter your password">
+                        <button type="button" 
+                                id="password-toggle" 
+                                class="password-toggle" 
+                                aria-label="Show password"
+                                aria-expanded="false">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="password-help" class="form-help-text">
+                        Your password must be at least 6 characters long.
+                    </div>
+                    <div class="form-error" id="password-error" role="alert" aria-live="polite"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-full" id="submit-btn" aria-describedby="submit-help">
+                        <span class="btn-text">Sign In</span>
+                        <span class="btn-loading" style="display: none;">
+                            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2v10l7 7"></path>
+                            </svg>
+                            Signing in...
+                        </span>
+                    </button>
+                    <div id="submit-help" class="form-help-text">
+                        By signing in, you agree to our Terms of Service and Privacy Policy.
+                    </div>
+                </div>
+            </form>
+
+            <!-- Additional Options -->
+            <div class="auth-footer">
+                <div class="divider">
+                    <span class="divider-text">Or continue with</span>
+                </div>
+                
+                <div class="social-login">
+                    <button type="button" class="social-btn google-btn" aria-label="Sign in with Google">
+                        <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Google
+                    </button>
+                    <button type="button" class="social-btn github-btn" aria-label="Sign in with GitHub">
+                        <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        GitHub
+                    </button>
+                </div>
+
+                <div class="auth-links">
+                    <p>Don't have an account? <a href="{{ url_for('main.signup_page') }}" class="auth-link" aria-label="Create a new account">Sign up here</a></p>
+                    <p><a href="#" class="auth-link" aria-label="Reset your password">Forgot password?</a></p>
+                </div>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+</main>
+
+<!-- Structured Data for Login Form -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPageElement",
+    "name": "Login Form",
+    "description": "User authentication form for Depanku platform",
+    "formElement": {
+        "@type": "Form",
+        "action": "{{ url_for('main.login_page') }}",
+        "method": "POST",
+        "targetDescription": "User account login",
+        "inputElement": [
+            {
+                "@type": "TextInput",
+                "name": "email",
+                "label": "Email Address",
+                "required": true,
+                "autocomplete": "email"
+            },
+            {
+                "@type": "PasswordInput",
+                "name": "password", 
+                "label": "Password",
+                "required": true,
+                "autocomplete": "current-password"
+            }
+        ]
+    }
+}
+</script>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('password-toggle');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnLoading = submitBtn.querySelector('.btn-loading');
+
+        // Password visibility toggle
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.setAttribute('aria-expanded', type === 'text');
+            this.querySelector('.eye-icon').style.display = type === 'text' ? 'none' : 'block';
+            this.querySelector('.eye-slash-icon').style.display = type === 'text' ? 'block' : 'none';
+        });
+
+        // Form validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        function showFieldError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function hideFieldError(fieldId) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            errorElement.style.display = 'none';
+        }
+
+        // Real-time validation
+        emailInput.addEventListener('blur', function() {
+            if (this.value && !validateEmail(this.value)) {
+                showFieldError('email', 'Please enter a valid email address');
+            } else {
+                hideFieldError('email');
+            }
+        });
+
+        passwordInput.addEventListener('blur', function() {
+            if (this.value && this.value.length < 6) {
+                showFieldError('password', 'Password must be at least 6 characters long');
+            } else {
+                hideFieldError('password');
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Clear previous errors
+            hideError();
+            hideFieldError('email');
+            hideFieldError('password');
+
+            // Validate form
+            let isValid = true;
+            if (!emailInput.value) {
+                showFieldError('email', 'Email address is required');
+                isValid = false;
+            } else if (!validateEmail(emailInput.value)) {
+                showFieldError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            if (!passwordInput.value) {
+                showFieldError('password', 'Password is required');
+                isValid = false;
+            } else if (passwordInput.value.length < 6) {
+                showFieldError('password', 'Password must be at least 6 characters long');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            // Show loading state
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'block';
+            submitBtn.disabled = true;
+
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Simulate successful login
+                window.location.href = "{{ url_for('dashboard.dashboard_page') }}";
+                
+            } catch (error) {
+                btnText.style.display = 'block';
+                btnLoading.style.display = 'none';
+                submitBtn.disabled = false;
+                showError('Invalid email or password. Please try again.');
+            }
+        });
+
+        // Social login handlers
+        document.querySelector('.google-btn').addEventListener('click', function() {
+            // Implement Google OAuth
+            console.log('Google login clicked');
+        });
+
+        document.querySelector('.github-btn').addEventListener('click', function() {
+            // Implement GitHub OAuth
+            console.log('GitHub login clicked');
+        });
+    });
+</script>
 {% endblock %}

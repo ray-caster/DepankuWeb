@@ -1,78 +1,436 @@
-<div class="form-section">
-    <h4>1. Basic Information</h4>
-    <div class="form-group">
-        <label for="name" class="form-label">Organization Name *</label>
-        <input type="text" class="form-control" id="name" required placeholder="e.g., Future Coders Initiative">
-    </div>
-    <div class="form-group">
-        <label for="description" class="form-label">Description *</label>
-        <textarea class="form-control" id="description" rows="4" required
-            placeholder="Describe your organization's mission, values, and the opportunities you provide."></textarea>
-    </div>
-    <div class="row">
-        <div class="col-md-6 form-group">
-            <label for="category" class="form-label">Primary Category *</label>
-            <select class="form-control" id="category" required>
-                <option value="" disabled selected>Select a primary category...</option>
-                <option value="education">Education</option>
-                <option value="research">Research</option>
-                <option value="nonprofit">Non-profit</option>
-                <option value="startup">Startup</option>
-                <option value="corporate">Corporate</option>
-                <option value="community">Community Group</option>
-            </select>
+<!-- Organization Form Fields - SEO and Accessibility Optimized -->
+<div class="organization-form-fields" role="form">
+    <!-- Basic Information Section -->
+    <section class="form-section" aria-labelledby="basic-info-heading">
+        <h3 id="basic-info-heading" class="section-title">1. Basic Information</h3>
+        <p class="section-description">Provide the essential details about your organization.</p>
+        
+        <div class="form-group">
+            <label for="name" class="form-label">
+                Organization Name *
+                <span class="required-indicator" aria-label="Required field">*</span>
+            </label>
+            <input type="text" 
+                   class="form-control" 
+                   id="name" 
+                   name="name"
+                   required 
+                   aria-required="true"
+                   placeholder="e.g., Future Coders Initiative"
+                   aria-describedby="name-help">
+            <div id="name-help" class="form-text">
+                Enter the official name of your organization as it appears on official documents.
+            </div>
+            <div class="invalid-feedback" id="name-error">Please enter a valid organization name.</div>
         </div>
-        <div class="col-md-6 form-group">
-            <label for="tags" class="form-label">Tags</label>
-            <input type="text" class="form-control" id="tags" placeholder="stem, coding, highschool">
-            <div class="form-text">Comma-separated keywords students would search for.</div>
+
+        <div class="form-group">
+            <label for="description" class="form-label">
+                Description *
+                <span class="required-indicator" aria-label="Required field">*</span>
+            </label>
+            <textarea class="form-control" 
+                      id="description" 
+                      name="description"
+                      rows="4" 
+                      required 
+                      aria-required="true"
+                      maxlength="2000"
+                      aria-describedby="description-help"
+                      placeholder="Describe your organization's mission, values, and the opportunities you provide."></textarea>
+            <div id="description-help" class="form-text">
+                Provide a comprehensive description that helps students understand what your organization does and what opportunities are available.
+            </div>
+            <div class="char-counter">
+                <span id="description-char-count">0</span>/2000 characters
+            </div>
+            <div class="invalid-feedback" id="description-error">Please enter a valid description.</div>
         </div>
-    </div>
+
+        <div class="form-row">
+            <div class="form-col">
+                <div class="form-group">
+                    <label for="category" class="form-label">
+                        Primary Category *
+                        <span class="required-indicator" aria-label="Required field">*</span>
+                    </label>
+                    <select class="form-select" 
+                            id="category" 
+                            name="category"
+                            required 
+                            aria-required="true"
+                            aria-describedby="category-help">
+                        <option value="" disabled selected>Select a primary category...</option>
+                        <option value="education">Education</option>
+                        <option value="research">Research</option>
+                        <option value="nonprofit">Non-profit</option>
+                        <option value="startup">Startup</option>
+                        <option value="corporate">Corporate</option>
+                        <option value="community">Community Group</option>
+                    </select>
+                    <div id="category-help" class="form-text">
+                        Choose the category that best represents your organization's primary focus.
+                    </div>
+                    <div class="invalid-feedback" id="category-error">Please select a category.</div>
+                </div>
+            </div>
+            <div class="form-col">
+                <div class="form-group">
+                    <label for="tags" class="form-label">Tags</label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="tags" 
+                           name="tags"
+                           placeholder="stem, coding, highschool"
+                           aria-describedby="tags-help">
+                    <div id="tags-help" class="form-text">
+                        Comma-separated keywords students would search for. Include relevant skills, subjects, and target audiences.
+                    </div>
+                    <div class="tag-suggestions">
+                        <span class="tag-suggestion" tabindex="0" role="button" aria-label="Add tag">STEM</span>
+                        <span class="tag-suggestion" tabindex="0" role="button" aria-label="Add tag">Coding</span>
+                        <span class="tag-suggestion" tabindex="0" role="button" aria-label="Add tag">Research</span>
+                        <span class="tag-suggestion" tabindex="0" role="button" aria-label="Add tag">Internship</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Branding Section -->
+    <section class="form-section" aria-labelledby="contact-branding-heading">
+        <h3 id="contact-branding-heading" class="section-title">2. Contact & Branding</h3>
+        <p class="section-description">Provide contact information and branding assets.</p>
+        
+        <div class="form-row">
+            <div class="form-col">
+                <div class="form-group">
+                    <label for="website" class="form-label">Website</label>
+                    <input type="url" 
+                           class="form-control" 
+                           id="website" 
+                           name="website"
+                           placeholder="https://example.com"
+                           aria-describedby="website-help">
+                    <div id="website-help" class="form-text">
+                        Enter your organization's official website URL.
+                    </div>
+                    <div class="invalid-feedback" id="website-error">Please enter a valid URL.</div>
+                </div>
+            </div>
+            <div class="form-col">
+                <div class="form-group">
+                    <label for="contactEmail" class="form-label">Public Contact Email</label>
+                    <input type="email" 
+                           class="form-control" 
+                           id="contactEmail" 
+                           name="contactEmail"
+                           placeholder="contact@example.com"
+                           aria-describedby="contact-email-help">
+                    <div id="contact-email-help" class="form-text">
+                        This email will be displayed to students who want to contact your organization.
+                    </div>
+                    <div class="invalid-feedback" id="contact-email-error">Please enter a valid email address.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="logo" class="form-label">Logo URL</label>
+            <div class="logo-input-group">
+                <input type="url" 
+                       class="form-control" 
+                       id="logo" 
+                       name="logo"
+                       placeholder="https://example.com/logo.png"
+                       aria-describedby="logo-help">
+                <button type="button" 
+                        class="btn btn-icon" 
+                        id="preview-logo-btn"
+                        aria-label="Preview logo">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+            <div id="logo-help" class="form-text">
+                A direct link to a square logo image (minimum 200x200px) works best. Supported formats: PNG, JPG, SVG.
+            </div>
+            <div class="logo-preview" id="logo-preview" style="display: none;">
+                <img src="" alt="Logo preview" class="preview-image">
+                <button type="button" 
+                        class="btn btn-sm btn-outline remove-logo" 
+                        aria-label="Remove logo">
+                    Remove
+                </button>
+            </div>
+            <div class="invalid-feedback" id="logo-error">Please enter a valid image URL.</div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="form-section" aria-labelledby="location-heading">
+        <h3 id="location-heading" class="section-title">3. Location</h3>
+        <p class="section-description">Specify where your opportunities are available.</p>
+        
+        <fieldset class="location-options" aria-labelledby="location-type-label">
+            <legend id="location-type-label" class="sr-only">Select location type</legend>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" 
+                           class="form-check-input" 
+                           id="locationRemote" 
+                           name="locationType" 
+                           value="remote"
+                           checked
+                           aria-describedby="location-remote-help">
+                    <label for="locationRemote" class="form-check-label">
+                        <span class="radio-icon">🌐</span>
+                        <span class="radio-text">Remote</span>
+                    </label>
+                    <div id="location-remote-help" class="form-text">
+                        Opportunities can be completed from anywhere in the world.
+                    </div>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" 
+                           class="form-check-input" 
+                           id="locationHybrid" 
+                           name="locationType" 
+                           value="hybrid"
+                           aria-describedby="location-hybrid-help">
+                    <label for="locationHybrid" class="form-check-label">
+                        <span class="radio-icon">🏢</span>
+                        <span class="radio-text">Hybrid</span>
+                    </label>
+                    <div id="location-hybrid-help" class="form-text">
+                        Combination of remote and on-site work required.
+                    </div>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" 
+                           class="form-check-input" 
+                           id="locationOnsite" 
+                           name="locationType" 
+                           value="onsite"
+                           aria-describedby="location-onsite-help">
+                    <label for="locationOnsite" class="form-check-label">
+                        <span class="radio-icon">📍</span>
+                        <span class="radio-text">On-site</span>
+                    </label>
+                    <div id="location-onsite-help" class="form-text">
+                        Physical presence at a specific location is required.
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="form-group conditional-field" id="addressField" style="display: none;">
+            <label for="address" class="form-label">
+                Physical Address *
+                <span class="required-indicator" aria-label="Required field">*</span>
+            </label>
+            <input type="text" 
+                   class="form-control" 
+                   id="address" 
+                   name="address"
+                   placeholder="123 Main St, Anytown, USA"
+                   aria-required="true"
+                   aria-describedby="address-help">
+            <div id="address-help" class="form-text">
+                Enter the full physical address where on-site work will take place.
+            </div>
+            <div class="address-suggestions">
+                <button type="button" 
+                        class="btn btn-link btn-sm" 
+                        id="use-current-location-btn"
+                        aria-label="Use current location">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Use Current Location
+                </button>
+            </div>
+            <div class="invalid-feedback" id="address-error">Please enter a valid address.</div>
+        </div>
+    </section>
+
+    <!-- Open Positions Section -->
+    <section class="form-section" aria-labelledby="positions-heading">
+        <h3 id="positions-heading" class="section-title">4. Open Positions (Optional)</h3>
+        <p class="section-description">List specific opportunities available at your organization.</p>
+        
+        <div class="positions-container" id="positionsContainer" role="list">
+            <!-- Position cards will be dynamically added here -->
+        </div>
+        
+        <div class="form-actions">
+            <button type="button" 
+                    class="btn btn-outline" 
+                    id="addPositionBtn"
+                    aria-label="Add new position">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Add Position
+            </button>
+            <div class="form-text">
+                Add specific job titles, internships, or research opportunities available at your organization.
+            </div>
+        </div>
+    </section>
+
+    <!-- Additional Information Section -->
+    <section class="form-section" aria-labelledby="additional-info-heading">
+        <h3 id="additional-info-heading" class="section-title">5. Additional Information</h3>
+        <p class="section-description">Provide any additional details that would be helpful for students.</p>
+        
+        <div class="form-group">
+            <label for="eligibility" class="form-label">Eligibility Requirements</label>
+            <textarea class="form-control" 
+                      id="eligibility" 
+                      name="eligibility"
+                      rows="3"
+                      maxlength="1000"
+                      aria-describedby="eligibility-help"
+                      placeholder="Specify any age, education level, or skill requirements for opportunities."></textarea>
+            <div id="eligibility-help" class="form-text">
+                Describe any specific requirements students must meet to apply for opportunities.
+            </div>
+            <div class="char-counter">
+                <span id="eligibility-char-count">0</span>/1000 characters
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="applicationProcess" class="form-label">Application Process</label>
+            <textarea class="form-control" 
+                      id="applicationProcess" 
+                      name="applicationProcess"
+                      rows="3"
+                      maxlength="1000"
+                      aria-describedby="application-help"
+                      placeholder="Describe how students should apply for opportunities."></textarea>
+            <div id="application-help" class="form-text">
+                Provide instructions on how students can apply, including any forms, links, or contact information.
+            </div>
+            <div class="char-counter">
+                <span id="application-char-count">0</span>/1000 characters
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="deadline" class="form-label">Application Deadline</label>
+            <input type="date" 
+                   class="form-control" 
+                   id="deadline" 
+                   name="deadline"
+                   aria-describedby="deadline-help">
+            <div id="deadline-help" class="form-text">
+                Leave blank if applications are accepted on a rolling basis.
+            </div>
+        </div>
+    </section>
 </div>
 
-<div class="form-section">
-    <h4>2. Contact & Branding</h4>
-    <div class="row">
-        <div class="col-md-6 form-group">
-            <label for="website" class="form-label">Website</label>
-            <input type="url" class="form-control" id="website" placeholder="https://example.com">
+<!-- Position Template -->
+<template id="positionTemplate">
+    <div class="position-card" role="article">
+        <div class="position-header">
+            <h4 class="position-title">Position #<span class="position-number">1</span></h4>
+            <button type="button" 
+                    class="btn btn-icon btn-sm remove-position" 
+                    aria-label="Remove position">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
         </div>
-        <div class="col-md-6 form-group">
-            <label for="contactEmail" class="form-label">Public Contact Email</label>
-            <input type="email" class="form-control" id="contactEmail" placeholder="contact@example.com">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="logo" class="form-label">Logo URL</label>
-        <input type="url" class="form-control" id="logo" placeholder="https://example.com/logo.png">
-        <div class="form-text">A direct link to a square logo image works best.</div>
-    </div>
-</div>
+        
+        <div class="position-fields">
+            <div class="form-group">
+                <label for="position-title" class="form-label">
+                    Position Title *
+                    <span class="required-indicator" aria-label="Required field">*</span>
+                </label>
+                <input type="text" 
+                       class="form-control position-title" 
+                       name="positions[<index>][title]"
+                       placeholder="e.g., Software Engineering Intern"
+                       aria-required="true"
+                       aria-describedby="position-title-help">
+                <div id="position-title-help" class="form-text">
+                    Enter the official title of the position.
+                </div>
+                <div class="invalid-feedback" id="position-title-error">Please enter a position title.</div>
+            </div>
 
-<div class="form-section">
-    <h4>3. Location</h4>
-    <div class="mb-3">
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="locationType" id="locationRemote" value="remote" checked>
-            <label class="form-check-label" for="locationRemote">Remote</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="locationType" id="locationHybrid" value="hybrid">
-            <label class="form-check-label" for="locationHybrid">Hybrid</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="locationType" id="locationOnsite" value="onsite">
-            <label class="form-check-label" for="locationOnsite">On-site</label>
-        </div>
-    </div>
-    <div class="form-group" id="addressField" style="display: none;">
-        <label for="address" class="form-label">Physical Address</label>
-        <input type="text" class="form-control" id="address" placeholder="123 Main St, Anytown, USA">
-    </div>
-</div>
+            <div class="form-group">
+                <label for="position-description" class="form-label">Description</label>
+                <textarea class="form-control position-description" 
+                          name="positions[<index>][description]"
+                          rows="3"
+                          maxlength="500"
+                          aria-describedby="position-desc-help"
+                          placeholder="Brief description of the role and responsibilities."></textarea>
+                <div id="position-desc-help" class="form-text">
+                    Describe what the position entails and what responsibilities the student will have.
+                </div>
+                <div class="char-counter">
+                    <span class="position-desc-count">0</span>/500 characters
+                </div>
+            </div>
 
-<div class="form-section">
-    <h4>4. Open Positions (Optional)</h4>
-    <div id="positionsContainer"></div>
-    <button type="button" class="btn btn-outline" id="addPositionBtn">+ Add Position</button>
-</div>
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="position-requirements" class="form-label">Requirements</label>
+                        <input type="text" 
+                               class="form-control position-requirements" 
+                               name="positions[<index>][requirements]"
+                               placeholder="e.g., Python, HTML, CSS"
+                               aria-describedby="position-req-help">
+                        <div id="position-req-help" class="form-text">
+                            Comma-separated list of required skills or qualifications.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="position-link" class="form-label">Application Link</label>
+                        <input type="url" 
+                               class="form-control position-link" 
+                               name="positions[<index>][link]"
+                               placeholder="https://example.com/apply"
+                               aria-describedby="position-link-help">
+                        <div id="position-link-help" class="form-text">
+                            Direct link to the application page or job posting.
+                        </div>
+                        <div class="invalid-feedback" id="position-link-error">Please enter a valid URL.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Structured Data for Organization Form -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPageElement",
+    "name": "Organization Form",
+    "description": "Form for creating and editing organization listings",
+    "formElement": {
+        "@type": "Form",
+        "name": "Organization Registration Form",
+        "action": "/api/organizations",
+        "method": "POST",
+        "targetDescription": "Create or update organization listings on Depanku platform"
+    }
+}
+</script>

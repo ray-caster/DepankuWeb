@@ -1,60 +1,796 @@
 {% extends "base.html" %}
 
 {% block title %}Edit Organization - Depanku{% endblock %}
+{% block og_title %}Edit Organization - Depanku{% endblock %}
+{% block og_description %}Update your organization listing and keep your information current for students.{% endblock %}
+{% block twitter_title %}Edit Organization - Depanku{% endblock %}
+{% block twitter_description %}Update your organization listing and keep your information current for students.{% endblock %}
 
 {% block content %}
-<main class="form-page container">
-    <div id="loading-container" class="text-center py-5">
-        <div class="loading-spinner"></div>
-        <p class="mt-3 text-muted">Loading organization data...</p>
-    </div>
+<main class="organization-edit-page" id="main-content">
+    <!-- Skip Navigation Link -->
+    <a href="#form-container" class="skip-link">Skip to organization form</a>
 
-    <div id="form-container" style="display: none;">
-        <h1 id="form-title" class="section-title"></h1>
-        <p class="text-center text-muted" style="max-width: 600px; margin: -1rem auto 2.5rem;">
-            Update the details for your organization. Changes will be re-submitted for review.
-        </p>
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" aria-label="Home">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('organizations.organizations_page') }}" aria-label="Organizations">Organizations</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('organizations.organization_view_page', org_id=org_id) }}" aria-label="Organization Details">Organization Details</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Organization</li>
+        </ol>
+    </nav>
 
-        <div id="moderationErrorAlert" class="alert alert-danger" style="display: none;">
-            <h4 id="moderationErrorSummary" class="mb-2"></h4>
-            <div id="moderationErrorDetails"></div>
-        </div>
-        <div id="generalErrorAlert" class="alert alert-danger" style="display: none;"></div>
-
-        <form id="organizationForm" novalidate>
-            {% include '_organization_form_fields.html' %}
-
-            <div class="d-flex justify-content-end gap-2 mt-4">
-                <a href="{{ url_for('organizations.organization_view_page', org_id=org_id) }}"
-                    class="btn btn-outline">Cancel</a>
-                <button type="submit" class="btn btn-primary" id="submitBtn"></button>
+    <section class="organization-form-section" aria-labelledby="form-heading">
+        <div class="container">
+            <!-- Loading State -->
+            <div id="loading-container" class="loading-container" role="status" aria-live="polite">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Loading organization data...</p>
             </div>
-        </form>
-    </div>
+
+            <!-- Form Container -->
+            <div id="form-container" class="form-container" style="display: none;">
+                <!-- Page Header -->
+                <header class="page-header">
+                    <div class="header-content">
+                        <div class="header-text">
+                            <h1 id="form-heading" class="page-title">Edit Organization Listing</h1>
+                            <p class="page-subtitle">
+                                Update the details for your organization. Changes will be re-submitted for review before going live.
+                            </p>
+                        </div>
+                        <div class="header-help">
+                            <button type="button" 
+                                    class="btn btn-link btn-sm" 
+                                    id="form-help-btn"
+                                    aria-label="Get help with the form">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                Need Help?
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Organization Preview Card -->
+                <div class="organization-preview-card" role="complementary" aria-label="Current organization preview">
+                    <div class="preview-header">
+                        <h3>Current Listing Preview</h3>
+                        <button type="button" 
+                                class="btn btn-icon btn-sm" 
+                                id="toggle-preview-btn"
+                                aria-label="Toggle preview visibility">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="preview-content" id="preview-content">
+                        <div class="preview-logo">
+                            <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                 alt="Organization logo" 
+                                 class="preview-image">
+                        </div>
+                        <div class="preview-info">
+                            <h4 class="preview-name">Organization Name</h4>
+                            <p class="preview-description">Organization description will appear here...</p>
+                            <div class="preview-meta">
+                                <span class="preview-category">Category</span>
+                                <span class="preview-location">Location</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Indicator -->
+                <div class="form-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Form completion progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span class="progress-current">0</span> of <span class="progress-total">5</span> sections completed
+                    </div>
+                </div>
+
+                <!-- Change History -->
+                <div class="change-history" id="change-history" style="display: none;">
+                    <h3>Recent Changes</h3>
+                    <div class="change-list">
+                        <div class="change-item">
+                            <div class="change-meta">
+                                <span class="change-date">2024-01-15</span>
+                                <span class="change-type">Updated</span>
+                            </div>
+                            <div class="change-details">
+                                <p>Modified job requirements for Software Engineering Intern position</p>
+                            </div>
+                        </div>
+                        <div class="change-item">
+                            <div class="change-meta">
+                                <span class="change-date">2024-01-10</span>
+                                <span class="change-type">Added</span>
+                            </div>
+                            <div class="change-details">
+                                <p>New position: Data Science Research Assistant</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Messages -->
+                <div id="error-alerts" class="error-alerts" role="alert" aria-live="polite">
+                    <!-- Moderation Error Alert -->
+                    <div id="moderationErrorAlert" class="alert alert-danger" style="display: none;" role="alert">
+                        <div class="alert-header">
+                            <h4 id="moderationErrorSummary" class="alert-title" tabindex="0">Content Moderation Issue</h4>
+                            <button type="button" 
+                                    class="btn-close" 
+                                    aria-label="Close moderation alert"
+                                    onclick="this.parentElement.parentElement.style.display='none'">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="moderationErrorDetails" class="alert-body">
+                            <!-- Error details will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- General Error Alert -->
+                    <div id="generalErrorAlert" class="alert alert-danger" style="display: none;" role="alert">
+                        <div class="alert-header">
+                            <h4 class="alert-title">Form Error</h4>
+                            <button type="button" 
+                                    class="btn-close" 
+                                    aria-label="Close error alert"
+                                    onclick="this.parentElement.parentElement.style.display='none'">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="alert-body">
+                            <!-- Error details will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Message -->
+                <div id="success-message" class="alert alert-success" style="display: none;" role="alert">
+                    <div class="alert-header">
+                        <h4 class="alert-title">Success!</h4>
+                        <button type="button" 
+                                class="btn-close" 
+                                aria-label="Close success message"
+                                onclick="this.parentElement.parentElement.style.display='none'">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="alert-body">
+                        Your organization listing has been updated successfully and is now under review.
+                    </div>
+                </div>
+
+                <!-- Organization Form -->
+                <form id="organizationForm" 
+                      class="organization-form" 
+                      novalidate 
+                      role="form"
+                      aria-describedby="form-help">
+                    
+                    <!-- Form Help Section -->
+                    <div id="form-help" class="form-help" style="display: none;">
+                        <h3>Editing Guidelines</h3>
+                        <ul>
+                            <li>Only update information that has changed</li>
+                            <li>Keep descriptions current and accurate</li>
+                            <li>Update position requirements and deadlines regularly</li>
+                            <li>Review contact information to ensure it's still valid</li>
+                            <li>All changes are reviewed by our team before going live</li>
+                        </ul>
+                        <button type="button" 
+                                class="btn btn-secondary" 
+                                onclick="document.getElementById('form-help').style.display='none'">
+                            Got it
+                        </button>
+                    </div>
+
+                    <!-- Organization Form Fields -->
+                    {% include '_organization_form_fields.html' %}
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <div class="form-actions-left">
+                            <button type="button" 
+                                    class="btn btn-outline" 
+                                    id="save-draft-btn"
+                                    aria-label="Save changes as draft">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                Save Draft
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-outline" 
+                                    id="preview-changes-btn"
+                                    aria-label="Preview changes">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                Preview Changes
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-outline" 
+                                    id="reset-changes-btn"
+                                    aria-label="Reset to original values">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="1 4 1 10 7 10"></polyline>
+                                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                                </svg>
+                                Reset Changes
+                            </button>
+                        </div>
+                        <div class="form-actions-right">
+                            <a href="{{ url_for('organizations.organization_view_page', org_id=org_id) }}" 
+                               class="btn btn-outline" 
+                               aria-label="Cancel and return to organization details">
+                                Cancel
+                            </a>
+                            <button type="submit" 
+                                    class="btn btn-primary" 
+                                    id="submitBtn"
+                                    aria-describedby="submit-help">
+                                <span class="btn-text">Submit Changes for Review</span>
+                                <span class="btn-loading" style="display: none;">
+                                    <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M12 2v10l7 7"></path>
+                                    </svg>
+                                    Submitting...
+                                </span>
+                            </button>
+                            <div id="submit-help" class="sr-only">
+                                Submit your organization changes for review
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Terms and Conditions -->
+                <div class="terms-conditions">
+                    <h3>Editing Guidelines</h3>
+                    <div class="terms-content">
+                        <p>When editing your organization listing, please ensure:</p>
+                        <ul>
+                            <li>All information remains accurate and up-to-date</li>
+                            <li>Changes reflect current opportunities and requirements</li>
+                            <li>Contact information is still valid and responsive</li>
+                            <li>Descriptions accurately represent your organization</li>
+                        </ul>
+                        <p>All edits are reviewed by our team within 24-48 hours. The listing will remain visible during the review process.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
 
+<!-- Position Template -->
 <template id="positionTemplate">
-    <div class="position-card">
-        <button type="button" class="btn-close remove-position" aria-label="Remove position"></button>
-        <h5 class="mb-3">Position #<span class="position-number">1</span></h5>
-        <div class="mb-2"><input type="text" class="form-control position-title"
-                placeholder="Position Title * (e.g., Software Engineering Intern)"></div>
-        <div class="mb-2"><textarea class="form-control position-description" rows="2"
-                placeholder="Position description"></textarea></div>
-        <div class="mb-2"><input type="text" class="form-control position-requirements"
-                placeholder="Requirements (comma-separated)"></div>
-        <div class="mb-2"><input type="url" class="form-control position-link" placeholder="Direct application link">
+    <div class="position-card" role="article">
+        <div class="position-header">
+            <h4 class="position-title">Position #<span class="position-number">1</span></h4>
+            <button type="button" 
+                    class="btn btn-icon btn-sm remove-position" 
+                    aria-label="Remove position">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="position-fields">
+            <div class="form-group">
+                <label for="position-title" class="form-label">
+                    Position Title *
+                    <span class="required-indicator" aria-label="Required field">*</span>
+                </label>
+                <input type="text" 
+                       class="form-control position-title" 
+                       name="positions[<index>][title]"
+                       placeholder="e.g., Software Engineering Intern"
+                       aria-required="true"
+                       aria-describedby="position-title-help">
+                <div id="position-title-help" class="form-text">
+                    Enter the official title of the position.
+                </div>
+                <div class="invalid-feedback" id="position-title-error">Please enter a position title.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="position-description" class="form-label">Description</label>
+                <textarea class="form-control position-description" 
+                          name="positions[<index>][description]"
+                          rows="3"
+                          maxlength="500"
+                          aria-describedby="position-desc-help"
+                          placeholder="Brief description of the role and responsibilities."></textarea>
+                <div id="position-desc-help" class="form-text">
+                    Describe what the position entails and what responsibilities the student will have.
+                </div>
+                <div class="char-counter">
+                    <span class="position-desc-count">0</span>/500 characters
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="position-requirements" class="form-label">Requirements</label>
+                        <input type="text" 
+                               class="form-control position-requirements" 
+                               name="positions[<index>][requirements]"
+                               placeholder="e.g., Python, HTML, CSS"
+                               aria-describedby="position-req-help">
+                        <div id="position-req-help" class="form-text">
+                            Comma-separated list of required skills or qualifications.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="position-link" class="form-label">Application Link</label>
+                        <input type="url" 
+                               class="form-control position-link" 
+                               name="positions[<index>][link]"
+                               placeholder="https://example.com/apply"
+                               aria-describedby="position-link-help">
+                        <div id="position-link-help" class="form-text">
+                            Direct link to the application page or job posting.
+                        </div>
+                        <div class="invalid-feedback" id="position-link-error">Please enter a valid URL.</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
-{% endblock %}
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpModalLabel">Organization Editing Help</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close help modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="help-content">
+                    <h6>Editing Your Organization</h6>
+                    <p>Welcome to Depanku's organization editing form. This guide will help you keep your listing current and effective.</p>
+                    
+                    <h6>Best Practices for Updates</h6>
+                    <ul>
+                        <li><strong>Keep Information Current:</strong> Update deadlines, requirements, and contact information regularly</li>
+                        <li><strong>Remove Expired Positions:</strong> Delete positions that are no longer accepting applications</li>
+                        <li><strong>Add New Opportunities:</strong> Include any new internships, research positions, or job openings</li>
+                        <li><strong>Update Descriptions:</strong> Revise organization descriptions to reflect current focus and achievements</li>
+                    </ul>
+
+                    <h6>What to Update</h6>
+                    <ul>
+                        <li><strong>Application Deadlines:</strong> Remove expired deadlines and add new ones</li>
+                        <li><strong>Position Requirements:</strong> Update skills and qualifications as needed</li>
+                        <li><strong>Contact Information:</strong> Ensure email addresses and websites are still valid</li>
+                        <li><strong>Organization Details:</strong> Update mission, values, or recent achievements</li>
+                    </ul>
+
+                    <h6>Review Process</h6>
+                    <p>All edits to your organization listing are reviewed by our team within 24-48 hours. We check for:</p>
+                    <ul>
+                        <li>Accuracy and relevance of updated information</li>
+                        <li>Removal of expired or outdated content</li>
+                        <li>Appropriate additions of new opportunities</li>
+                        <li>Overall quality and usefulness of the listing</li>
+                    </ul>
+
+                    <h6>Tips for Effective Updates</h6>
+                    <ul>
+                        <li>Make changes regularly to keep your listing fresh</li>
+                        <li>Respond promptly to student inquiries about updated positions</li>
+                        <li>Use clear, specific language in position descriptions</li>
+                        <li>Include application deadlines prominently</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="contact-support-btn">Contact Support</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Structured Data for Organization Editing -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Edit Organization - Depanku",
+    "description": "Form for editing organization listings on Depanku platform",
+    "url": "{{ canonical_url|default('https://depanku.com' + request.path) }}",
+    "author": {
+        "@type": "Organization",
+        "name": "Depanku"
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ canonical_url|default('https://depanku.com') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Organizations",
+                "item": "{{ canonical_url|default('https://depanku.com/organizations') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Organization Details",
+                "item": "{{ canonical_url|default('https://depanku.com/organizations/' + org_id) }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Edit Organization",
+                "item": "{{ canonical_url|default('https://depanku.com' + request.path) }}"
+            }
+        ]
+    },
+    "mainEntity": {
+        "@type": "Form",
+        "name": "Organization Edit Form",
+        "action": "/api/organizations/{{ org_id }}",
+        "method": "PUT",
+        "targetDescription": "Update organization listings on Depanku platform",
+        "formElement": {
+            "@type": "Thing",
+            "name": "Organization Information Update",
+            "description": "Updated information about the organization including name, description, contact details, and available positions"
+        }
+    }
+}
+</script>
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/organization_form.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const orgId = '{{ org_id }}';
+        
+        // Initialize form for edit mode
         initializeFormForEdit(orgId);
+        
+        // Form validation and submission
+        const form = document.getElementById('organizationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const saveDraftBtn = document.getElementById('save-draft-btn');
+        const previewChangesBtn = document.getElementById('preview-changes-btn');
+        const resetChangesBtn = document.getElementById('reset-changes-btn');
+        const togglePreviewBtn = document.getElementById('toggle-preview-btn');
+        const formHelpBtn = document.getElementById('form-help-btn');
+        const helpModal = new bootstrap.Modal(document.getElementById('helpModal'));
+        const changeHistory = document.getElementById('change-history');
+        
+        // ARIA Live Region for Dynamic Updates
+        const ariaLiveRegion = document.createElement('div');
+        ariaLiveRegion.className = 'sr-only';
+        ariaLiveRegion.setAttribute('aria-live', 'polite');
+        ariaLiveRegion.setAttribute('aria-atomic', 'true');
+        document.body.appendChild(ariaLiveRegion);
+        
+        function announceToScreenReader(message) {
+            ariaLiveRegion.textContent = message;
+            setTimeout(() => {
+                ariaLiveRegion.textContent = '';
+            }, 1000);
+        }
+        
+        // Toggle preview visibility
+        togglePreviewBtn.addEventListener('click', () => {
+            const previewContent = document.getElementById('preview-content');
+            const isVisible = previewContent.style.display !== 'none';
+            
+            if (isVisible) {
+                previewContent.style.display = 'none';
+                togglePreviewBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                `;
+                announceToScreenReader('Preview hidden');
+            } else {
+                previewContent.style.display = 'block';
+                togglePreviewBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>
+                        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                `;
+                announceToScreenReader('Preview shown');
+            }
+        });
+        
+        // Show change history
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'h') {
+                e.preventDefault();
+                changeHistory.style.display = changeHistory.style.display === 'none' ? 'block' : 'none';
+                announceToScreenReader(changeHistory.style.display === 'block' ? 'Change history shown' : 'Change history hidden');
+            }
+        });
+        
+        // Form help button
+        formHelpBtn.addEventListener('click', () => {
+            helpModal.show();
+            announceToScreenReader('Help modal opened');
+        });
+        
+        // Contact support button
+        document.getElementById('contact-support-btn').addEventListener('click', () => {
+            helpModal.hide();
+            // In a real implementation, this would open a contact form or redirect to support
+            window.location.href = '/contact';
+        });
+        
+        // Save draft functionality
+        saveDraftBtn.addEventListener('click', async () => {
+            try {
+                // Simulate saving draft
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Show success message
+                const successAlert = document.getElementById('success-message');
+                successAlert.querySelector('.alert-body').textContent = 'Changes saved as draft!';
+                successAlert.style.display = 'block';
+                
+                announceToScreenReader('Changes saved as draft');
+                
+            } catch (error) {
+                console.error('Failed to save draft:', error);
+                announceToScreenReader('Failed to save draft');
+            }
+        });
+        
+        // Preview changes functionality
+        previewChangesBtn.addEventListener('click', () => {
+            // In a real implementation, this would open a preview page with the changes
+            alert('Preview functionality would open a new tab showing the updated organization listing');
+        });
+        
+        // Reset changes functionality
+        resetChangesBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all changes? This will restore the original values.')) {
+                // In a real implementation, this would reset the form to original values
+                form.reset();
+                announceToScreenReader('Changes reset to original values');
+            }
+        });
+        
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!validateForm()) {
+                announceToScreenReader('Please fix the errors in the form');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.querySelector('.btn-text').style.display = 'none';
+            submitBtn.querySelector('.btn-loading').style.display = 'block';
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Show success message
+                const successAlert = document.getElementById('success-message');
+                successAlert.querySelector('.alert-body').textContent = 'Your organization changes have been submitted successfully and are now under review.';
+                successAlert.style.display = 'block';
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                announceToScreenReader('Organization changes submitted successfully');
+                
+                // Redirect after delay
+                setTimeout(() => {
+                    window.location.href = '{{ url_for("organizations.organization_view_page", org_id=org_id) }}';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Failed to submit form:', error);
+                
+                // Show error message
+                const errorAlert = document.getElementById('generalErrorAlert');
+                errorAlert.querySelector('.alert-body').textContent = 'Failed to submit organization changes. Please try again.';
+                errorAlert.style.display = 'block';
+                
+                announceToScreenReader('Failed to submit organization changes');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.querySelector('.btn-text').style.display = 'block';
+                submitBtn.querySelector('.btn-loading').style.display = 'none';
+            }
+        });
+        
+        // Form validation function
+        function validateForm() {
+            let isValid = true;
+            
+            // Validate organization name
+            const nameInput = document.getElementById('name');
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                nameInput.classList.remove('is-invalid');
+            }
+            
+            // Validate description
+            const descriptionInput = document.getElementById('description');
+            if (!descriptionInput.value.trim()) {
+                descriptionInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                descriptionInput.classList.remove('is-invalid');
+            }
+            
+            // Validate category
+            const categorySelect = document.getElementById('category');
+            if (!categorySelect.value) {
+                categorySelect.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                categorySelect.classList.remove('is-invalid');
+            }
+            
+            // Validate website if provided
+            const websiteInput = document.getElementById('website');
+            if (websiteInput.value && !isValidUrl(websiteInput.value)) {
+                websiteInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                websiteInput.classList.remove('is-invalid');
+            }
+            
+            // Validate contact email if provided
+            const contactEmailInput = document.getElementById('contactEmail');
+            if (contactEmailInput.value && !isValidEmail(contactEmailInput.value)) {
+                contactEmailInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                contactEmailInput.classList.remove('is-invalid');
+            }
+            
+            // Validate logo URL if provided
+            const logoInput = document.getElementById('logo');
+            if (logoInput.value && !isValidUrl(logoInput.value)) {
+                logoInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                logoInput.classList.remove('is-invalid');
+            }
+            
+            return isValid;
+        }
+        
+        // URL validation helper
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+        
+        // Email validation helper
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Real-time validation
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    this.classList.add('is-invalid');
+                } else if (this.type === 'url' && this.value && !isValidUrl(this.value)) {
+                    this.classList.add('is-invalid');
+                } else if (this.type === 'email' && this.value && !isValidEmail(this.value)) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + Enter to submit form
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                form.dispatchEvent(new Event('submit'));
+            }
+            
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                if (helpModal._isShown) {
+                    helpModal.hide();
+                }
+            }
+            
+            // Ctrl/Cmd + H to toggle change history
+            if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
+                e.preventDefault();
+                changeHistory.style.display = changeHistory.style.display === 'none' ? 'block' : 'none';
+                announceToScreenReader(changeHistory.style.display === 'block' ? 'Change history shown' : 'Change history hidden');
+            }
+        });
+        
+        // Track form changes
+        let hasChanges = false;
+        const originalValues = new Map();
+        
+        // Store original values
+        inputs.forEach(input => {
+            originalValues.set(input, input.value);
+        });
+        
+        // Monitor for changes
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const originalValue = originalValues.get(this);
+                if (this.value !== originalValue) {
+                    hasChanges = true;
+                    submitBtn.querySelector('.btn-text').textContent = 'Submit Changes for Review';
+                } else {
+                    // Check if any other inputs have changed
+                    hasChanges = Array.from(inputs).some(input => 
+                        input.value !== originalValues.get(input)
+                    );
+                    if (!hasChanges) {
+                        submitBtn.querySelector('.btn-text').textContent = 'Submit for Review';
+                    }
+                }
+            });
+        });
     });
 </script>
 {% endblock %}

@@ -1,71 +1,598 @@
 {% extends "base.html" %}
 
 {% block title %}AI Career Analysis - Depanku{% endblock %}
+{% block og_title %}AI Career Analysis - Depanku{% endblock %}
+{% block og_description %}Get personalized AI-powered career analysis and recommendations for your professional development.{% endblock %}
+{% block twitter_title %}AI Career Analysis - Depanku{% endblock %}
+{% block twitter_description %}Get personalized AI-powered career analysis and recommendations for your professional development.{% endblock %}
 
 {% block page_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ai_analysis.css') }}">
 {% endblock %}
 
 {% block content %}
-<main class="container">
-    <div class="ai-analysis-container">
-        <div class="analysis-header">
-            <h1>AI Career Analysis</h1>
-            <p>Get personalized recommendations from a team of AI experts.</p>
-        </div>
+<main class="ai-analysis-page" id="main-content">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" aria-label="Home">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.dashboard_page') }}" aria-label="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">AI Analysis</li>
+        </ol>
+    </nav>
 
-        <div class="limit-warning" id="limit-warning">
-            <strong>Free Tier Limit:</strong> You have <span id="remaining-analyses">3</span> AI analyses remaining.
-        </div>
-        <div class="error-message" id="error-message"></div>
+    <section class="ai-analysis-container" aria-labelledby="analysis-heading">
+        <div class="container">
+            <!-- Analysis Header -->
+            <div class="analysis-header">
+                <h1 id="analysis-heading" class="analysis-title">AI Career Analysis</h1>
+                <p class="analysis-subtitle">Get personalized recommendations from our team of AI experts to guide your career journey.</p>
+            </div>
 
-        <div class="analysis-steps">
-            <div class="step-connector"></div>
-            <div class="step active" id="step-1">
-                <div class="step-number">1</div>
-                <div class="step-label">Refine Goal</div>
+            <!-- Usage Limit Warning -->
+            <div class="limit-warning" id="limit-warning" role="alert" aria-live="polite">
+                <div class="warning-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                    </svg>
+                </div>
+                <div class="warning-content">
+                    <strong>Free Tier Limit:</strong> You have <span id="remaining-analyses" aria-live="polite">3</span> AI analyses remaining.
+                    <a href="#" class="warning-link" aria-label="Upgrade to premium for unlimited analyses">Upgrade to Premium</a>
+                </div>
             </div>
-            <div class="step" id="step-2">
-                <div class="step-number">2</div>
-                <div class="step-label">AI Debate</div>
-            </div>
-            <div class="step" id="step-3">
-                <div class="step-number">3</div>
-                <div class="step-label">Results</div>
-            </div>
-        </div>
 
-        <div class="analysis-content" id="socratic-phase">
-            <h3>Tell us your initial goal</h3>
-            <p>We'll ask a few clarifying questions to understand exactly what you're looking for.</p>
-            <div class="socratic-chat" id="chat-container">
-                <div class="message ai-message">What are you hoping to achieve or discover?</div>
+            <!-- Error Message Area -->
+            <div id="error-message" class="alert alert-danger" role="alert" aria-live="polite" style="display: none;">
+                <div class="alert-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="alert-content">
+                    <h4 class="alert-title">Analysis Error</h4>
+                    <p class="alert-message" id="error-text"></p>
+                </div>
             </div>
-            <div class="input-group" id="initial-goal-phase">
-                <input type="text" id="goal-input" placeholder="e.g., 'Find a summer STEM internship'"
-                    autocomplete="off">
-                <button id="start-analysis-btn" class="btn btn-primary">Start</button>
-            </div>
-            <div class="input-group" id="question-phase" style="display: none;">
-                <input type="text" id="answer-input" placeholder="Your response..." autocomplete="off">
-                <button id="submit-answer-btn" class="btn btn-primary">Send</button>
-            </div>
-        </div>
 
-        <div class="analysis-content debate-visualization" id="debate-phase">
-            <h3>AI Experts are Debating Your Opportunity</h3>
-            <p>Our team of AI specialists is analyzing your goals from different perspectives to build the best
-                recommendation.</p>
-            <div class="loading-spinner" style="width: 40px; height: 40px; margin-bottom: 1rem;"></div>
-            <p id="debate-status">Building consensus among experts...</p>
-            <div class="ai-personas">
-                <!-- Persona cards will be updated by JS -->
+            <!-- Progress Steps -->
+            <div class="progress-steps" role="progressbar" aria-label="Analysis progress" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
+                <div class="steps-container">
+                    <div class="step-connector"></div>
+                    
+                    <!-- Step 1: Refine Goal -->
+                    <div class="step active" id="step-1" role="step" aria-current="step" aria-posinset="1" aria-setsize="3">
+                        <div class="step-number" aria-hidden="true">1</div>
+                        <div class="step-content">
+                            <div class="step-label">Refine Goal</div>
+                            <div class="step-description">Define your objectives</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: AI Debate -->
+                    <div class="step" id="step-2" role="step" aria-posinset="2" aria-setsize="3">
+                        <div class="step-number" aria-hidden="true">2</div>
+                        <div class="step-content">
+                            <div class="step-label">AI Debate</div>
+                            <div class="step-description">Expert analysis</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Results -->
+                    <div class="step" id="step-3" role="step" aria-posinset="3" aria-setsize="3">
+                        <div class="step-number" aria-hidden="true">3</div>
+                        <div class="step-content">
+                            <div class="step-label">Results</div>
+                            <div class="step-description">Personalized recommendations</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Content Area -->
+            <div class="analysis-content" id="analysis-content">
+                <!-- Step 1: Socratic Phase -->
+                <div class="analysis-phase active" id="socratic-phase" role="region" aria-labelledby="socratic-heading">
+                    <div class="phase-header">
+                        <h2 id="socratic-heading" class="phase-title">Tell us your initial goal</h2>
+                        <p class="phase-description">We'll ask a few clarifying questions to understand exactly what you're looking for.</p>
+                    </div>
+
+                    <!-- Chat Interface -->
+                    <div class="socratic-chat" id="chat-container" role="log" aria-live="polite" aria-label="AI conversation">
+                        <div class="message ai-message" role="article">
+                            <div class="message-avatar ai-avatar">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 6v6l4 2"></path>
+                                </svg>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="message-sender">AI Career Advisor</span>
+                                    <time class="message-time" datetime="2024-01-01T10:00:00">Just now</time>
+                                </div>
+                                <div class="message-text">
+                                    What are you hoping to achieve or discover? Be as specific as you can about your career goals, interests, and what you're looking for in an opportunity.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Groups -->
+                    <div class="input-group-container">
+                        <!-- Initial Goal Input -->
+                        <div class="input-group" id="initial-goal-phase">
+                            <label for="goal-input" class="input-label">Your Initial Goal</label>
+                            <div class="input-wrapper">
+                                <input type="text" 
+                                       id="goal-input" 
+                                       class="form-control" 
+                                       placeholder="e.g., 'Find a summer STEM internship' or 'Explore computer science careers'"
+                                       autocomplete="off"
+                                       aria-describedby="goal-help">
+                                <button type="button" 
+                                        id="start-analysis-btn" 
+                                        class="btn btn-primary"
+                                        aria-describedby="start-help">
+                                    <span class="btn-text">Start Analysis</span>
+                                    <span class="btn-loading" style="display: none;">
+                                        <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M12 2v10l7 7"></path>
+                                        </svg>
+                                        Processing...
+                                    </span>
+                                </button>
+                            </div>
+                            <div id="goal-help" class="input-help">
+                                Provide a clear description of what you're looking to achieve.
+                            </div>
+                        </div>
+
+                        <!-- Question Phase Input -->
+                        <div class="input-group" id="question-phase" style="display: none;">
+                            <label for="answer-input" class="input-label">Your Response</label>
+                            <div class="input-wrapper">
+                                <input type="text" 
+                                       id="answer-input" 
+                                       class="form-control" 
+                                       placeholder="Your response..."
+                                       autocomplete="off"
+                                       aria-describedby="answer-help">
+                                <button type="button" 
+                                        id="submit-answer-btn" 
+                                        class="btn btn-primary"
+                                        aria-describedby="submit-help">
+                                    <span class="btn-text">Send</span>
+                                    <span class="btn-loading" style="display: none;">
+                                        <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M12 2v10l7 7"></path>
+                                        </svg>
+                                        Sending...
+                                    </span>
+                                </button>
+                            </div>
+                            <div id="answer-help" class="input-help">
+                                Share your thoughts to help us understand your needs better.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Debate Phase -->
+                <div class="analysis-phase" id="debate-phase" role="region" aria-labelledby="debate-heading" style="display: none;">
+                    <div class="phase-header">
+                        <h2 id="debate-heading" class="phase-title">AI Experts are Debating Your Opportunity</h2>
+                        <p class="phase-description">Our team of AI specialists is analyzing your goals from different perspectives to build the best recommendation.</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="loading-state" id="debate-loading">
+                        <div class="loading-spinner"></div>
+                        <p id="debate-status" class="loading-text" aria-live="polite">Building consensus among experts...</p>
+                    </div>
+
+                    <!-- AI Personas -->
+                    <div class="ai-personas" id="ai-personas" role="list" aria-label="AI expert personas">
+                        <!-- Persona cards will be dynamically added here -->
+                    </div>
+                </div>
+
+                <!-- Step 3: Results Phase -->
+                <div class="analysis-phase" id="results-phase" role="region" aria-labelledby="results-heading" style="display: none;">
+                    <div class="phase-header">
+                        <h2 id="results-heading" class="phase-title">Analysis Complete</h2>
+                        <p class="phase-description">Here are your personalized recommendations from our AI experts.</p>
+                    </div>
+
+                    <!-- Results Content -->
+                    <div class="results-summary" id="results-summary">
+                        <!-- Results will be dynamically added here -->
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </main>
-{% endblock %}
+
+<!-- Structured Data for AI Analysis -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "AI Career Analysis - Depanku",
+    "description": "AI-powered career analysis and recommendation service for students and professionals",
+    "url": "{{ canonical_url|default('https://depanku.com' + request.path) }}",
+    "author": {
+        "@type": "Organization",
+        "name": "Depanku"
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ canonical_url|default('https://depanku.com') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Dashboard",
+                "item": "{{ canonical_url|default('https://depanku.com/dashboard') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "AI Analysis",
+                "item": "{{ canonical_url|default('https://depanku.com' + request.path) }}"
+            }
+        ]
+    },
+    "mainEntity": {
+        "@type": "Service",
+        "name": "AI Career Analysis",
+        "serviceType": "CareerPlanningService",
+        "provider": {
+            "@type": "Organization",
+            "name": "Depanku"
+        },
+        "description": "AI-powered career analysis and recommendation service providing personalized guidance for students and professionals",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        }
+    }
+}
+</script>
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/ai_analysis.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ARIA Live Region for Dynamic Updates
+        const ariaLiveRegion = document.createElement('div');
+        ariaLiveRegion.className = 'sr-only';
+        ariaLiveRegion.setAttribute('aria-live', 'polite');
+        ariaLiveRegion.setAttribute('aria-atomic', 'true');
+        document.body.appendChild(ariaLiveRegion);
+
+        function announceToScreenReader(message) {
+            ariaLiveRegion.textContent = message;
+            setTimeout(() => {
+                ariaLiveRegion.textContent = '';
+            }, 1000);
+        }
+
+        // Phase Management
+        let currentPhase = 'socratic';
+        let questionIndex = 0;
+        let sessionId = null;
+
+        const phases = {
+            socratic: document.getElementById('socratic-phase'),
+            debate: document.getElementById('debate-phase'),
+            results: document.getElementById('results-phase')
+        };
+
+        const steps = {
+            socratic: document.getElementById('step-1'),
+            debate: document.getElementById('step-2'),
+            results: document.getElementById('step-3')
+        };
+
+        function showPhase(phaseName) {
+            // Hide all phases
+            Object.values(phases).forEach(phase => {
+                phase.classList.remove('active');
+                phase.style.display = 'none';
+            });
+
+            // Show current phase
+            phases[phaseName].classList.add('active');
+            phases[phaseName].style.display = 'block';
+
+            // Update progress steps
+            Object.entries(steps).forEach(([key, step]) => {
+                if (key === phaseName || (key === 'debate' && phaseName === 'results')) {
+                    step.classList.add('active');
+                    step.setAttribute('aria-current', 'step');
+                } else {
+                    step.classList.remove('active');
+                    step.removeAttribute('aria-current');
+                }
+            });
+
+            // Update progress bar
+            const progressBar = document.querySelector('[role="progressbar"]');
+            const stepNumber = phaseName === 'socratic' ? 1 : phaseName === 'debate' ? 2 : 3;
+            progressBar.setAttribute('aria-valuenow', stepNumber);
+
+            currentPhase = phaseName;
+            announceToScreenReader(`Step ${stepNumber}: ${steps[phaseName].querySelector('.step-label').textContent}`);
+        }
+
+        // Initial Goal Input
+        const goalInput = document.getElementById('goal-input');
+        const startBtn = document.getElementById('start-analysis-btn');
+        const initialGoalPhase = document.getElementById('initial-goal-phase');
+        const questionPhase = document.getElementById('question-phase');
+
+        startBtn.addEventListener('click', async function() {
+            const goal = goalInput.value.trim();
+            if (!goal) {
+                goalInput.focus();
+                return;
+            }
+
+            // Show loading state
+            startBtn.disabled = true;
+            startBtn.querySelector('.btn-text').style.display = 'none';
+            startBtn.querySelector('.btn-loading').style.display = 'block';
+
+            try {
+                // Simulate API call to start analysis
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Add user message to chat
+                addUserMessage(goal);
+                
+                // Generate first question
+                const firstQuestion = generateQuestion(goal);
+                addAIMessage(firstQuestion);
+                
+                // Switch to question input
+                initialGoalPhase.style.display = 'none';
+                questionPhase.style.display = 'block';
+                document.getElementById('answer-input').focus();
+                
+                announceToScreenReader('Analysis started. Please answer the first question.');
+                
+            } catch (error) {
+                showError('Failed to start analysis. Please try again.');
+            } finally {
+                startBtn.disabled = false;
+                startBtn.querySelector('.btn-text').style.display = 'block';
+                startBtn.querySelector('.btn-loading').style.display = 'none';
+            }
+        });
+
+        // Answer Input
+        const answerInput = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-answer-btn');
+
+        submitBtn.addEventListener('click', async function() {
+            const answer = answerInput.value.trim();
+            if (!answer) {
+                answerInput.focus();
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.querySelector('.btn-text').style.display = 'none';
+            submitBtn.querySelector('.btn-loading').style.display = 'block';
+
+            try {
+                // Add user message
+                addUserMessage(answer);
+                answerInput.value = '';
+
+                // Simulate processing and get next question or move to debate
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                if (questionIndex < 2) {
+                    // More questions
+                    questionIndex++;
+                    const nextQuestion = generateQuestion(answer);
+                    addAIMessage(nextQuestion);
+                } else {
+                    // Move to debate phase
+                    moveToDebatePhase();
+                }
+                
+            } catch (error) {
+                showError('Failed to process your answer. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.querySelector('.btn-text').style.display = 'block';
+                submitBtn.querySelector('.btn-loading').style.display = 'none';
+            }
+        });
+
+        // Enter key support
+        goalInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startBtn.click();
+            }
+        });
+
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+
+        function addUserMessage(text) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user-message';
+            messageDiv.setAttribute('role', 'article');
+            messageDiv.innerHTML = `
+                <div class="message-avatar user-avatar">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-sender">You</span>
+                        <time class="message-time" datetime="${new Date().toISOString()}">${new Date().toLocaleTimeString()}</time>
+                    </div>
+                    <div class="message-text">${text}</div>
+                </div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function addAIMessage(text) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai-message';
+            messageDiv.setAttribute('role', 'article');
+            messageDiv.innerHTML = `
+                <div class="message-avatar ai-avatar">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                    </svg>
+                </div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-sender">AI Career Advisor</span>
+                        <time class="message-time" datetime="${new Date().toISOString()}">${new Date().toLocaleTimeString()}</time>
+                    </div>
+                    <div class="message-text">${text}</div>
+                </div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function generateResponse(goal, answer) {
+            // Mock response generation - replace with actual AI service
+            const responses = [
+                "Based on your response, I'd like to understand more about your preferred work environment.",
+                "That's helpful information. Could you tell me more about your long-term career aspirations?",
+                "Thank you for sharing. What specific skills are you hoping to develop through this opportunity?"
+            ];
+            return responses[questionIndex] || "Thank you for your response. Let me analyze this information.";
+        }
+
+        function generateQuestion(goal) {
+            const questions = [
+                "What specific field or industry interests you most?",
+                "What are your long-term career goals?",
+                "What skills would you like to develop or improve?"
+            ];
+            return questions[questionIndex] || "Based on your responses, what's your preferred work environment?";
+        }
+
+        function moveToDebatePhase() {
+            showPhase('debate');
+            
+            // Show loading state
+            const loadingState = document.getElementById('debate-loading');
+            const personasContainer = document.getElementById('ai-personas');
+            
+            // Simulate AI debate
+            setTimeout(() => {
+                loadingState.style.display = 'none';
+                
+                // Add AI personas
+                const personas = [
+                    { name: 'Career Expert', icon: '🎯', response: 'Based on your goals, I recommend focusing on opportunities that offer hands-on experience and mentorship.' },
+                    { name: 'Industry Analyst', icon: '📊', response: 'The current job market shows strong demand for skills in AI and data science. Consider opportunities in these areas.' },
+                    { name: 'Education Specialist', icon: '🎓', response: 'Look for programs that provide both theoretical knowledge and practical application to maximize your learning.' }
+                ];
+                
+                personas.forEach((persona, index) => {
+                    setTimeout(() => {
+                        const personaCard = document.createElement('div');
+                        personaCard.className = 'persona-card';
+                        personaCard.setAttribute('role', 'article');
+                        personaCard.innerHTML = `
+                            <div class="persona-header">
+                                <div class="persona-icon">${persona.icon}</div>
+                                <div class="persona-name">${persona.name}</div>
+                            </div>
+                            <div class="persona-response">${persona.response}</div>
+                        `;
+                        personasContainer.appendChild(personaCard);
+                        
+                        if (index === personas.length - 1) {
+                            // Move to results after all personas
+                            setTimeout(moveToResultsPhase, 1000);
+                        }
+                    }, index * 1500);
+                });
+            }, 2000);
+        }
+
+        function moveToResultsPhase() {
+            showPhase('results');
+            
+            const resultsContainer = document.getElementById('results-summary');
+            resultsContainer.innerHTML = `
+                <div class="results-card consensus-card">
+                    <div class="results-header">
+                        <div class="results-icon">✓</div>
+                        <div class="results-title">Consensus Reached</div>
+                    </div>
+                    <div class="results-content">
+                        <h4>Recommended Path:</h4>
+                        <p>Based on your goals and our AI analysis, we recommend pursuing internships in technology companies that offer mentorship programs and opportunities to work on cutting-edge projects.</p>
+                        
+                        <h4>Next Steps:</h4>
+                        <ul>
+                            <li>Update your profile with relevant skills and experiences</li>
+                            <li>Research companies that align with your interests</li>
+                            <li>Prepare applications highlighting your learning goals</li>
+                        </ul>
+                        
+                        <div class="results-actions">
+                            <button type="button" class="btn btn-primary" onclick="window.location.href='{{ url_for('organizations.organizations_page') }}'">
+                                Browse Opportunities
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="window.location.reload()">
+                                Start New Analysis
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            announceToScreenReader('Analysis complete. Recommendations are now available.');
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Initialize
+        goalInput.focus();
+    });
+</script>
 {% endblock %}

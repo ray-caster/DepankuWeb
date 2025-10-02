@@ -2,63 +2,155 @@
 <html lang="en">
 
 <head>
+    <!-- Basic Meta Tags -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="msapplication-TileColor" content="#2563eb">
 
     <!-- SEO Meta Tags -->
     <title>{% block title %}Depanku - AI-Powered Career Planning{% endblock %}</title>
     <meta name="description"
         content="Depanku is an AI-powered platform helping students discover STEM internships, research opportunities, and organizations for effective career planning.">
     <meta name="keywords"
-        content="STEM internships, career planning, organization discovery, AI analysis, student opportunities">
+        content="STEM internships, career planning, organization discovery, AI analysis, student opportunities, educational platform">
+    <meta name="author" content="Depanku">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ canonical_url|default('https://depanku.com' + request.path) }}">
 
     <!-- Open Graph & Twitter Card -->
-    <meta property="og:title" content="Depanku - AI-Powered Organization Discovery & Career Planning">
+    <meta property="og:title" content="{% block og_title %}Depanku - AI-Powered Organization Discovery & Career Planning{% endblock %}">
     <meta property="og:description"
-        content="Discover STEM internships, research opportunities, and organizations tailored to your interests.">
+        content="{% block og_description %}Discover STEM internships, research opportunities, and organizations tailored to your interests.{% endblock %}">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://depanku.com">
+    <meta property="og:url" content="{{ canonical_url|default('https://depanku.com' + request.path) }}">
     <meta property="og:image" content="{{ url_for('static', filename='images/og-landing.jpg') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Depanku">
+    <meta property="og:locale" content="en_US">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Depanku - AI-Powered Career Planning{% endblock %}">
+    <meta name="twitter:description"
+        content="{% block twitter_description %}Discover STEM internships, research opportunities, and organizations tailored to your interests.{% endblock %}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='images/og-landing.jpg') }}">
+    <meta name="twitter:site" content="@depanku">
 
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <!-- Additional SEO Meta Tags -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Depanku">
+
+    <!-- Favicon Implementation -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='images/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='images/safari-pinned-tab.svg') }}" color="#2563eb">
+
+    <!-- Resource Hints for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="//www.gstatic.com">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system-accessibility.css') }}" media="print" onload="this.media='all'">
+    
+    <!-- Rhetorical Design Patterns -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rhetorical-design.css') }}" media="print" onload="this.media='all'">
+    
+    <!-- Legacy Stylesheet (for backward compatibility) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}" media="print" onload="this.media='all'">
+
+    <!-- Critical CSS Inline -->
+    <style>
+        /* Critical CSS for above-the-fold content */
+        body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+        .header { background: white; border-bottom: 1px solid #e5e7eb; }
+        .nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem; }
+        .nav-brand h1 { margin: 0; font-size: 1.5rem; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; }
+        .btn { padding: 0.5rem 1rem; border-radius: 0.375rem; border: none; cursor: pointer; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-outline { background: transparent; color: #2563eb; border: 1px solid #2563eb; }
+        .mobile-menu-toggle { display: none; background: none; border: none; cursor: pointer; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-toggle { display: block; }
+        }
+    </style>
 
     <!-- This block allows individual pages to add their own specific stylesheet -->
     {% block page_css %}{% endblock %}
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Depanku",
+        "url": "{{ canonical_url|default('https://depanku.com') }}",
+        "description": "AI-powered platform helping students discover STEM internships, research opportunities, and organizations for effective career planning.",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Depanku",
+            "url": "{{ canonical_url|default('https://depanku.com') }}",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ url_for('static', filename='images/logo.png') }}"
+            }
+        },
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ canonical_url|default('https://depanku.com') }}/organizations?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+
+    <!-- Sitemap and robots.txt references -->
+    {% if sitemap_url %}
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ sitemap_url }}">
+    {% endif %}
+    <link rel="robots" href="{{ url_for('static', filename='robots.txt') }}">
 
     {% block head_extra %}{% endblock %}
 </head>
 
 <body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
+
     <!-- Header -->
-    <header class="header">
-        <nav class="nav container">
+    <header class="header" role="banner">
+        <nav class="nav container" role="navigation" aria-label="Main navigation">
             <div class="nav-brand">
-                <h1><a href="{{ url_for('main.index') }}">Depanku</a></h1>
+                <h1><a href="{{ url_for('main.index') }}" aria-label="Depanku Home">Depanku</a></h1>
             </div>
             <div class="nav-links" id="main-navigation">
                 <!-- Auth.js dynamically populates these links -->
-                <a href="{{ url_for('main.login_page') }}" class="nav-link">Login</a>
-                <a href="{{ url_for('main.signup_page') }}" class="btn btn-secondary">Sign Up</a>
+                <a href="{{ url_for('main.login_page') }}" class="nav-link" aria-label="Login to your account">Login</a>
+                <a href="{{ url_for('main.signup_page') }}" class="btn btn-secondary" aria-label="Create a new account">Sign Up</a>
             </div>
             <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false"
                 aria-controls="main-navigation">
-                <span class="menu-icon">☰</span>
-                <span class="close-icon" style="display: none;">✕</span>
+                <span class="menu-icon" aria-hidden="true">☰</span>
+                <span class="close-icon" aria-hidden="true" style="display: none;">✕</span>
             </button>
         </nav>
     </header>
 
-    <main>
+    <main id="main-content">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
@@ -67,14 +159,14 @@
                 </div>
                 <div class="footer-section">
                     <h4>Navigate</h4>
-                    <a href="/#features">Features</a>
-                    <a href="{{ url_for('organizations.organizations_page') }}">Organizations</a>
-                    <a href="{{ url_for('dashboard.dashboard_page') }}">Dashboard</a>
+                    <a href="/#features" aria-label="View features">Features</a>
+                    <a href="{{ url_for('organizations.organizations_page') }}" aria-label="Browse organizations">Organizations</a>
+                    <a href="{{ url_for('dashboard.dashboard_page') }}" aria-label="View your dashboard">Dashboard</a>
                 </div>
                 <div class="footer-section">
                     <h4>Legal</h4>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
+                    <a href="#" aria-label="Read our privacy policy">Privacy Policy</a>
+                    <a href="#" aria-label="Read our terms of service">Terms of Service</a>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -87,8 +179,21 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
+    <!-- Performance Optimization Script -->
+    <script src="{{ url_for('static', filename='js/performance.js') }}" defer></script>
+    
+    <!-- Accessibility Enhancement Script -->
+    <script src="{{ url_for('static', filename='js/accessibility.js') }}" defer></script>
+    
+    <!-- SEO Helper Functions Script -->
+    <script src="{{ url_for('static', filename='js/seo-helper.js') }}" defer></script>
+    
     <!-- Core App Scripts -->
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}" defer></script>
+    
+    <!-- Rhetorical Design Patterns Implementation -->
+    <script src="{{ url_for('static', filename='js/rhetorical-design.js') }}" defer></script>
+    
     {% block scripts %}{% endblock %}
 </body>
 

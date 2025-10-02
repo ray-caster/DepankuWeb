@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Conversation - Depanku{% endblock %}
+{% block og_title %}Conversation - Depanku{% endblock %}
+{% block og_description %}View and participate in your conversation with other users.{% endblock %}
+{% block twitter_title %}Conversation - Depanku{% endblock %}
+{% block twitter_description %}View and participate in your conversation with other users.{% endblock %}
 
 {% block head_extra %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,47 +15,540 @@
 {% endblock %}
 
 {% block content %}
-<main class="container messages-page">
-    <div class="mb-3">
-        <a href="{{ url_for('messaging.messages_page') }}" class="btn btn-outline">← Back to Inbox</a>
-    </div>
+<main class="conversation-page" id="main-content">
+    <!-- Skip Navigation Link -->
+    <a href="#messages-container" class="skip-link">Skip to messages</a>
 
-    <div id="loading-container" class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        <p class="mt-2">Loading conversation...</p>
-    </div>
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" aria-label="Home">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.dashboard_page') }}" aria-label="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('messaging.messages_page') }}" aria-label="Messages">Messages</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Conversation</li>
+        </ol>
+    </nav>
 
-    <div id="chat-window" class="card" style="display: none;">
-        <div class="card-header d-flex align-items-center p-3">
-            <img src="/static/images/default-avatar.png" id="otherUserAvatar" alt="Avatar" class="conversation-avatar">
-            <h5 id="otherUserName" class="mb-0"></h5>
-        </div>
+    <section class="conversation-section" aria-labelledby="conversation-heading">
+        <div class="container">
+            <!-- Back Button -->
+            <div class="back-button mb-4">
+                <a href="{{ url_for('messaging.messages_page') }}" class="btn btn-outline" aria-label="Back to messages">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                    </svg>
+                    Back to Messages
+                </a>
+            </div>
 
-        <div id="messagesContainer" class="card-body message-container">
-            <!-- Messages will be loaded here -->
-        </div>
+            <!-- Loading State -->
+            <div id="loading-container" class="loading-container" role="status" aria-live="polite">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Loading conversation...</p>
+            </div>
 
-        <div class="card-footer message-input-container">
-            <form id="messageForm" class="message-input-form">
-                <input type="text" id="messageInput" class="form-control message-input"
-                    placeholder="Type your message..." autocomplete="off" required>
-                <button class="btn btn-primary" type="submit" id="sendBtn">Send</button>
-            </form>
+            <!-- Conversation Container -->
+            <div id="conversation-container" class="conversation-container" style="display: none;">
+                <!-- Conversation Header -->
+                <div class="conversation-header" role="banner">
+                    <div class="conversation-info">
+                        <div class="other-user-info">
+                            <img id="otherUserAvatar" 
+                                 src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                 alt="User avatar" 
+                                 class="conversation-avatar"
+                                 loading="lazy">
+                            <div class="user-details">
+                                <h2 id="otherUserName" class="other-user-name">Loading...</h2>
+                                <div class="user-status">
+                                    <span id="user-status-indicator" class="status-indicator offline"></span>
+                                    <span id="user-status-text" class="status-text">Offline</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="conversation-actions">
+                            <button type="button" 
+                                    class="btn btn-outline" 
+                                    id="conversation-info-btn"
+                                    aria-label="View conversation information">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-outline" 
+                                    id="conversation-actions-btn"
+                                    aria-label="More conversation actions">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div id="messages-container" class="messages-container" role="log" aria-live="polite">
+                    <!-- Messages will be loaded here -->
+                </div>
+
+                <!-- Message Input Area -->
+                <div class="message-input-area" role="form" aria-label="Message input">
+                    <form id="messageForm" class="message-input-form" novalidate>
+                        <div class="input-wrapper">
+                            <div class="input-group">
+                                <input type="text" 
+                                       id="messageInput" 
+                                       class="form-control message-input" 
+                                       placeholder="Type your message..."
+                                       autocomplete="off" 
+                                       required
+                                       aria-describedby="message-help"
+                                       maxlength="1000">
+                                <div id="message-help" class="sr-only">
+                                    Type your message and press Enter to send. Use Shift+Enter for a new line.
+                                </div>
+                                <div class="char-counter">
+                                    <span id="message-char-count">0</span>/1000
+                                </div>
+                            </div>
+                            <div class="input-actions">
+                                <button type="button" 
+                                        class="btn btn-icon" 
+                                        id="attach-file-btn"
+                                        aria-label="Attach file">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                                    </svg>
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-icon" 
+                                        id="emoji-btn"
+                                        aria-label="Insert emoji">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" 
+                                    class="btn btn-outline" 
+                                    id="clear-input-btn"
+                                    aria-label="Clear message">
+                                Clear
+                            </button>
+                            <button type="submit" 
+                                    class="btn btn-primary" 
+                                    id="send-btn"
+                                    aria-describedby="send-help">
+                                <span class="btn-text">Send</span>
+                                <span class="btn-loading" style="display: none;">
+                                    <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M12 2v10l7 7"></path>
+                                    </svg>
+                                    Sending...
+                                </span>
+                            </button>
+                            <div id="send-help" class="sr-only">
+                                Send your message to the conversation
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state-container" class="empty-state-container" style="display: none;">
+                <div class="empty-state-content">
+                    <div class="empty-state-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="empty-state-title">No conversation selected</h3>
+                    <p class="empty-state-description">Select a conversation from your messages or start a new one.</p>
+                    <a href="{{ url_for('messaging.messages_page') }}" class="btn btn-primary">View Messages</a>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 </main>
-{% endblock %}
+
+<!-- Conversation Info Modal -->
+<div class="modal fade" id="conversationInfoModal" tabindex="-1" aria-labelledby="conversationInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="conversationInfoModalLabel">Conversation Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="conversation-info-content">
+                    <div class="info-section">
+                        <h6>Participants</h6>
+                        <div id="participants-list">
+                            <!-- Participants will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="info-section">
+                        <h6>Conversation Details</h6>
+                        <div class="info-item">
+                            <span class="info-label">Started:</span>
+                            <span id="conversation-start-date" class="info-value">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Last Message:</span>
+                            <span id="conversation-last-message" class="info-value">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Total Messages:</span>
+                            <span id="conversation-message-count" class="info-value">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline" id="export-conversation-btn">
+                    Export Conversation
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="success-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <div class="toast-icon me-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+            <strong class="me-auto">Success</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Message sent successfully!
+        </div>
+    </div>
+</div>
+
+<!-- Structured Data for Conversation -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Conversation - Depanku",
+    "description": "View and participate in a conversation with other users",
+    "url": "{{ canonical_url|default('https://depanku.com' + request.path) }}",
+    "author": {
+        "@type": "Organization",
+        "name": "Depanku"
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ canonical_url|default('https://depanku.com') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Dashboard",
+                "item": "{{ canonical_url|default('https://depanku.com/dashboard') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Messages",
+                "item": "{{ canonical_url|default('https://depanku.com/messages') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Conversation",
+                "item": "{{ canonical_url|default('https://depanku.com' + request.path) }}"
+            }
+        ]
+    },
+    "mainEntity": {
+        "@type": "Conversation",
+        "name": "User Conversation",
+        "description": "Real-time conversation between users",
+        "participantCount": "2",
+        "dateCreated": "{{ conversation.created_at|default('2024-01-01') }}",
+        "dateModified": "{{ conversation.updated_at|default('2024-01-01') }}",
+        "author": {
+            "@type": "Organization",
+            "name": "Depanku"
+        }
+    }
+}
+</script>
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const conversationId = '{{ conversation_id }}';
+        const messageInput = document.getElementById('messageInput');
+        const messageCharCount = document.getElementById('message-char-count');
+        const messageForm = document.getElementById('messageForm');
+        const sendBtn = document.getElementById('send-btn');
+        const messagesContainer = document.getElementById('messages-container');
+        const otherUserName = document.getElementById('otherUserName');
+        const otherUserAvatar = document.getElementById('otherUserAvatar');
+        const userStatusIndicator = document.getElementById('user-status-indicator');
+        const userStatusText = document.getElementById('user-status-text');
+
+        // ARIA Live Region for Dynamic Updates
+        const ariaLiveRegion = document.createElement('div');
+        ariaLiveRegion.className = 'sr-only';
+        ariaLiveRegion.setAttribute('aria-live', 'polite');
+        ariaLiveRegion.setAttribute('aria-atomic', 'true');
+        document.body.appendChild(ariaLiveRegion);
+
+        function announceToScreenReader(message) {
+            ariaLiveRegion.textContent = message;
+            setTimeout(() => {
+                ariaLiveRegion.textContent = '';
+            }, 1000);
+        }
+
+        // Character Counter
+        messageInput.addEventListener('input', function() {
+            const count = this.value.length;
+            messageCharCount.textContent = count;
+            
+            if (count > 900) {
+                messageCharCount.parentElement.classList.add('text-warning');
+            } else {
+                messageCharCount.parentElement.classList.remove('text-warning');
+            }
+            
+            if (count === 1000) {
+                announceToScreenReader('Character limit reached');
+            }
+        });
+
+        // Load conversation data
+        async function loadConversation() {
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Mock conversation data
+                const mockData = {
+                    otherUser: {
+                        name: 'Sarah Johnson',
+                        avatar: '/static/images/avatar-sarah.svg',
+                        isOnline: true,
+                        lastSeen: 'Just now'
+                    },
+                    messages: [
+                        {
+                            id: 1,
+                            sender: 'other',
+                            content: 'Hi! I saw your profile and I think you might be interested in our summer internship program.',
+                            timestamp: '2024-01-15T10:30:00Z',
+                            isRead: true
+                        },
+                        {
+                            id: 2,
+                            sender: 'me',
+                            content: 'That sounds interesting! Could you tell me more about the program details?',
+                            timestamp: '2024-01-15T10:32:00Z',
+                            isRead: true
+                        },
+                        {
+                            id: 3,
+                            sender: 'other',
+                            content: 'Sure! We offer 10-week internships in software development, data science, and AI research. The program includes mentorship, hands-on projects, and networking opportunities.',
+                            timestamp: '2024-01-15T10:35:00Z',
+                            isRead: true
+                        }
+                    ]
+                };
+
+                // Update UI
+                otherUserName.textContent = mockData.otherUser.name;
+                otherUserAvatar.src = mockData.otherUser.avatar;
+                otherUserAvatar.alt = `${mockData.otherUser.name}'s avatar`;
+                
+                if (mockData.otherUser.isOnline) {
+                    userStatusIndicator.className = 'status-indicator online';
+                    userStatusText.textContent = 'Online';
+                } else {
+                    userStatusIndicator.className = 'status-indicator offline';
+                    userStatusText.textContent = `Last seen ${mockData.otherUser.lastSeen}`;
+                }
+
+                // Load messages
+                loadMessages(mockData.messages);
+                
+                // Show conversation container
+                document.getElementById('loading-container').style.display = 'none';
+                document.getElementById('conversation-container').style.display = 'block';
+                
+                announceToScreenReader('Conversation loaded successfully');
+                
+            } catch (error) {
+                console.error('Failed to load conversation:', error);
+                announceToScreenReader('Failed to load conversation');
+            }
+        }
+
+        function loadMessages(messages) {
+            messagesContainer.innerHTML = '';
+            
+            messages.forEach((message, index) => {
+                const messageElement = createMessageElement(message);
+                messagesContainer.appendChild(messageElement);
+                
+                // Announce new messages to screen reader
+                if (message.sender === 'other' && !message.isRead) {
+                    setTimeout(() => {
+                        announceToScreenReader(`New message from ${otherUserName.textContent}: ${message.content.substring(0, 100)}${message.content.length > 100 ? '...' : ''}`);
+                    }, 100);
+                }
+            });
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function createMessageElement(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.sender === 'me' ? 'sent' : 'received'}`;
+            messageDiv.setAttribute('role', 'article');
+            messageDiv.setAttribute('aria-label', `${message.sender === 'me' ? 'Your message' : 'Message from ' + otherUserName.textContent}`);
+            
+            const time = new Date(message.timestamp);
+            const timeString = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateString = time.toLocaleDateString();
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="message-text">${escapeHtml(message.content)}</div>
+                    <div class="message-meta">
+                        <time class="message-time" datetime="${message.timestamp}" aria-label="Sent at ${timeString} on ${dateString}">
+                            ${dateString === new Date().toLocaleDateString() ? 'Today' : dateString} at ${timeString}
+                        </time>
+                        ${message.sender === 'me' ? `
+                            <span class="message-status ${message.isRead ? 'read' : 'delivered'}" aria-label="${message.isRead ? 'Message read' : 'Message delivered'}">
+                                ${message.isRead ? '✓✓' : '✓'}
+                            </span>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            return messageDiv;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Message form submission
+        messageForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const message = messageInput.value.trim();
+            if (!message) {
+                messageInput.focus();
+                return;
+            }
+
+            // Show loading state
+            sendBtn.disabled = true;
+            sendBtn.querySelector('.btn-text').style.display = 'none';
+            sendBtn.querySelector('.btn-loading').style.display = 'block';
+
+            try {
+                // Add message to UI immediately
+                const newMessage = {
+                    id: Date.now(),
+                    sender: 'me',
+                    content: message,
+                    timestamp: new Date().toISOString(),
+                    isRead: true
+                };
+                
+                const messageElement = createMessageElement(newMessage);
+                messagesContainer.appendChild(messageElement);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // Clear input
+                messageInput.value = '';
+                messageCharCount.textContent = '0';
+                
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Show success toast
+                const successToast = new bootstrap.Toast(document.getElementById('success-toast'));
+                successToast.show();
+                
+                announceToScreenReader('Message sent successfully');
+                
+            } catch (error) {
+                console.error('Failed to send message:', error);
+                announceToScreenReader('Failed to send message');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.querySelector('.btn-text').style.display = 'block';
+                sendBtn.querySelector('.btn-loading').style.display = 'none';
+                messageInput.focus();
+            }
+        });
+
+        // Clear input button
+        document.getElementById('clear-input-btn').addEventListener('click', function() {
+            messageInput.value = '';
+            messageCharCount.textContent = '0';
+            messageInput.focus();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + Enter to send message
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                messageForm.dispatchEvent(new Event('submit'));
+            }
+            
+            // Escape to clear input
+            if (e.key === 'Escape' && document.activeElement === messageInput) {
+                messageInput.value = '';
+                messageCharCount.textContent = '0';
+            }
+        });
+
+        // Initialize conversation
         if (window.messagingSystem) {
             window.messagingSystem.loadConversation(conversationId);
+        } else {
+            loadConversation();
         }
     });
 </script>

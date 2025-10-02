@@ -1,75 +1,187 @@
 {% extends "base.html" %}
 
 {% block title %}Depanku - Discover Organizations & AI-Powered Career Planning{% endblock %}
+{% block og_title %}Depanku - Discover Organizations & AI-Powered Career Planning{% endblock %}
+{% block og_description %}Discover STEM internships, research opportunities, and organizations tailored to your interests with AI-powered career planning.{% endblock %}
+{% block twitter_title %}Depanku - Discover Organizations & AI-Powered Career Planning{% endblock %}
+{% block twitter_description %}Discover STEM internships, research opportunities, and organizations tailored to your interests with AI-powered career planning.{% endblock %}
 
 {% block content %}
+<!-- Breadcrumb Navigation -->
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" aria-label="Home">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Discover Opportunities</li>
+    </ol>
+</nav>
+
 <!-- Hero Section -->
-<section class="hero">
+<section class="hero" aria-labelledby="hero-heading">
     <div class="container">
         <div class="hero-grid">
             <div class="hero-content">
-                <h2>Your Future, Amplified by AI</h2>
-                <p>
+                <h1 id="hero-heading" class="hero-title">Your Future, Amplified by AI</h1>
+                <p class="hero-subtitle">
                     Depanku helps students from middle school to adulthood find perfect
                     STEM internships, research opportunities, and organizations tailored to their interests.
                 </p>
 
-                <div class="search-container">
+                <div class="search-container" role="search">
                     <form id="landing-search-form" action="{{ url_for('organizations.organizations_page') }}"
-                        method="GET" class="search-box">
+                        method="GET" class="search-box" aria-label="Search for opportunities">
                         <input type="text" name="search" placeholder="Search for STEM, internships, etc..."
-                            class="search-input" aria-label="Search">
-                        <button type="submit" class="search-btn" aria-label="Submit search">Search</button>
+                            class="search-input" aria-label="Search for opportunities" required>
+                        <button type="submit" class="search-btn" aria-label="Submit search">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            Search
+                        </button>
                     </form>
                     <div class="tags-container" style="justify-content: center; margin-top: 1rem;">
-                        <span class="tag">#STEM</span>
-                        <span class="tag">#Research</span>
-                        <span class="tag">#ComputerScience</span>
+                        <span class="tag" role="button" tabindex="0" aria-label="Search for STEM opportunities">#STEM</span>
+                        <span class="tag" role="button" tabindex="0" aria-label="Search for research opportunities">#Research</span>
+                        <span class="tag" role="button" tabindex="0" aria-label="Search for computer science opportunities">#ComputerScience</span>
                     </div>
                 </div>
 
                 <div class="hero-actions">
                     <a href="{{ url_for('organizations.organization_create_page') }}" class="btn btn-primary"
-                        id="create-org-btn">🚀 List an Opportunity</a>
-                    <a href="{{ url_for('ai.ai_analysis_page') }}" class="btn btn-outline" id="ai-analysis-btn">🤖 Get
-                        AI Analysis</a>
+                        id="create-org-btn" aria-label="List an opportunity">
+                        <svg class="action-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M2 12h20"></path>
+                        </svg>
+                        🚀 List an Opportunity
+                    </a>
+                    <a href="{{ url_for('ai.ai_analysis_page') }}" class="btn btn-outline" id="ai-analysis-btn" aria-label="Get AI career analysis">
+                        <svg class="action-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M12 1v6m0 6v6m-9-9h6m6 0h6"></path>
+                        </svg>
+                        🤖 Get AI Analysis
+                    </a>
                 </div>
             </div>
 
             <div class="hero-image">
                 <img src="{{ url_for('static', filename='images/hero-illustration.svg') }}"
-                    alt="AI-powered career discovery platform illustration">
+                    alt="AI-powered career discovery platform illustration showing students finding opportunities"
+                    loading="lazy" width="400" height="300">
             </div>
         </div>
     </div>
 </section>
 
 <!-- Features Section -->
-<section id="features" class="section-padding">
+<section id="features" class="section-padding" aria-labelledby="features-heading">
     <div class="container">
-        <h2 class="section-title">AI-Powered Features for Your Success</h2>
-        <div class="board-columns">
-            <div class="card">
+        <h2 id="features-heading" class="section-title">AI-Powered Features for Your Success</h2>
+        <p class="section-subtitle">Discover how our advanced AI technology helps you find the perfect opportunities</p>
+        
+        <div class="board-columns" role="list">
+            <article class="card" role="listitem">
                 <div class="card-body">
-                    <h3>Multi-Model AI Analysis</h3>
-                    <p>Get personalized recommendations through our multi-model AI debate system that understands your
-                        unique goals.</p>
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Multi-Model AI Analysis</h3>
+                    <p class="card-text">Get personalized recommendations through our multi-model AI debate system that understands your unique goals and aspirations.</p>
+                    <ul class="feature-benefits" role="list">
+                        <li>Personalized career path analysis</li>
+                        <li>Multi-perspective opportunity evaluation</li>
+                        <li>Real-time recommendation updates</li>
+                    </ul>
                 </div>
-            </div>
-            <div class="card">
+            </article>
+            
+            <article class="card" role="listitem">
                 <div class="card-body">
-                    <h3>Intelligent Matching</h3>
-                    <p>Find curated opportunities matching your age, interests, and career aspirations with advanced
-                        search.</p>
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Intelligent Matching</h3>
+                    <p class="card-text">Find curated opportunities matching your age, interests, and career aspirations with advanced search algorithms.</p>
+                    <ul class="feature-benefits" role="list">
+                        <li>Age-appropriate opportunity filtering</li>
+                        <li>Interest-based smart recommendations</li>
+                        <li>Location-aware opportunity discovery</li>
+                    </ul>
                 </div>
-            </div>
-            <div class="card">
+            </article>
+            
+            <article class="card" role="listitem">
                 <div class="card-body">
-                    <h3>Visual Career Planning</h3>
-                    <p>Use a drag-and-drop board to organize opportunities and create actionable career roadmaps.</p>
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="9"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Visual Career Planning</h3>
+                    <p class="card-text">Use a drag-and-drop board to organize opportunities and create actionable career roadmaps with visual progress tracking.</p>
+                    <ul class="feature-benefits" role="list">
+                        <li>Interactive opportunity organization</li>
+                        <li>Visual career path planning</li>
+                        <li>Progress tracking and analytics</li>
+                    </ul>
                 </div>
-            </div>
+            </article>
         </div>
     </div>
 </section>
+
+<!-- Structured Data for Educational Content -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Depanku",
+    "description": "AI-powered platform helping students discover STEM internships, research opportunities, and organizations for effective career planning",
+    "url": "{{ canonical_url|default('https://depanku.com') }}",
+    "logo": "{{ url_for('static', filename='images/logo.png') }}",
+    "image": "{{ url_for('static', filename='images/hero-illustration.svg') }}",
+    "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "San Francisco",
+        "addressRegion": "CA",
+        "addressCountry": "US"
+    },
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Service",
+        "email": "support@depanku.com"
+    },
+    "sameAs": [
+        "https://twitter.com/depanku",
+        "https://linkedin.com/company/depanu"
+    ],
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "validFrom": "2024-01-01"
+    },
+    "educationalProgram": {
+        "@type": "EducationalProgram",
+        "name": "STEM Career Discovery Program",
+        "description": "AI-powered career planning and opportunity discovery for students",
+        "educationalLevel": "Middle School to Adult",
+        "programType": "Online Program",
+        "provider": {
+            "@type": "Organization",
+            "name": "Depanku"
+        }
+    }
+}
+</script>
 {% endblock %}

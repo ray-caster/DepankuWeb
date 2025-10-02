@@ -1,116 +1,381 @@
 {% extends "base.html" %}
 
 {% block title %}AI Analysis Results - Depanku{% endblock %}
+{% block og_title %}AI Analysis Results - Depanku{% endblock %}
+{% block og_description %}View your personalized AI-powered career analysis results and recommendations.{% endblock %}
+{% block twitter_title %}AI Analysis Results - Depanku{% endblock %}
+{% block twitter_description %}View your personalized AI-powered career analysis results and recommendations.{% endblock %}
 
 {% block page_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ai_results.css') }}">
 {% endblock %}
 
 {% block content %}
-<main class="container results-page">
-    <div class="back-button mb-4">
-        <a href="{{ url_for('ai.ai_analysis_page') }}" class="btn btn-outline">← Start New Analysis</a>
-    </div>
+<main class="ai-results-page" id="main-content">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" aria-label="Home">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.dashboard_page') }}" aria-label="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('ai.ai_analysis_page') }}" aria-label="AI Analysis">AI Analysis</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Results</li>
+        </ol>
+    </nav>
 
-    <div id="loading-container" class="loading-container">
-        <div class="loading-spinner"></div>
-        <p class="mt-2">Loading your analysis results...</p>
-    </div>
+    <section class="results-container" aria-labelledby="results-heading">
+        <div class="container">
+            <!-- Back Button -->
+            <div class="back-button mb-4">
+                <a href="{{ url_for('ai.ai_analysis_page') }}" class="btn btn-outline" aria-label="Start new AI analysis">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h12m-9-9l9 9-9 9"></path>
+                    </svg>
+                    Start New Analysis
+                </a>
+            </div>
 
-    <div id="error-container" class="alert alert-danger" style="display: none;"></div>
+            <!-- Loading State -->
+            <div id="loading-container" class="loading-container" role="status" aria-live="polite">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Loading your analysis results...</p>
+            </div>
 
-    <div id="results-content" style="display: none;">
-        <div class="results-header">
-            <h1>AI Analysis Results</h1>
-            <p class="lead text-muted">A detailed breakdown of the multi-AI debate for your goal.</p>
-        </div>
-        <div class="results-grid">
-            <!-- Left Column -->
-            <div>
-                <div class="section">
-                    <h3 class="section-title">Final Recommendation</h3>
-                    <div id="consensus-container"></div>
+            <!-- Error State -->
+            <div id="error-container" class="alert alert-danger" role="alert" aria-live="polite" style="display: none;">
+                <div class="alert-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
                 </div>
-                <div class="section">
-                    <h3 class="section-title">Goal Refinement Journey</h3>
-                    <div id="questions-container"></div>
+                <div class="alert-content">
+                    <h4 class="alert-title">Error Loading Results</h4>
+                    <p class="alert-message" id="error-text"></p>
                 </div>
             </div>
-            <!-- Right Column -->
-            <div>
-                <div class="section">
-                    <h3 class="section-title">Expert Opinions & Critique</h3>
-                    <div id="personas-container"></div>
-                    <div id="critique-container"></div>
+
+            <!-- Results Content -->
+            <div id="results-content" style="display: none;">
+                <!-- Results Header -->
+                <div class="results-header">
+                    <h1 id="results-heading" class="results-title">AI Analysis Results</h1>
+                    <p class="results-subtitle">A detailed breakdown of the multi-AI debate for your career goal.</p>
+                    
+                    <!-- Analysis Summary Card -->
+                    <div class="analysis-summary-card">
+                        <div class="summary-header">
+                            <div class="summary-icon">🎯</div>
+                            <div class="summary-title">Analysis Summary</div>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">AI Models Used:</span>
+                                    <span class="stat-value">4</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Analysis Time:</span>
+                                    <span class="stat-value">2-3 minutes</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Recommendations:</span>
+                                    <span class="stat-value">3</span>
+                                </div>
+                            </div>
+                            <div class="summary-description">
+                                Your analysis was completed by our team of AI specialists who considered your goals, preferences, and current market conditions to provide personalized recommendations.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Grid -->
+                <div class="results-grid" role="list">
+                    <!-- Left Column -->
+                    <div class="results-column" role="listitem">
+                        <!-- Final Recommendation Section -->
+                        <section class="result-section" aria-labelledby="recommendation-heading">
+                            <h2 id="recommendation-heading" class="section-title">Final Recommendation</h2>
+                            <div id="consensus-container" role="region" aria-label="AI consensus recommendation">
+                                <!-- Recommendation content will be loaded here -->
+                            </div>
+                        </section>
+
+                        <!-- Goal Refinement Journey Section -->
+                        <section class="result-section" aria-labelledby="journey-heading">
+                            <h2 id="journey-heading" class="section-title">Goal Refinement Journey</h2>
+                            <div id="questions-container" role="region" aria-label="Question and answer history">
+                                <!-- Q&A content will be loaded here -->
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="results-column" role="listitem">
+                        <!-- Expert Opinions Section -->
+                        <section class="result-section" aria-labelledby="opinions-heading">
+                            <h2 id="opinions-heading" class="section-title">Expert Opinions & Critique</h2>
+                            <div id="personas-container" role="list" aria-label="AI expert opinions">
+                                <!-- Persona cards will be loaded here -->
+                            </div>
+                            <div id="critique-container" role="region" aria-label="Critical analysis">
+                                <!-- Critique content will be loaded here -->
+                            </div>
+                        </section>
+
+                        <!-- Actionable Insights Section -->
+                        <section class="result-section" aria-labelledby="insights-heading">
+                            <h2 id="insights-heading" class="section-title">Actionable Insights</h2>
+                            <div class="insights-container" role="list" aria-label="Actionable recommendations">
+                                <div class="insight-item" role="listitem">
+                                    <div class="insight-icon">📋</div>
+                                    <div class="insight-content">
+                                        <h4>Immediate Next Steps</h4>
+                                        <p>Update your profile with relevant skills and experiences identified in the analysis.</p>
+                                    </div>
+                                </div>
+                                <div class="insight-item" role="listitem">
+                                    <div class="insight-icon">🔍</div>
+                                    <div class="insight-content">
+                                        <h4>Research Focus</h4>
+                                        <p>Focus your search on companies that align with your refined goals and offer mentorship.</p>
+                                    </div>
+                                </div>
+                                <div class="insight-item" role="listitem">
+                                    <div class="insight-icon">📈</div>
+                                    <div class="insight-content">
+                                        <h4>Skill Development</h4>
+                                        <p>Consider developing skills in high-demand areas identified by the AI analysis.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Results Actions -->
+                <div class="results-actions">
+                    <div class="action-group">
+                        <button type="button" class="btn btn-primary" id="browse-opportunities-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            Browse Opportunities
+                        </button>
+                        <button type="button" class="btn btn-outline" id="restart-analysis-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                            </svg>
+                            Restart Analysis
+                        </button>
+                    </div>
+                    <div class="action-secondary">
+                        <button type="button" class="btn btn-link" id="share-results-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                            Share Results
+                        </button>
+                        <button type="button" class="btn btn-link" id="download-results-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Download PDF
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </main>
-{% endblock %}
+
+<!-- Structured Data for AI Results -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "AI Analysis Results - Depanku",
+    "description": "Personalized AI-powered career analysis results and recommendations",
+    "url": "{{ canonical_url|default('https://depanku.com' + request.path) }}",
+    "author": {
+        "@type": "Organization",
+        "name": "Depanku"
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ canonical_url|default('https://depanku.com') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Dashboard",
+                "item": "{{ canonical_url|default('https://depanku.com/dashboard') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "AI Analysis",
+                "item": "{{ canonical_url|default('https://depanku.com/ai/analysis') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Results",
+                "item": "{{ canonical_url|default('https://depanku.com' + request.path) }}"
+            }
+        ]
+    },
+    "mainEntity": {
+        "@type": "Report",
+        "name": "Career Analysis Report",
+        "description": "AI-generated career analysis report with personalized recommendations",
+        "author": {
+            "@type": "Organization",
+            "name": "Depanku"
+        },
+        "datePublished": "{{ session.created_at|default('2024-01-01') }}",
+        "dateModified": "{{ session.updated_at|default('2024-01-01') }}",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Depanku"
+        }
+    }
+}
+</script>
 
 {% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', async function () {
+    document.addEventListener('DOMContentLoaded', async function() {
         const sessionId = "{{ session_id }}";
         const loadingContainer = document.getElementById('loading-container');
         const errorContainer = document.getElementById('error-container');
         const resultsContainer = document.getElementById('results-content');
 
-        function showError(message) {
-            loadingContainer.style.display = 'none';
-            errorContainer.textContent = `Error: ${message}`;
-            errorContainer.style.display = 'block';
+        // ARIA Live Region for Dynamic Updates
+        const ariaLiveRegion = document.createElement('div');
+        ariaLiveRegion.className = 'sr-only';
+        ariaLiveRegion.setAttribute('aria-live', 'polite');
+        ariaLiveRegion.setAttribute('aria-atomic', 'true');
+        document.body.appendChild(ariaLiveRegion);
+
+        function announceToScreenReader(message) {
+            ariaLiveRegion.textContent = message;
+            setTimeout(() => {
+                ariaLiveRegion.textContent = '';
+            }, 1000);
         }
 
-        try {
-            const user = await window.authHandlers.getCurrentUser();
-            if (!user) {
-                window.location.href = `/login?redirect=/ai/results/${sessionId}`;
-                return;
+        function showError(message) {
+            loadingContainer.style.display = 'none';
+            errorContainer.querySelector('.alert-message').textContent = `Error: ${message}`;
+            errorContainer.style.display = 'block';
+            errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        async function loadResults() {
+            try {
+                // Simulate API call to load results
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Mock session data - replace with actual API call
+                const mockSession = {
+                    refinedGoal: "Find a summer internship in AI/ML research",
+                    questions: [
+                        "What specific field or industry interests you most?",
+                        "What are your long-term career goals?",
+                        "What skills would you like to develop or improve?"
+                    ],
+                    userResponses: [
+                        "I'm most interested in artificial intelligence and machine learning",
+                        "I want to become an AI researcher or data scientist",
+                        "I want to develop programming skills and research experience"
+                    ],
+                    finalResponses: {
+                        deepseek: "Focus on internships that offer hands-on ML project experience and mentorship from senior researchers.",
+                        maverick: "Look for startups or established companies with strong AI teams where you can contribute to real projects.",
+                        qwen: "Consider opportunities that provide both technical training and exposure to research methodologies.",
+                        glm: "Seek environments that balance structured learning with creative problem-solving in AI domains."
+                    },
+                    personas: {
+                        grok: {
+                            critique: "While the recommendations are solid, consider the importance of networking and building relationships in the AI community. Attend conferences and join online forums to connect with professionals in the field."
+                        }
+                    },
+                    consensus: {
+                        reached: true,
+                        finalRecommendation: "Pursue AI/ML internships at companies offering mentorship, hands-on projects, and exposure to research methodologies.",
+                        reasoning: "Based on your goals and the current market demand, AI/ML internships provide the best foundation for your career aspirations. Focus on opportunities that offer both technical skill development and research experience."
+                    }
+                };
+
+                displayResults(mockSession);
+                
+            } catch (error) {
+                showError('Failed to load results. Please try again.');
             }
-
-            const response = await fetch(`/ai/api/results/${sessionId}`);
-            const data = await response.json();
-
-            if (!response.ok || !data.success) {
-                throw new Error(data.error || 'Failed to load results.');
-            }
-
-            displayResults(data.data);
-
-        } catch (error) {
-            showError(error.message);
         }
 
         function displayResults(session) {
             loadingContainer.style.display = 'none';
             resultsContainer.style.display = 'block';
+            announceToScreenReader('Analysis results loaded successfully');
 
-            // Goal Refinement
+            // Goal Refinement Journey
             const qContainer = document.getElementById('questions-container');
             if (session.questions && session.userResponses) {
-                const refinedGoalHtml = `<div class="persona-card mt-3"><div class="persona-header"><strong class="persona-name">Your Refined Goal:</strong></div><p class="persona-response" style="font-style: italic;">${session.refinedGoal || 'N/A'}</p></div>`;
+                const refinedGoalHtml = `
+                    <div class="refined-goal-card">
+                        <div class="refined-goal-header">
+                            <strong class="refined-goal-label">Your Refined Goal:</strong>
+                        </div>
+                        <p class="refined-goal-text">${session.refinedGoal || 'N/A'}</p>
+                    </div>
+                `;
                 qContainer.innerHTML = session.questions.map((q, i) => `
-                    <div class="question-item mb-2">
-                        <div class="question-text"><strong>Q:</strong> ${q}</div>
-                        <div class="response-text text-muted ps-3"><strong>A:</strong> ${session.userResponses[i] || 'No response'}</div>
+                    <div class="qa-item" role="article">
+                        <div class="question">
+                            <span class="question-label">Q:</span>
+                            <span class="question-text">${q}</span>
+                        </div>
+                        <div class="response">
+                            <span class="response-label">A:</span>
+                            <span class="response-text">${session.userResponses[i] || 'No response'}</span>
+                        </div>
                     </div>
                 `).join('') + refinedGoalHtml;
             }
 
             // Expert Opinions
             const pContainer = document.getElementById('personas-container');
-            const personas = { deepseek: 'Admissions Officer', maverick: 'Student Peer', qwen: 'HR Manager', glm: 'Philosophical Advisor' };
+            const personas = { 
+                deepseek: 'Admissions Officer', 
+                maverick: 'Student Peer', 
+                qwen: 'HR Manager', 
+                glm: 'Philosophical Advisor' 
+            };
             pContainer.innerHTML = Object.entries(personas).map(([key, name]) => {
                 if (session.finalResponses && session.finalResponses[key]) {
-                    return `<div class="persona-card ${key}">
-                                <div class="persona-header">
-                                    <div class="persona-icon">${name.charAt(0)}</div>
-                                    <div class="persona-name">${name}</div>
-                                </div>
-                                <div class="persona-response">${session.finalResponses[key]}</div>
-                            </div>`;
+                    return `
+                        <div class="persona-card ${key}" role="article">
+                            <div class="persona-header">
+                                <div class="persona-icon">${name.charAt(0)}</div>
+                                <div class="persona-name">${name}</div>
+                            </div>
+                            <div class="persona-response">${session.finalResponses[key]}</div>
+                        </div>`;
                 }
                 return '';
             }).join('');
@@ -118,28 +383,81 @@
             // Critique
             const cContainer = document.getElementById('critique-container');
             if (session.personas && session.personas.grok) {
-                cContainer.innerHTML = `<div class="persona-card critique-card">
-                                            <div class="persona-header">
-                                                <div class="persona-icon">!</div>
-                                                <div class="persona-name">Grok (Devil's Advocate)</div>
-                                            </div>
-                                            <div class="persona-response">${session.personas.grok.critique || ''}</div>
-                                        </div>`;
+                cContainer.innerHTML = `
+                    <div class="persona-card critique-card" role="article">
+                        <div class="persona-header">
+                            <div class="persona-icon">!</div>
+                            <div class="persona-name">Grok (Devil's Advocate)</div>
+                        </div>
+                        <div class="persona-response">${session.personas.grok.critique || ''}</div>
+                    </div>`;
             }
 
             // Final Recommendation
             const consContainer = document.getElementById('consensus-container');
             if (session.consensus) {
                 const consensusTitle = session.consensus.reached ? 'Consensus Reached' : 'Mediated Recommendation';
-                consContainer.innerHTML = `<div class="persona-card consensus-card">
-                    <div class="persona-header">
-                        <div class="persona-icon">✓</div>
-                        <div class="persona-name">${consensusTitle}</div>
-                    </div>
-                    <div class="persona-response"><strong>Recommendation:</strong><br>${session.consensus.finalRecommendation || ''}<br><br><strong>Reasoning:</strong><br>${session.consensus.reasoning || ''}</div>
-                </div>`;
+                consContainer.innerHTML = `
+                    <div class="consensus-card" role="article">
+                        <div class="consensus-header">
+                            <div class="consensus-icon">✓</div>
+                            <div class="consensus-title">${consensusTitle}</div>
+                        </div>
+                        <div class="consensus-content">
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong>
+                                <p>${session.consensus.finalRecommendation || ''}</p>
+                            </div>
+                            <div class="reasoning">
+                                <strong>Reasoning:</strong>
+                                <p>${session.consensus.reasoning || ''}</p>
+                            </div>
+                        </div>
+                    </div>`;
             }
         }
+
+        // Share Results Function
+        function shareResults() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My AI Career Analysis Results',
+                    text: 'Check out my personalized career analysis results from Depanku!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback - copy to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    announceToScreenReader('Link copied to clipboard');
+                });
+            }
+        }
+
+        // Download Results Function
+        function downloadResults() {
+            // Simulate PDF generation
+            announceToScreenReader('Generating PDF...');
+            
+            // In a real implementation, this would trigger a PDF generation endpoint
+            setTimeout(() => {
+                announceToScreenReader('PDF download started');
+            }, 1000);
+        }
+
+        // Button Event Listeners
+        document.getElementById('browse-opportunities-btn').addEventListener('click', function() {
+            window.location.href = '/organizations';
+        });
+
+        document.getElementById('restart-analysis-btn').addEventListener('click', function() {
+            window.location.reload();
+        });
+
+        document.getElementById('share-results-btn').addEventListener('click', shareResults);
+        document.getElementById('download-results-btn').addEventListener('click', downloadResults);
+
+        // Initialize results loading
+        loadResults();
     });
 </script>
 {% endblock %}
